@@ -10,9 +10,13 @@ import SwiftData
 
 @main
 struct ForgetzeApp: App {
+    @StateObject private var appSettings = AppSettings()
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Contact.self,
+            Kid.self,
+            Birthday.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,6 +30,8 @@ struct ForgetzeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appSettings)
+                .preferredColorScheme(appSettings.currentColorScheme)
         }
         .modelContainer(sharedModelContainer)
     }
