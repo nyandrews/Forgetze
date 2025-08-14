@@ -10,10 +10,6 @@ struct ContactEditView: View {
     @State private var notes = ""
     @State private var group = ""
     @State private var birthday: Birthday?
-    @State private var selectedMonth = Calendar.current.component(.month, from: Date())
-    @State private var selectedDay = Calendar.current.component(.day, from: Date())
-    @State private var selectedYear = Calendar.current.component(.year, from: Date())
-    @State private var includeYear = true
     @State private var hasBirthday = false
     @State private var kids: [Kid] = []
     
@@ -33,13 +29,6 @@ struct ContactEditView: View {
             _birthday = State(initialValue: contact.birthday)
             _hasBirthday = State(initialValue: contact.birthday != nil)
             _kids = State(initialValue: contact.kids)
-            
-            if let existingBirthday = contact.birthday {
-                _selectedMonth = State(initialValue: existingBirthday.month)
-                _selectedDay = State(initialValue: existingBirthday.day)
-                _selectedYear = State(initialValue: existingBirthday.year ?? Calendar.current.component(.year, from: Date()))
-                _includeYear = State(initialValue: existingBirthday.year != nil)
-            }
         }
     }
     
@@ -72,8 +61,16 @@ struct ContactEditView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Text("Month:")
-                                    .frame(width: 60, alignment: .leading)
-                                Picker("Month", selection: $selectedMonth) {
+                                Picker("Month", selection: Binding(
+                                    get: { birthday?.month ?? 1 },
+                                    set: { 
+                                        if birthday == nil {
+                                            birthday = Birthday(month: $0, day: 1)
+                                        } else {
+                                            birthday?.month = $0
+                                        }
+                                    }
+                                )) {
                                     ForEach(1...12, id: \.self) { month in
                                         Text(Calendar.current.monthSymbols[month - 1]).tag(month)
                                     }
@@ -83,8 +80,16 @@ struct ContactEditView: View {
                             
                             HStack {
                                 Text("Day:")
-                                    .frame(width: 60, alignment: .leading)
-                                Picker("Day", selection: $selectedDay) {
+                                Picker("Day", selection: Binding(
+                                    get: { birthday?.day ?? 1 },
+                                    set: { 
+                                        if birthday == nil {
+                                            birthday = Birthday(month: 1, day: $0)
+                                        } else {
+                                            birthday?.day = $0
+                                        }
+                                    }
+                                )) {
                                     ForEach(1...31, id: \.self) { day in
                                         Text("\(day)").tag(day)
                                     }
@@ -94,16 +99,26 @@ struct ContactEditView: View {
                             
                             HStack {
                                 Text("Year:")
-                                    .frame(width: 60, alignment: .leading)
-                                Toggle("Include Year", isOn: $includeYear)
-                                    .toggleStyle(SwitchToggleStyle())
-                            }
-                            
-                            if includeYear {
-                                HStack {
-                                    Text("Year:")
-                                        .frame(width: 60, alignment: .leading)
-                                    Picker("Year", selection: $selectedYear) {
+                                Toggle("Include Year", isOn: Binding(
+                                    get: { birthday?.year != nil },
+                                    set: { includeYear in
+                                        if includeYear {
+                                            if birthday == nil {
+                                                birthday = Birthday(month: 1, day: 1, year: Calendar.current.component(.year, from: Date()))
+                                            } else if birthday?.year == nil {
+                                                birthday?.year = Calendar.current.component(.year, from: Date())
+                                            }
+                                        } else {
+                                            birthday?.year = nil
+                                        }
+                                    }
+                                ))
+                                
+                                if birthday?.year != nil {
+                                    Picker("Year", selection: Binding(
+                                        get: { birthday?.year ?? Calendar.current.component(.year, from: Date()) },
+                                        set: { birthday?.year = $0 }
+                                    )) {
                                         ForEach(1900...Calendar.current.component(.year, from: Date()), id: \.self) { year in
                                             Text("\(year)").tag(year)
                                         }
@@ -127,7 +142,7 @@ struct ContactEditView: View {
                                     .foregroundColor(.secondary)
                                 
                                 if let age = birthday.age {
-                                    Text("(\(age) years old)")
+                                    Text("(\(String(age)) years old)")
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
                                 }
@@ -177,11 +192,7 @@ struct ContactEditView: View {
             lastName: lastName.trimmingCharacters(in: .whitespaces),
             notes: notes.trimmingCharacters(in: .whitespaces),
             group: group.trimmingCharacters(in: .whitespaces),
-            birthday: hasBirthday ? Birthday(
-                month: selectedMonth,
-                day: selectedDay,
-                year: includeYear ? selectedYear : nil
-            ) : nil,
+            birthday: hasBirthday ? birthday : nil,
             kids: kids
         )
         

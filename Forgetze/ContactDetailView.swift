@@ -49,17 +49,9 @@ struct ContactDetailView: View {
                             Text(birthday.displayString)
                                 .font(.title2)
                             
-                            if birthday.hasYear {
-                                if let age = birthday.age {
-                                    Text("(\(age) years old)")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                }
-                            } else {
-                                Text("(N/A years old)")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
+                            Text(birthday.ageDisplayString)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
                     }
                     .padding()
@@ -91,17 +83,9 @@ struct ContactDetailView: View {
                                                 .font(.subheadline)
                                                 .foregroundColor(.secondary)
                                             
-                                                                                    if birthday.hasYear {
-                                            if let age = birthday.age {
-                                                Text("(\(age) years old)")
-                                                    .font(.caption)
-                                                    .foregroundColor(.secondary)
-                                            }
-                                        } else {
-                                            Text("(N/A years old)")
+                                            Text("(\(birthday.ageDisplayString))")
                                                 .font(.caption)
                                                 .foregroundColor(.secondary)
-                                        }
                                         }
                                     } else {
                                         Text("No birthday set")

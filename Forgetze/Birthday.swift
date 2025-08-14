@@ -57,7 +57,7 @@ final class Birthday: Identifiable, Validatable {
     var displayString: String {
         let monthName = Calendar.current.monthSymbols[month - 1]
         if let year = year {
-            return "\(monthName) \(day), \(year)"
+            return "\(monthName) \(day), \(String(year))"
         } else {
             return "\(monthName) \(day)"
         }
@@ -66,9 +66,17 @@ final class Birthday: Identifiable, Validatable {
     var shortDisplayString: String {
         let monthName = Calendar.current.shortMonthSymbols[month - 1]
         if let year = year {
-            return "\(monthName) \(day), \(year)"
+            return "\(monthName) \(day), \(String(year))"
         } else {
             return "\(monthName) \(day)"
+        }
+    }
+    
+    var ageDisplayString: String {
+        if let age = age {
+            return "\(String(age)) years old"
+        } else {
+            return "N/A years old"
         }
     }
     
