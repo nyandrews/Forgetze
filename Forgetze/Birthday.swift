@@ -50,6 +50,10 @@ final class Birthday: Identifiable, Validatable {
         return age
     }
     
+    var hasYear: Bool {
+        return year != nil
+    }
+    
     var displayString: String {
         let monthName = Calendar.current.monthSymbols[month - 1]
         if let year = year {

@@ -51,7 +51,7 @@ struct ContentView: View {
                 group: "Neighbors",
                 birthday: Birthday(date: Date().addingTimeInterval(-45*365*24*60*60)),
                 kids: [
-                    Kid(firstName: "Alex", lastName: "Johnson", birthday: Birthday(date: Date().addingTimeInterval(-12*365*24*60*60)))
+                    Kid(firstName: "Alex", lastName: "Johnson", birthday: Birthday(month: 3, day: 22)) // No year known
                 ]
             ),
             Contact(
@@ -59,7 +59,7 @@ struct ContentView: View {
                 lastName: "Brown",
                 notes: "Book club organizer and fellow bookworm. Runs the local library's monthly book discussion group. Former English teacher, now works as a freelance editor. Loves historical fiction, especially WWII era novels. Has a collection of over 500 books. Lives in a charming Victorian house downtown. Husband is Tom, they have no children but three rescue dogs. Always has great book recommendations and hosts the best book club meetings with wine and cheese.",
                 group: "Hobbies",
-                birthday: Birthday(date: Date().addingTimeInterval(-35*365*24*60*60))
+                birthday: Birthday(month: 6, day: 15) // No year known
             ),
             Contact(
                 firstName: "David",

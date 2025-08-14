@@ -10,6 +10,10 @@ struct ContactEditView: View {
     @State private var notes = ""
     @State private var group = ""
     @State private var birthday: Birthday?
+    @State private var selectedMonth = Calendar.current.component(.month, from: Date())
+    @State private var selectedDay = Calendar.current.component(.day, from: Date())
+    @State private var selectedYear = Calendar.current.component(.year, from: Date())
+    @State private var includeYear = true
     @State private var hasBirthday = false
     @State private var kids: [Kid] = []
     
@@ -29,6 +33,13 @@ struct ContactEditView: View {
             _birthday = State(initialValue: contact.birthday)
             _hasBirthday = State(initialValue: contact.birthday != nil)
             _kids = State(initialValue: contact.kids)
+            
+            if let existingBirthday = contact.birthday {
+                _selectedMonth = State(initialValue: existingBirthday.month)
+                _selectedDay = State(initialValue: existingBirthday.day)
+                _selectedYear = State(initialValue: existingBirthday.year ?? Calendar.current.component(.year, from: Date()))
+                _includeYear = State(initialValue: existingBirthday.year != nil)
+            }
         }
     }
     
@@ -58,14 +69,49 @@ struct ContactEditView: View {
                     Toggle("Has Birthday", isOn: $hasBirthday)
                     
                     if hasBirthday {
-                        DatePicker(
-                            "Birthday",
-                            selection: Binding(
-                                get: { birthday?.date ?? Date() },
-                                set: { birthday = Birthday(date: $0) }
-                            ),
-                            displayedComponents: .date
-                        )
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text("Month:")
+                                    .frame(width: 60, alignment: .leading)
+                                Picker("Month", selection: $selectedMonth) {
+                                    ForEach(1...12, id: \.self) { month in
+                                        Text(Calendar.current.monthSymbols[month - 1]).tag(month)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                            }
+                            
+                            HStack {
+                                Text("Day:")
+                                    .frame(width: 60, alignment: .leading)
+                                Picker("Day", selection: $selectedDay) {
+                                    ForEach(1...31, id: \.self) { day in
+                                        Text("\(day)").tag(day)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                            }
+                            
+                            HStack {
+                                Text("Year:")
+                                    .frame(width: 60, alignment: .leading)
+                                Toggle("Include Year", isOn: $includeYear)
+                                    .toggleStyle(SwitchToggleStyle())
+                            }
+                            
+                            if includeYear {
+                                HStack {
+                                    Text("Year:")
+                                        .frame(width: 60, alignment: .leading)
+                                    Picker("Year", selection: $selectedYear) {
+                                        ForEach(1900...Calendar.current.component(.year, from: Date()), id: \.self) { year in
+                                            Text("\(year)").tag(year)
+                                        }
+                                    }
+                                    .pickerStyle(MenuPickerStyle())
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -131,7 +177,11 @@ struct ContactEditView: View {
             lastName: lastName.trimmingCharacters(in: .whitespaces),
             notes: notes.trimmingCharacters(in: .whitespaces),
             group: group.trimmingCharacters(in: .whitespaces),
-            birthday: hasBirthday ? birthday : nil,
+            birthday: hasBirthday ? Birthday(
+                month: selectedMonth,
+                day: selectedDay,
+                year: includeYear ? selectedYear : nil
+            ) : nil,
             kids: kids
         )
         
