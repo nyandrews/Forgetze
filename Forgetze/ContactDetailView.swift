@@ -110,26 +110,7 @@ struct ContactDetailView: View {
                     .padding(.horizontal)
                 }
                 
-                // Contact Info
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .foregroundColor(.blue)
-                        Text("Contact Information")
-                            .font(.headline)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        InfoRow(label: "First Name", value: contact.firstName)
-                        InfoRow(label: "Last Name", value: contact.lastName)
-                        InfoRow(label: "Created", value: contact.createdAt.formatted(date: .abbreviated, time: .omitted))
-                        InfoRow(label: "Updated", value: contact.updatedAt.formatted(date: .abbreviated, time: .omitted))
-                    }
-                }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.horizontal)
+
             }
             .padding(.vertical)
         }
@@ -175,24 +156,7 @@ struct ContactDetailView: View {
     }
 }
 
-struct InfoRow: View {
-    let label: String
-    let value: String
-    
-    var body: some View {
-        HStack {
-            Text(label)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .frame(width: 80, alignment: .leading)
-            
-            Text(value)
-                .font(.subheadline)
-            
-            Spacer()
-        }
-    }
-}
+
 
 #Preview {
     NavigationView {
