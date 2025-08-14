@@ -40,7 +40,7 @@ final class Kid: Identifiable, Validatable {
             return "Unnamed Child"
         } else if firstName.isEmpty {
             return lastName
-        } else if last.isEmpty {
+        } else if lastName.isEmpty {
             return firstName
         } else {
             return "\(firstName) \(lastName)"

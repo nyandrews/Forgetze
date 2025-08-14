@@ -44,7 +44,7 @@ final class Contact: Identifiable, Validatable {
             return "Unnamed Contact"
         } else if firstName.isEmpty {
             return lastName
-        } else if last.isEmpty {
+        } else if lastName.isEmpty {
             return firstName
         } else {
             return "\(firstName) \(lastName)"

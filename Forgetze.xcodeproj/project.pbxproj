@@ -7,9 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		915CCCE02E4E644700928251 /* Birthday.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCD42E4E644600928251 /* Birthday.swift */; };
+		915CCCE12E4E644700928251 /* AddKidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCD52E4E644600928251 /* AddKidView.swift */; };
+		915CCCE22E4E644700928251 /* ContactEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCD62E4E644600928251 /* ContactEditView.swift */; };
+		915CCCE32E4E644700928251 /* Kid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCD72E4E644600928251 /* Kid.swift */; };
+		915CCCE42E4E644700928251 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCD82E4E644600928251 /* AppSettings.swift */; };
+		915CCCE52E4E644700928251 /* Validatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCD92E4E644600928251 /* Validatable.swift */; };
+		915CCCE62E4E644700928251 /* AboutForgetzeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDA2E4E644600928251 /* AboutForgetzeView.swift */; };
+		915CCCE72E4E644700928251 /* HamburgerMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDB2E4E644700928251 /* HamburgerMenuView.swift */; };
+		915CCCE82E4E644700928251 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDC2E4E644700928251 /* Contact.swift */; };
+		915CCCE92E4E644700928251 /* ContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDD2E4E644700928251 /* ContactListView.swift */; };
+		915CCCEA2E4E644700928251 /* PrivacyStatementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */; };
+		915CCCEB2E4E644700928251 /* ContactDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDF2E4E644700928251 /* ContactDetailView.swift */; };
 		91B94D5F2E4E52DE00BDE072 /* ForgetzeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */; };
 		91B94D612E4E52DE00BDE072 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D602E4E52DE00BDE072 /* ContentView.swift */; };
-		91B94D632E4E52DE00BDE072 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D622E4E52DE00BDE072 /* Item.swift */; };
 		91B94D652E4E52E100BDE072 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91B94D642E4E52E100BDE072 /* Assets.xcassets */; };
 		91B94D682E4E52E100BDE072 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91B94D672E4E52E100BDE072 /* Preview Assets.xcassets */; };
 		91B94D742E4E52E200BDE072 /* ForgetzeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D732E4E52E200BDE072 /* ForgetzeTests.swift */; };
@@ -35,10 +46,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		915CCCD42E4E644600928251 /* Birthday.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Birthday.swift; sourceTree = "<group>"; };
+		915CCCD52E4E644600928251 /* AddKidView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddKidView.swift; sourceTree = "<group>"; };
+		915CCCD62E4E644600928251 /* ContactEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactEditView.swift; sourceTree = "<group>"; };
+		915CCCD72E4E644600928251 /* Kid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Kid.swift; sourceTree = "<group>"; };
+		915CCCD82E4E644600928251 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		915CCCD92E4E644600928251 /* Validatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validatable.swift; sourceTree = "<group>"; };
+		915CCCDA2E4E644600928251 /* AboutForgetzeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutForgetzeView.swift; sourceTree = "<group>"; };
+		915CCCDB2E4E644700928251 /* HamburgerMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HamburgerMenuView.swift; sourceTree = "<group>"; };
+		915CCCDC2E4E644700928251 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		915CCCDD2E4E644700928251 /* ContactListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactListView.swift; sourceTree = "<group>"; };
+		915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyStatementView.swift; sourceTree = "<group>"; };
+		915CCCDF2E4E644700928251 /* ContactDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactDetailView.swift; sourceTree = "<group>"; };
 		91B94D5B2E4E52DE00BDE072 /* Forgetze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forgetze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetzeApp.swift; sourceTree = "<group>"; };
 		91B94D602E4E52DE00BDE072 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		91B94D622E4E52DE00BDE072 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		91B94D642E4E52E100BDE072 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91B94D672E4E52E100BDE072 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		91B94D692E4E52E100BDE072 /* Forgetze.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forgetze.entitlements; sourceTree = "<group>"; };
@@ -98,9 +120,20 @@
 		91B94D5D2E4E52DE00BDE072 /* Forgetze */ = {
 			isa = PBXGroup;
 			children = (
+				915CCCDA2E4E644600928251 /* AboutForgetzeView.swift */,
+				915CCCD52E4E644600928251 /* AddKidView.swift */,
+				915CCCD82E4E644600928251 /* AppSettings.swift */,
+				915CCCD42E4E644600928251 /* Birthday.swift */,
+				915CCCDC2E4E644700928251 /* Contact.swift */,
+				915CCCDF2E4E644700928251 /* ContactDetailView.swift */,
+				915CCCD62E4E644600928251 /* ContactEditView.swift */,
+				915CCCDD2E4E644700928251 /* ContactListView.swift */,
+				915CCCDB2E4E644700928251 /* HamburgerMenuView.swift */,
+				915CCCD72E4E644600928251 /* Kid.swift */,
+				915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */,
+				915CCCD92E4E644600928251 /* Validatable.swift */,
 				91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */,
 				91B94D602E4E52DE00BDE072 /* ContentView.swift */,
-				91B94D622E4E52DE00BDE072 /* Item.swift */,
 				91B94D642E4E52E100BDE072 /* Assets.xcassets */,
 				91B94D692E4E52E100BDE072 /* Forgetze.entitlements */,
 				91B94D6A2E4E52E100BDE072 /* Info.plist */,
@@ -265,8 +298,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				91B94D612E4E52DE00BDE072 /* ContentView.swift in Sources */,
-				91B94D632E4E52DE00BDE072 /* Item.swift in Sources */,
 				91B94D5F2E4E52DE00BDE072 /* ForgetzeApp.swift in Sources */,
+				915CCCEB2E4E644700928251 /* ContactDetailView.swift in Sources */,
+				915CCCE42E4E644700928251 /* AppSettings.swift in Sources */,
+				915CCCE92E4E644700928251 /* ContactListView.swift in Sources */,
+				915CCCE32E4E644700928251 /* Kid.swift in Sources */,
+				915CCCEA2E4E644700928251 /* PrivacyStatementView.swift in Sources */,
+				915CCCE22E4E644700928251 /* ContactEditView.swift in Sources */,
+				915CCCE52E4E644700928251 /* Validatable.swift in Sources */,
+				915CCCE82E4E644700928251 /* Contact.swift in Sources */,
+				915CCCE02E4E644700928251 /* Birthday.swift in Sources */,
+				915CCCE72E4E644700928251 /* HamburgerMenuView.swift in Sources */,
+				915CCCE62E4E644700928251 /* AboutForgetzeView.swift in Sources */,
+				915CCCE12E4E644700928251 /* AddKidView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

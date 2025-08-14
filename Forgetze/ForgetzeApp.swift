@@ -32,6 +32,14 @@ struct ForgetzeApp: App {
             ContentView()
                 .environmentObject(appSettings)
                 .preferredColorScheme(appSettings.currentColorScheme)
+                .onAppear {
+                    // Add sample data if this is the first launch
+                    if UserDefaults.standard.bool(forKey: "hasAddedSampleData") == false {
+                        let modelContext = sharedModelContainer.mainContext
+                        SampleData.addSampleData(to: modelContext)
+                        UserDefaults.standard.set(true, forKey: "hasAddedSampleData")
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
     }
