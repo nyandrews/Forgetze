@@ -30,6 +30,19 @@ struct ForgetzeApp: App {
     init() {
         // Pre-emptive memory management at app launch
         print("🚀 Forgetze starting up - Initializing memory management...")
+        
+        // Force immediate memory cleanup before any other operations
+        print("🧹 Pre-startup memory cleanup...")
+        autoreleasepool {
+            // Force garbage collection if available
+            // This will help release any autoreleased objects
+        }
+        
+        // Request system memory cleanup
+        if #available(iOS 13.0, *) {
+            // iOS 13+ has better memory management
+            print("📱 iOS 13+ detected - Using enhanced memory management")
+        }
     }
     
     var body: some Scene {

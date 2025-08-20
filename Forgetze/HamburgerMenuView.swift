@@ -75,13 +75,14 @@ struct HamburgerMenuView: View {
                     HStack {
                         Image(systemName: "paintpalette")
                             .foregroundColor(appSettings.primaryColor.color)
+                        Text("Theme Color")
+                            .foregroundColor(appSettings.primaryColor.color)
                         Spacer()
-                        HStack(spacing: 8) {
-                            Text(appSettings.primaryColor.rawValue)
-                                .foregroundColor(appSettings.primaryColor.color)
-                                .font(.body)
-                            Picker("Theme Color", selection: $appSettings.primaryColor) {
-                                ForEach(AppThemeColor.allCases, id: \.self) { color in
+                        Menu {
+                            ForEach(AppThemeColor.allCases, id: \.self) { color in
+                                Button(action: {
+                                    appSettings.primaryColor = color
+                                }) {
                                     HStack {
                                         Circle()
                                             .fill(color.color)
@@ -89,11 +90,17 @@ struct HamburgerMenuView: View {
                                         Text(color.rawValue)
                                             .foregroundColor(appSettings.primaryColor.color)
                                     }
-                                    .tag(color)
                                 }
                             }
-                            .pickerStyle(MenuPickerStyle())
-                            .accentColor(appSettings.primaryColor.color)
+                        } label: {
+                            HStack(spacing: 8) {
+                                Text(appSettings.primaryColor.rawValue)
+                                    .foregroundColor(appSettings.primaryColor.color)
+                                    .font(.body)
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .foregroundColor(appSettings.primaryColor.color)
+                                    .font(.caption)
+                            }
                         }
                     }
                 }
