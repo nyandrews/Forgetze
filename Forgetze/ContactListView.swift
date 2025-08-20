@@ -108,6 +108,17 @@ struct ContactListView: View {
                 appSettings.cleanupMemory()
                 searchManager.cleanupMemory()
                 
+                // Aggressive memory cleanup if needed
+                if appSettings.getMemoryUsage().contains("MB") {
+                    let usage = appSettings.getMemoryUsage()
+                    if let mbValue = Float(usage.replacingOccurrences(of: " MB", with: "")) {
+                        if mbValue > 80.0 {
+                            print("⚠️ High memory detected, running aggressive cleanup")
+                            appSettings.aggressiveMemoryCleanup()
+                        }
+                    }
+                }
+                
                 // Set loading to false after a brief delay to prevent memory issues
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     isLoading = false
@@ -120,6 +131,9 @@ struct ContactListView: View {
                 // Cleanup when view disappears
                 searchManager.reset()
                 voiceSearchManager.reset()
+                
+                // Final memory cleanup
+                appSettings.cleanupMemory()
             }
         }
     }

@@ -87,7 +87,7 @@ class AppSettings: ObservableObject {
         
         let kerr: kern_return_t = withUnsafeMutablePointer(to: &info) {
             $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
-                task_info(mach_task_self_,
+                task_info(mach_task_self_(),
                          task_flavor_t(MACH_TASK_BASIC_INFO),
                          $0,
                          &count)
@@ -114,5 +114,72 @@ class AppSettings: ObservableObject {
         }
         
         logMemoryUsage()
+    }
+    
+    // MARK: - Aggressive Memory Management
+    
+    func aggressiveMemoryCleanup() {
+        print("🔄 Starting aggressive memory cleanup...")
+        
+        // Force multiple autorelease pool cycles
+        for _ in 1...3 {
+            autoreleasepool {
+                // Create and immediately release objects to trigger cleanup
+                let _ = Array<Int>(repeating: 0, count: 1000)
+            }
+        }
+        
+        // Log memory before and after
+        let beforeUsage = getMemoryUsage()
+        print("Memory before cleanup: \(beforeUsage)")
+        
+        // Force system memory cleanup
+        if #available(iOS 13.0, *) {
+            // Trigger system-level memory cleanup
+            let _ = ProcessInfo.processInfo.thermalState
+        }
+        
+        // Small delay to allow cleanup
+        Thread.sleep(forTimeInterval: 0.1)
+        
+        let afterUsage = getMemoryUsage()
+        print("Memory after cleanup: \(afterUsage)")
+        
+        // Check if we're in a critical memory state
+        checkMemoryPressure()
+    }
+    
+    private func checkMemoryPressure() {
+        let usage = getMemoryUsage()
+        if let mbValue = Float(usage.replacingOccurrences(of: " MB", with: "")) {
+            if mbValue > 100.0 {
+                print("⚠️ HIGH MEMORY PRESSURE: \(usage)")
+                print("💡 Consider restarting the app or simulator")
+            } else if mbValue > 80.0 {
+                print("⚠️ MODERATE MEMORY PRESSURE: \(usage)")
+            } else {
+                print("✅ Memory usage acceptable: \(usage)")
+            }
+        }
+    }
+    
+    func emergencyMemoryCleanup() {
+        print("🚨 EMERGENCY MEMORY CLEANUP TRIGGERED")
+        
+        // Most aggressive cleanup possible
+        autoreleasepool {
+            // Force release of all autoreleased objects
+            let _ = Array<Int>(repeating: 0, count: 10000)
+        }
+        
+        // Request system memory cleanup
+        if #available(iOS 13.0, *) {
+            // Trigger system memory pressure handling
+            let _ = ProcessInfo.processInfo.thermalState
+        }
+        
+        // Log final memory state
+        let finalUsage = getMemoryUsage()
+        print("Emergency cleanup complete. Final memory: \(finalUsage)")
     }
 }

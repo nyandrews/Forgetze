@@ -32,7 +32,21 @@ struct ForgetzeApp: App {
             ContentView()
                 .environmentObject(appSettings)
                 .preferredColorScheme(appSettings.currentColorScheme)
-
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)) { _ in
+                    // Handle memory warnings
+                    print("🚨 MEMORY WARNING RECEIVED - Running emergency cleanup")
+                    appSettings.emergencyMemoryCleanup()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+                    // Clean up when app goes to background
+                    print("📱 App going to background - Cleaning up memory")
+                    appSettings.cleanupMemory()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    // Check memory when app becomes active
+                    print("📱 App becoming active - Checking memory")
+                    appSettings.logMemoryUsage()
+                }
         }
         .modelContainer(sharedModelContainer)
     }

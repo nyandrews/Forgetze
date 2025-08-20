@@ -125,6 +125,49 @@ struct HamburgerMenuView: View {
                         }
                     }
                 }
+                
+                Section("MEMORY MANAGEMENT") {
+                    HStack {
+                        Image(systemName: "memorychip")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Current Memory")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Text(appSettings.getMemoryUsage())
+                            .foregroundColor(.secondary)
+                            .font(.caption)
+                    }
+                    
+                    Button(action: {
+                        appSettings.cleanupMemory()
+                    }) {
+                        HStack {
+                            Image(systemName: "trash")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Clean Memory")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Spacer()
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                    
+                    Button(action: {
+                        appSettings.aggressiveMemoryCleanup()
+                    }) {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle")
+                                .foregroundColor(.orange)
+                            Text("Aggressive Cleanup")
+                                .foregroundColor(.orange)
+                            Spacer()
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                }
             }
             .navigationTitle("Menu")
             .navigationBarTitleDisplayMode(.inline)
