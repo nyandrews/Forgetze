@@ -21,7 +21,7 @@ struct AboutForgetzeView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                         
-                        Text("Forgetze is a modern, privacy-focused contacts app designed to help you remember the important details about the people in your life. Whether it's birthdays, anniversaries, or just notes about your contacts, Forgetze keeps everything organized and accessible.")
+                        Text("Forgetze is an app that helps you quickly remember someone's name.")
                         
                         Text("Key Features")
                             .font(.title2)
@@ -36,11 +36,7 @@ struct AboutForgetzeView: View {
                             FeatureRow(icon: "paintbrush", text: "Light & Dark Themes", color: appSettings.primaryColor.color)
                         }
                         
-                        Text("Our Mission")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        
-                        Text("We believe that personal relationships are the foundation of a meaningful life. Forgetze helps you nurture these relationships by ensuring you never forget the important details about the people who matter most.")
+
                         
                         Text("Privacy First")
                             .font(.title2)

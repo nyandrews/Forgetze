@@ -212,7 +212,7 @@ struct ContactDetailView: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
-                        .foregroundColor(.blue)
+                        .foregroundColor(appSettings.primaryColor.color)
                 }
             }
         }

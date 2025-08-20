@@ -105,8 +105,8 @@ struct ContactListView: View {
                 print("🧹 Pre-startup memory cleanup...")
                 appSettings.aggressiveMemoryCleanup()
                 
-                // Delay demo data loading to allow memory cleanup to complete
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                // Longer delay to allow system memory to stabilize
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     loadDemoDataIfNeeded()
                 }
                 
@@ -114,7 +114,7 @@ struct ContactListView: View {
                 searchManager.cleanupMemory()
                 
                 // Set loading to false after demo data has time to load
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     isLoading = false
                     
                     // Final cleanup after loading

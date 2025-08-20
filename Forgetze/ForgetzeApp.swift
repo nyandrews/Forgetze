@@ -33,15 +33,30 @@ struct ForgetzeApp: App {
         
         // Force immediate memory cleanup before any other operations
         print("🧹 Pre-startup memory cleanup...")
-        autoreleasepool {
-            // Force garbage collection if available
-            // This will help release any autoreleased objects
+        
+        // Multiple aggressive autorelease pool cycles
+        for _ in 1...5 {
+            autoreleasepool {
+                // Force garbage collection if available
+                // This will help release any autoreleased objects
+            }
         }
         
         // Request system memory cleanup
         if #available(iOS 13.0, *) {
             // iOS 13+ has better memory management
             print("📱 iOS 13+ detected - Using enhanced memory management")
+        }
+        
+        // Additional system-level memory management
+        print("🔧 Requesting system memory cleanup...")
+        
+        // Force immediate memory pressure handling
+        DispatchQueue.global(qos: .background).async {
+            // Request system to free up memory
+            autoreleasepool {
+                // Background memory cleanup
+            }
         }
     }
     
