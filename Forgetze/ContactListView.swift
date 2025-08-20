@@ -145,15 +145,17 @@ struct ContactListView: View {
                 contacts[index]
             }
             
-            for contact in contactsToDelete {
-                modelContext.delete(contact)
-            }
-            
-            do {
-                try modelContext.save()
-            } catch {
-                errorMessage = "Failed to delete contacts: \(error.localizedDescription)"
-                showingError = true
+            // Use safe delete with data protection
+            Task { @MainActor in
+                for contact in contactsToDelete {
+                    do {
+                        try await DataProtectionManager.shared.safeDelete(contact, in: modelContext)
+                        // Deletion successful
+                    } catch {
+                        errorMessage = "Failed to delete contact '\(contact.displayName)': \(error.localizedDescription)"
+                        showingError = true
+                    }
+                }
             }
         }
     }

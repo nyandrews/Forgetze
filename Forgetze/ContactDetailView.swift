@@ -169,7 +169,7 @@ struct ContactDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(false)
         .toolbarColorScheme(appSettings.isDarkMode ? .dark : .light)
-        .accentColor(appSettings.primaryColor.color)
+        .tint(appSettings.primaryColor.color)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
@@ -237,13 +237,16 @@ struct ContactDetailView: View {
     }
     
     private func deleteContact() {
-        modelContext.delete(contact)
-        
-        do {
-            try modelContext.save()
-            // Navigate back
-        } catch {
-            // Handle error
+        // Use safe delete with data protection
+        Task { @MainActor in
+            do {
+                try await DataProtectionManager.shared.safeDelete(contact, in: modelContext)
+                // Navigate back - deletion was successful
+            } catch {
+                // Handle error - show alert to user
+                successMessage = "Failed to delete contact: \(error.localizedDescription)"
+                showingSuccessAlert = true
+            }
         }
     }
     
