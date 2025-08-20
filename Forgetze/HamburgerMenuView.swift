@@ -6,6 +6,7 @@ struct HamburgerMenuView: View {
     @EnvironmentObject var appSettings: AppSettings
     @State private var showingPrivacyStatement = false
     @State private var showingAboutForgetze = false
+    @State private var showingDataProtection = false
     
     var body: some View {
         NavigationView {
@@ -173,6 +174,36 @@ struct HamburgerMenuView: View {
                         }
                     }
                 }
+                
+                // TODO: Uncomment when DataProtectionManager is added to Xcode project
+                /*
+                Section("🛡️ DATA PROTECTION") {
+                    Button(action: {
+                        showingDataProtection = true
+                    }) {
+                        HStack {
+                            Image(systemName: "shield.checkered")
+                                .foregroundColor(.green)
+                            Text("Data Protection Status")
+                                .foregroundColor(.green)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                    
+                    HStack {
+                        Image(systemName: "archivebox")
+                            .foregroundColor(.blue)
+                        Text("Backup Status")
+                        Spacer()
+                        Text("0 backups")
+                            .foregroundColor(.blue)
+                            .font(.caption)
+                    }
+                }
+                */
             }
             .navigationTitle("Menu")
             .navigationBarTitleDisplayMode(.inline)
@@ -190,6 +221,12 @@ struct HamburgerMenuView: View {
         .sheet(isPresented: $showingAboutForgetze) {
             AboutForgetzeView()
         }
+        // TODO: Uncomment when DataProtectionStatusView is added to Xcode project
+        /*
+        .sheet(isPresented: $showingDataProtection) {
+            DataProtectionStatusView()
+        }
+        */
     }
 }
 

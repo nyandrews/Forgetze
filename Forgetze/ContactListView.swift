@@ -144,8 +144,6 @@ struct ContactListView: View {
         withAnimation {
             // Get the filtered contacts for deletion
             let contactsToDelete = offsets.map { index in
-                // Since we're using the main contacts array, we need to find the actual contact
-                // This is a simplified approach - in a real app you might want to use a view model
                 contacts[index]
             }
             
