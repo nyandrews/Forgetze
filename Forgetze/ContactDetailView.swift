@@ -14,6 +14,7 @@ struct ContactDetailView: View {
     @State private var showingExportOptions = false
     @State private var showingSuccessAlert = false
     @State private var successMessage = ""
+    @State private var viewMode: ContactViewMode = .basic
     
     let contact: Contact
     
@@ -45,6 +46,28 @@ struct ContactDetailView: View {
                     
 
                 }
+                .padding(.horizontal)
+                
+                // View Mode Toggle
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "eye")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("View Mode")
+                            .font(.headline)
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("View Mode", selection: $viewMode) {
+                            Text("Basic").tag(ContactViewMode.basic)
+                            Text("Advanced").tag(ContactViewMode.advanced)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 140)
+                    }
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
                 .padding(.horizontal)
                 
                 // Birthday Section
@@ -118,10 +141,56 @@ struct ContactDetailView: View {
                     .background(Color(.systemGray6))
                     .cornerRadius(12)
                     .padding(.horizontal)
-                                }
+                }
                 
-                // Social Media Section - At the bottom
-                if contact.hasSocialMedia {
+                // Addresses Section - Advanced View Only
+                if viewMode == .advanced && contact.hasAddresses {
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack {
+                            Image(systemName: "location")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Addresses (\(contact.addressesCount))")
+                                .font(.headline)
+                                .foregroundColor(appSettings.primaryColor.color)
+                        }
+                        
+                        VStack(spacing: 12) {
+                            ForEach(contact.addresses) { address in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text(address.type)
+                                            .font(.caption)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(appSettings.primaryColor.color)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(8)
+                                        Spacer()
+                                    }
+                                    
+                                    Text("\(address.street)")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    
+                                    Text("\(address.city), \(address.state) \(address.zip)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                    .padding(.horizontal)
+                }
+                
+                // Social Media Section - Advanced View Only
+                if viewMode == .advanced && contact.hasSocialMedia {
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
                             Image(systemName: "link")
@@ -131,31 +200,31 @@ struct ContactDetailView: View {
                                 .foregroundColor(appSettings.primaryColor.color)
                         }
                         
-                        LazyVStack(spacing: 12) {
-                            ForEach(contact.socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { url in
-                                Button(action: {
-                                    if let url = URL(string: url) {
-                                        UIApplication.shared.open(url)
+                                                    LazyVStack(spacing: 12) {
+                                ForEach(contact.socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { url in
+                                    Button(action: {
+                                        if let url = URL(string: url) {
+                                            UIApplication.shared.open(url)
+                                        }
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "link")
+                                                .foregroundColor(appSettings.primaryColor.color)
+                                            Text(url)
+                                                .foregroundColor(appSettings.primaryColor.color)
+                                                .lineLimit(1)
+                                            Spacer()
+                                            Image(systemName: "arrow.up.right.square")
+                                                .foregroundColor(.secondary)
+                                                .font(.caption)
+                                        }
+                                        .padding()
+                                        .background(Color(.systemGray6))
+                                        .cornerRadius(8)
                                     }
-                                }) {
-                                    HStack {
-                                        Image(systemName: "link")
-                                            .foregroundColor(appSettings.primaryColor.color)
-                                        Text(url)
-                                            .foregroundColor(appSettings.primaryColor.color)
-                                            .lineLimit(1)
-                                        Spacer()
-                                        Image(systemName: "arrow.up.right.square")
-                                            .foregroundColor(.secondary)
-                                            .font(.caption)
-                                    }
-                                    .padding()
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(8)
+                                    .buttonStyle(PlainButtonStyle())
                                 }
-                                .buttonStyle(PlainButtonStyle())
                             }
-                        }
                     }
                     .padding()
                     .background(Color(.systemGray6))
