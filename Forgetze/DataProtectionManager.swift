@@ -35,7 +35,7 @@ class DataProtectionManager: ObservableObject {
     private let backupDirectory: URL
     
     // MARK: - Types
-    enum OperationStatus {
+    enum OperationStatus: Equatable {
         case idle
         case backingUp
         case saving
@@ -44,6 +44,23 @@ class DataProtectionManager: ObservableObject {
         case recovering
         case error(String)
         case success
+        
+        static func == (lhs: OperationStatus, rhs: OperationStatus) -> Bool {
+            switch (lhs, rhs) {
+            case (.idle, .idle),
+                 (.backingUp, .backingUp),
+                 (.saving, .saving),
+                 (.deleting, .deleting),
+                 (.validating, .validating),
+                 (.recovering, .recovering),
+                 (.success, .success):
+                return true
+            case (.error(let lhsMessage), .error(let rhsMessage)):
+                return lhsMessage == rhsMessage
+            default:
+                return false
+            }
+        }
     }
     
     enum ProtectionError: Error, LocalizedError {
@@ -279,7 +296,7 @@ class DataProtectionManager: ObservableObject {
         
         for kid in kids {
             guard kid.isValid else {
-                throw ProtectionError.validationFailed("Kid \(kid.name) is invalid")
+                throw ProtectionError.validationFailed("Kid \(kid.firstName) \(kid.lastName) is invalid")
             }
         }
         
@@ -289,7 +306,7 @@ class DataProtectionManager: ObservableObject {
         
         for birthday in birthdays {
             guard birthday.isValid else {
-                throw ProtectionError.validationFailed("Birthday for \(birthday.contact?.fullName ?? "Unknown") is invalid")
+                throw ProtectionError.validationFailed("Birthday \(birthday.displayString) is invalid")
             }
         }
         
@@ -334,11 +351,11 @@ class DataProtectionManager: ObservableObject {
         let backupFiles = try FileManager.default.contentsOfDirectory(at: backupDirectory, includingPropertiesForKeys: [.creationDateKey])
         
         if backupFiles.count > maxBackups {
-            // Sort by creation date and remove oldest
-            let sortedFiles = backupFiles.sorted { file1, file2 in
-                let date1 = try file1.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
-                let date2 = try file2.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
-                return date1 < date2
+            // Sort backup files by creation date (newest first)
+            let sortedFiles = try backupFiles.sorted { file1, file2 in
+                let date1 = try FileManager.default.attributesOfItem(atPath: file1.path)[.creationDate] as? Date ?? Date.distantPast
+                let date2 = try FileManager.default.attributesOfItem(atPath: file2.path)[.creationDate] as? Date ?? Date.distantPast
+                return date1 > date2
             }
             
             let filesToDelete = sortedFiles.prefix(backupFiles.count - maxBackups)
@@ -353,10 +370,10 @@ class DataProtectionManager: ObservableObject {
     private func findMostRecentBackup() throws -> URL {
         let backupFiles = try FileManager.default.contentsOfDirectory(at: backupDirectory, includingPropertiesForKeys: [.creationDateKey])
         
-        guard let mostRecent = backupFiles.max(by: { file1, file2 in
-            let date1 = try file1.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
-            let date2 = try file2.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
-            return date1 < date2
+        guard let mostRecent = try backupFiles.max(by: { file1, file2 in
+            let date1 = try FileManager.default.attributesOfItem(atPath: file1.path)[.creationDate] as? Date ?? Date.distantPast
+            let date2 = try FileManager.default.attributesOfItem(atPath: file2.path)[.creationDate] as? Date ?? Date.distantPast
+            return date1 > date2
         }) else {
             throw ProtectionError.recoveryFailed("No backup files found")
         }
@@ -399,7 +416,7 @@ class DataProtectionManager: ObservableObject {
     
     private func validateAllData(context: ModelContext) async throws -> DataHealthReport {
         // Comprehensive data validation
-        let report = DataHealthReport()
+        var report = DataHealthReport()
         
         // Validate contacts
         let contactDescriptor = FetchDescriptor<Contact>()
