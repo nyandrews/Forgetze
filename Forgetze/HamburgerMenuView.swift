@@ -46,12 +46,14 @@ struct HamburgerMenuView: View {
                                 .foregroundColor(appSettings.primaryColor.color)
                             Text("www.forgetze.com")
                                 .foregroundColor(appSettings.primaryColor.color)
+                                .font(.body)
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                         }
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 Section("APPEARANCE") {
@@ -82,6 +84,7 @@ struct HamburgerMenuView: View {
                                         .fill(color.color)
                                         .frame(width: 16, height: 16)
                                     Text(color.rawValue)
+                                        .foregroundColor(appSettings.primaryColor.color)
                                 }
                                 .tag(color)
                             }
@@ -118,12 +121,14 @@ struct HamburgerMenuView: View {
                                 .foregroundColor(appSettings.primaryColor.color)
                             Text("Contact Support")
                                 .foregroundColor(appSettings.primaryColor.color)
+                                .font(.body)
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                         }
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 Section("MEMORY MANAGEMENT") {
