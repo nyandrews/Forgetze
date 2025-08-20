@@ -6,5 +6,13 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Voice search requires access to your microphone to transcribe your spoken search terms. All audio is processed locally and never stored or transmitted.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Voice search uses speech recognition to convert your spoken words into search text. All processing happens locally on your device for maximum privacy.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Export contacts to your iOS Contacts app to keep them synchronized across all your devices.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Set birthday reminders in your Calendar to never miss important dates.</string>
 </dict>
 </plist>

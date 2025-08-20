@@ -3,16 +3,15 @@ import SwiftData
 
 @Model
 final class Birthday: Identifiable, Validatable {
+    var id = UUID()
     var month: Int
     var day: Int
     var year: Int?
-    var id: String
     
     init(month: Int, day: Int, year: Int? = nil) {
         self.month = month
         self.day = day
         self.year = year
-        self.id = "\(month)-\(day)-\(year ?? 0)"
     }
     
     convenience init(date: Date) {

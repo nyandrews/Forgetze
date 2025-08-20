@@ -19,6 +19,14 @@
 		915CCCE92E4E644700928251 /* ContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDD2E4E644700928251 /* ContactListView.swift */; };
 		915CCCEA2E4E644700928251 /* PrivacyStatementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */; };
 		915CCCEB2E4E644700928251 /* ContactDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915CCCDF2E4E644700928251 /* ContactDetailView.swift */; };
+		916749B92E54F37E002AA45F /* DemoDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749B62E54F37E002AA45F /* DemoDataService.swift */; };
+		916749BA2E54F37E002AA45F /* SearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749B72E54F37E002AA45F /* SearchManager.swift */; };
+		916749BB2E54F37E002AA45F /* VoiceSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749B82E54F37E002AA45F /* VoiceSearchManager.swift */; };
+		916749C12E54F7DC002AA45F /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BC2E54F7DC002AA45F /* EmptyStateView.swift */; };
+		916749C22E54F7DC002AA45F /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BD2E54F7DC002AA45F /* LoadingView.swift */; };
+		916749C32E54F7DC002AA45F /* ContactListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BE2E54F7DC002AA45F /* ContactListContent.swift */; };
+		916749C42E54F7DC002AA45F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BF2E54F7DC002AA45F /* SampleData.swift */; };
+		916749C52E54F7DC002AA45F /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749C02E54F7DC002AA45F /* SearchBarView.swift */; };
 		91B94D5F2E4E52DE00BDE072 /* ForgetzeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */; };
 		91B94D612E4E52DE00BDE072 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D602E4E52DE00BDE072 /* ContentView.swift */; };
 		91B94D652E4E52E100BDE072 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91B94D642E4E52E100BDE072 /* Assets.xcassets */; };
@@ -58,6 +66,14 @@
 		915CCCDD2E4E644700928251 /* ContactListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactListView.swift; sourceTree = "<group>"; };
 		915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyStatementView.swift; sourceTree = "<group>"; };
 		915CCCDF2E4E644700928251 /* ContactDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactDetailView.swift; sourceTree = "<group>"; };
+		916749B62E54F37E002AA45F /* DemoDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoDataService.swift; sourceTree = "<group>"; };
+		916749B72E54F37E002AA45F /* SearchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchManager.swift; sourceTree = "<group>"; };
+		916749B82E54F37E002AA45F /* VoiceSearchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceSearchManager.swift; sourceTree = "<group>"; };
+		916749BC2E54F7DC002AA45F /* EmptyStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		916749BD2E54F7DC002AA45F /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		916749BE2E54F7DC002AA45F /* ContactListContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactListContent.swift; sourceTree = "<group>"; };
+		916749BF2E54F7DC002AA45F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		916749C02E54F7DC002AA45F /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		91B94D5B2E4E52DE00BDE072 /* Forgetze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forgetze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetzeApp.swift; sourceTree = "<group>"; };
 		91B94D602E4E52DE00BDE072 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -123,21 +139,29 @@
 				915CCCDA2E4E644600928251 /* AboutForgetzeView.swift */,
 				915CCCD52E4E644600928251 /* AddKidView.swift */,
 				915CCCD82E4E644600928251 /* AppSettings.swift */,
+				91B94D642E4E52E100BDE072 /* Assets.xcassets */,
 				915CCCD42E4E644600928251 /* Birthday.swift */,
 				915CCCDC2E4E644700928251 /* Contact.swift */,
 				915CCCDF2E4E644700928251 /* ContactDetailView.swift */,
 				915CCCD62E4E644600928251 /* ContactEditView.swift */,
+				916749BE2E54F7DC002AA45F /* ContactListContent.swift */,
 				915CCCDD2E4E644700928251 /* ContactListView.swift */,
-				915CCCDB2E4E644700928251 /* HamburgerMenuView.swift */,
-				915CCCD72E4E644600928251 /* Kid.swift */,
-				915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */,
-				915CCCD92E4E644600928251 /* Validatable.swift */,
-				91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */,
 				91B94D602E4E52DE00BDE072 /* ContentView.swift */,
-				91B94D642E4E52E100BDE072 /* Assets.xcassets */,
+				916749B62E54F37E002AA45F /* DemoDataService.swift */,
+				916749BC2E54F7DC002AA45F /* EmptyStateView.swift */,
 				91B94D692E4E52E100BDE072 /* Forgetze.entitlements */,
+				91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */,
+				915CCCDB2E4E644700928251 /* HamburgerMenuView.swift */,
 				91B94D6A2E4E52E100BDE072 /* Info.plist */,
+				915CCCD72E4E644600928251 /* Kid.swift */,
+				916749BD2E54F7DC002AA45F /* LoadingView.swift */,
 				91B94D662E4E52E100BDE072 /* Preview Content */,
+				915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */,
+				916749BF2E54F7DC002AA45F /* SampleData.swift */,
+				916749C02E54F7DC002AA45F /* SearchBarView.swift */,
+				916749B72E54F37E002AA45F /* SearchManager.swift */,
+				915CCCD92E4E644600928251 /* Validatable.swift */,
+				916749B82E54F37E002AA45F /* VoiceSearchManager.swift */,
 			);
 			path = Forgetze;
 			sourceTree = "<group>";
@@ -297,20 +321,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				916749C12E54F7DC002AA45F /* EmptyStateView.swift in Sources */,
+				916749C42E54F7DC002AA45F /* SampleData.swift in Sources */,
 				91B94D612E4E52DE00BDE072 /* ContentView.swift in Sources */,
 				91B94D5F2E4E52DE00BDE072 /* ForgetzeApp.swift in Sources */,
 				915CCCEB2E4E644700928251 /* ContactDetailView.swift in Sources */,
 				915CCCE42E4E644700928251 /* AppSettings.swift in Sources */,
 				915CCCE92E4E644700928251 /* ContactListView.swift in Sources */,
+				916749C32E54F7DC002AA45F /* ContactListContent.swift in Sources */,
+				916749B92E54F37E002AA45F /* DemoDataService.swift in Sources */,
 				915CCCE32E4E644700928251 /* Kid.swift in Sources */,
 				915CCCEA2E4E644700928251 /* PrivacyStatementView.swift in Sources */,
 				915CCCE22E4E644700928251 /* ContactEditView.swift in Sources */,
 				915CCCE52E4E644700928251 /* Validatable.swift in Sources */,
 				915CCCE82E4E644700928251 /* Contact.swift in Sources */,
 				915CCCE02E4E644700928251 /* Birthday.swift in Sources */,
+				916749BB2E54F37E002AA45F /* VoiceSearchManager.swift in Sources */,
 				915CCCE72E4E644700928251 /* HamburgerMenuView.swift in Sources */,
 				915CCCE62E4E644700928251 /* AboutForgetzeView.swift in Sources */,
+				916749C52E54F7DC002AA45F /* SearchBarView.swift in Sources */,
 				915CCCE12E4E644700928251 /* AddKidView.swift in Sources */,
+				916749C22E54F7DC002AA45F /* LoadingView.swift in Sources */,
+				916749BA2E54F37E002AA45F /* SearchManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

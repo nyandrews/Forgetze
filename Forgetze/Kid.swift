@@ -3,16 +3,10 @@ import SwiftData
 
 @Model
 final class Kid: Identifiable, Validatable {
+    var id = UUID()
     var firstName: String
     var lastName: String
     var birthday: Birthday?
-    
-    // Generate a unique ID based on the kid's data
-    var id: String {
-        let name = "\(firstName)-\(lastName)"
-        let birthdayId = birthday?.id ?? "N/A"
-        return "\(name)-\(birthdayId)"
-    }
     
     init(firstName: String, lastName: String, birthday: Birthday? = nil) {
         self.firstName = firstName

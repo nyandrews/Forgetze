@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AboutForgetzeView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appSettings: AppSettings
     
     var body: some View {
         NavigationView {
@@ -27,12 +28,12 @@ struct AboutForgetzeView: View {
                             .fontWeight(.semibold)
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            FeatureRow(icon: "person.2", text: "Contact Management")
-                            FeatureRow(icon: "gift", text: "Birthday Tracking")
-                            FeatureRow(icon: "person.3", text: "Family & Children")
-                            FeatureRow(icon: "note.text", text: "Notes & Groups")
-                            FeatureRow(icon: "icloud", text: "iCloud Sync")
-                            FeatureRow(icon: "paintbrush", text: "Light & Dark Themes")
+                            FeatureRow(icon: "person.2", text: "Contact Management", color: appSettings.primaryColor.color)
+                            FeatureRow(icon: "gift", text: "Birthday Tracking", color: appSettings.primaryColor.color)
+                            FeatureRow(icon: "person.3", text: "Family & Children", color: appSettings.primaryColor.color)
+                            FeatureRow(icon: "note.text", text: "Notes & Groups", color: appSettings.primaryColor.color)
+                            FeatureRow(icon: "icloud", text: "iCloud Sync", color: appSettings.primaryColor.color)
+                            FeatureRow(icon: "paintbrush", text: "Light & Dark Themes", color: appSettings.primaryColor.color)
                         }
                         
                         Text("Our Mission")
@@ -73,11 +74,12 @@ struct AboutForgetzeView: View {
 struct FeatureRow: View {
     let icon: String
     let text: String
+    let color: Color
     
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(.blue)
+                .foregroundColor(color)
                 .frame(width: 20)
             Text(text)
             Spacer()
@@ -87,4 +89,5 @@ struct FeatureRow: View {
 
 #Preview {
     AboutForgetzeView()
+        .environmentObject(AppSettings())
 }

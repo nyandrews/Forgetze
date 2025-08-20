@@ -2,13 +2,17 @@ import SwiftUI
 import SwiftData
 
 struct ContactEditView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var appSettings: AppSettings
+    let contact: Contact?
+    let isNewContact: Bool
     
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var notes = ""
-    @State private var group = ""
+
+    @State private var socialMediaURLs: [String] = []
     @State private var birthday: Birthday?
     @State private var hasBirthday = false
     @State private var kids: [Kid] = []
@@ -17,23 +21,19 @@ struct ContactEditView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
     
-    let contact: Contact?
-    
     init(contact: Contact? = nil) {
         self.contact = contact
+        self.isNewContact = contact == nil
         if let contact = contact {
             _firstName = State(initialValue: contact.firstName)
             _lastName = State(initialValue: contact.lastName)
             _notes = State(initialValue: contact.notes)
-            _group = State(initialValue: contact.group)
+
+            _socialMediaURLs = State(initialValue: contact.socialMediaURLs)
             _birthday = State(initialValue: contact.birthday)
             _hasBirthday = State(initialValue: contact.birthday != nil)
             _kids = State(initialValue: contact.kids)
         }
-    }
-    
-    var isNewContact: Bool {
-        contact == nil
     }
     
     var body: some View {
@@ -50,8 +50,7 @@ struct ContactEditView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .lineLimit(3...6)
                     
-                    TextField("Group", text: $group)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
                 }
                 
                 Section("Birthday") {
@@ -154,7 +153,38 @@ struct ContactEditView: View {
                     Button("Add Child") {
                         showingAddKidSheet = true
                     }
-                    .foregroundColor(.blue)
+                    .foregroundColor(appSettings.primaryColor.color)
+                }
+                
+                Section("Social Media") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(socialMediaURLs.indices, id: \.self) { index in
+                            HStack {
+                                TextField("Social Media URL", text: $socialMediaURLs[index])
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .keyboardType(.URL)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                
+                                Button(action: {
+                                    socialMediaURLs.remove(at: index)
+                                }) {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }
+                        
+                        Button(action: {
+                            socialMediaURLs.append("")
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add Social Media URL")
+                            }
+                            .foregroundColor(appSettings.primaryColor.color)
+                        }
+                    }
                 }
             }
             .navigationTitle(isNewContact ? "New Contact" : "Edit Contact")
@@ -191,7 +221,10 @@ struct ContactEditView: View {
             firstName: firstName.trimmingCharacters(in: .whitespaces),
             lastName: lastName.trimmingCharacters(in: .whitespaces),
             notes: notes.trimmingCharacters(in: .whitespaces),
-            group: group.trimmingCharacters(in: .whitespaces),
+            socialMediaURLs: socialMediaURLs.compactMap { url in
+                let trimmed = url.trimmingCharacters(in: .whitespaces)
+                return trimmed.isEmpty ? nil : trimmed
+            },
             birthday: hasBirthday ? birthday : nil,
             kids: kids
         )
@@ -208,7 +241,8 @@ struct ContactEditView: View {
             existingContact.firstName = newContact.firstName
             existingContact.lastName = newContact.lastName
             existingContact.notes = newContact.notes
-            existingContact.group = newContact.group
+
+            existingContact.socialMediaURLs = newContact.socialMediaURLs
             existingContact.birthday = newContact.birthday
             existingContact.kids = newContact.kids
             existingContact.updatedAt = Date()

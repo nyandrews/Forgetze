@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct HamburgerMenuView: View {
     @Environment(\.dismiss) private var dismiss
@@ -9,11 +10,12 @@ struct HamburgerMenuView: View {
     var body: some View {
         NavigationView {
             List {
-                Section("App Information") {
+                Section("APP INFORMATION") {
                     HStack {
                         Image(systemName: "info.circle")
-                            .foregroundColor(.blue)
+                            .foregroundColor(appSettings.primaryColor.color)
                         Text("Version")
+                            .foregroundColor(appSettings.primaryColor.color)
                         Spacer()
                         Text(appSettings.appVersion)
                             .foregroundColor(.secondary)
@@ -24,8 +26,9 @@ struct HamburgerMenuView: View {
                     }) {
                         HStack {
                             Image(systemName: "questionmark.circle")
-                                .foregroundColor(.blue)
+                                .foregroundColor(appSettings.primaryColor.color)
                             Text("About Forgetze")
+                                .foregroundColor(appSettings.primaryColor.color)
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .foregroundColor(.secondary)
@@ -33,11 +36,16 @@ struct HamburgerMenuView: View {
                         }
                     }
                     
-                    Link(destination: URL(string: "https://www.forgetze.com")!) {
+                    Button(action: {
+                        if let url = URL(string: "https://www.forgetze.com") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
                         HStack {
                             Image(systemName: "globe")
-                                .foregroundColor(.blue)
+                                .foregroundColor(appSettings.primaryColor.color)
                             Text("www.forgetze.com")
+                                .foregroundColor(appSettings.primaryColor.color)
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
                                 .foregroundColor(.secondary)
@@ -46,11 +54,12 @@ struct HamburgerMenuView: View {
                     }
                 }
                 
-                Section("Appearance") {
+                Section("APPEARANCE") {
                     HStack {
                         Image(systemName: "paintbrush")
-                            .foregroundColor(.blue)
+                            .foregroundColor(appSettings.primaryColor.color)
                         Text("Theme")
+                            .foregroundColor(appSettings.primaryColor.color)
                         Spacer()
                         Picker("Theme", selection: $appSettings.isDarkMode) {
                             Text("Light").tag(false)
@@ -59,16 +68,37 @@ struct HamburgerMenuView: View {
                         .pickerStyle(SegmentedPickerStyle())
                         .frame(width: 120)
                     }
+                    
+                    HStack {
+                        Image(systemName: "paintpalette")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Theme Color")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker(selection: $appSettings.primaryColor) {
+                            ForEach(AppThemeColor.allCases, id: \.self) { color in
+                                HStack {
+                                    Circle()
+                                        .fill(color.color)
+                                        .frame(width: 16, height: 16)
+                                    Text(color.rawValue)
+                                }
+                                .tag(color)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                    }
                 }
                 
-                Section("Legal") {
+                Section("LEGAL") {
                     Button(action: {
                         showingPrivacyStatement = true
                     }) {
                         HStack {
                             Image(systemName: "hand.raised")
-                                .foregroundColor(.blue)
+                                .foregroundColor(appSettings.primaryColor.color)
                             Text("Privacy Statement")
+                                .foregroundColor(appSettings.primaryColor.color)
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .foregroundColor(.secondary)
@@ -77,12 +107,17 @@ struct HamburgerMenuView: View {
                     }
                 }
                 
-                Section("Support") {
-                    Link(destination: URL(string: "mailto:support@forgetze.com")!) {
+                Section("SUPPORT") {
+                    Button(action: {
+                        if let url = URL(string: "mailto:support@forgetze.com") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
                         HStack {
                             Image(systemName: "envelope")
-                                .foregroundColor(.blue)
+                                .foregroundColor(appSettings.primaryColor.color)
                             Text("Contact Support")
+                                .foregroundColor(appSettings.primaryColor.color)
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
                                 .foregroundColor(.secondary)
