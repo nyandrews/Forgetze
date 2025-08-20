@@ -6,6 +6,7 @@ final class Address {
     var id: UUID
     var type: String // "Home", "Work", "Other", or custom names
     var street: String
+    var street2: String? // Apartment, suite, unit, etc. (optional for backward compatibility)
     var city: String
     var state: String // 2-letter state code
     var zip: String
@@ -17,10 +18,11 @@ final class Address {
     // Relationship to Contact
     var contact: Contact?
     
-    init(type: String = "Home", street: String = "", city: String = "", state: String = "", zip: String = "", country: String = "United States", isDefault: Bool = false) {
+    init(type: String = "Home", street: String = "", street2: String? = nil, city: String = "", state: String = "", zip: String = "", country: String = "United States", isDefault: Bool = false) {
         self.id = UUID()
         self.type = type
         self.street = street
+        self.street2 = street2
         self.city = city
         self.state = state
         self.zip = zip
@@ -35,6 +37,7 @@ final class Address {
         var components: [String] = []
         
         if !street.isEmpty { components.append(street) }
+        if let street2 = street2, !street2.isEmpty { components.append(street2) }
         if !city.isEmpty || !state.isEmpty || !zip.isEmpty {
             let cityStateZip = [city, state, zip].filter { !$0.isEmpty }.joined(separator: ", ")
             if !cityStateZip.isEmpty { components.append(cityStateZip) }
@@ -42,6 +45,22 @@ final class Address {
         if !country.isEmpty && country != "United States" { components.append(country) }
         
         return components.joined(separator: "\n")
+    }
+    
+    // Computed property for display string (used in sharing)
+    var displayString: String {
+        var components: [String] = []
+        
+        if !type.isEmpty { components.append("[\(type)]") }
+        if !street.isEmpty { components.append(street) }
+        if let street2 = street2, !street2.isEmpty { components.append(street2) }
+        if !city.isEmpty || !state.isEmpty || !zip.isEmpty {
+            let cityStateZip = [city, state, zip].filter { !$0.isEmpty }.joined(separator: ", ")
+            if !cityStateZip.isEmpty { components.append(cityStateZip) }
+        }
+        if !country.isEmpty && country != "United States" { components.append(country) }
+        
+        return components.joined(separator: " ")
     }
     
     // Computed property for address validation

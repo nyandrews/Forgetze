@@ -122,21 +122,25 @@ struct ContactListView: View {
                     print("✅ Startup sequence completed")
                 }
             }
-            .onChange(of: searchManager.searchText) { _, newValue in
-                searchManager.performSearch(in: contacts)
-            }
-            .onDisappear {
-                // Cleanup when view disappears
-                searchManager.reset()
-                voiceSearchManager.reset()
-                
-                // Final memory cleanup
-                appSettings.cleanupMemory()
+        }
+    }
+    
+    // MARK: - Demo Data Loading
+    
+    private func loadDemoDataIfNeeded() {
+        Task {
+            do {
+                try await DemoDataService.shared.loadDemoDataIfNeeded(
+                    context: modelContext,
+                    existingContacts: contacts
+                )
+            } catch {
+                print("Failed to load demo data: \(error)")
             }
         }
     }
     
-    // MARK: - Contact Management Functions
+    // MARK: - Contact Deletion
     
     private func deleteContacts(offsets: IndexSet) {
         withAnimation {
@@ -159,161 +163,130 @@ struct ContactListView: View {
             }
         }
     }
+}
+
+// MARK: - ContactListContent
+
+struct ContactListContent: View {
+    let contacts: [Contact]
+    @ObservedObject var searchManager: SearchManager
+    let onDelete: (IndexSet) -> Void
+    let themeColor: Color
     
-    private func loadDemoDataIfNeeded() {
-        Task { @MainActor in
-            do {
-                try await DemoDataService.shared.loadDemoDataIfNeeded(
-                    context: modelContext,
-                    existingContacts: contacts
-                )
-            } catch {
-                print("Failed to load demo data: \(error)")
-            }
+    var filteredContacts: [Contact] {
+        if searchManager.hasActiveSearch() {
+            return searchManager.getResults()
+        } else {
+            return contacts
         }
+    }
+    
+    var body: some View {
+        List {
+            ForEach(filteredContacts) { contact in
+                NavigationLink(destination: ContactDetailView(contact: contact)) {
+                    if searchManager.hasActiveSearch() {
+                        EnhancedContactRowView(contact: contact, searchText: searchManager.searchText, themeColor: themeColor)
+                    } else {
+                        ContactRowView(contact: contact, themeColor: themeColor)
+                    }
+                }
+                .accentColor(themeColor)
+            }
+            .onDelete(perform: onDelete)
+        }
+        .listStyle(PlainListStyle())
     }
 }
 
-// MARK: - Contact Row Views
+// MARK: - ContactRowView
 
 struct ContactRowView: View {
     let contact: Contact
     let themeColor: Color
     
-    // Computed property to generate initials
-    private var initials: String {
-        let firstInitial = contact.firstName.first?.uppercased() ?? ""
-        let lastInitial = contact.lastName.first?.uppercased() ?? ""
-        
-        if firstInitial.isEmpty && lastInitial.isEmpty {
-            return "?"
-        } else if firstInitial.isEmpty {
-            return lastInitial
-        } else if lastInitial.isEmpty {
-            return firstInitial
-        } else {
-            return "\(firstInitial)\(lastInitial)"
-        }
-    }
-    
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            // Contact initials circle
+        HStack {
+            Text(contact.displayName)
+                .font(.headline)
+                .foregroundColor(.primary)
+            
+            Spacer()
+            
+            // Circle with initials
             ZStack {
                 Circle()
                     .fill(themeColor)
-                    .frame(width: 40, height: 40)
+                    .frame(width: 32, height: 32)
                 
-                Text(initials)
-                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                Text(contact.initials)
+                    .font(.caption)
+                    .fontWeight(.semibold)
                     .foregroundColor(.white)
             }
-            
-            // Contact name only
-            Text(contact.displayName)
-                .font(.headline)
-            
-            Spacer()
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
     }
 }
 
-// MARK: - Enhanced Contact Row for Search Results
+// MARK: - EnhancedContactRowView
 
 struct EnhancedContactRowView: View {
     let contact: Contact
     let searchText: String
     let themeColor: Color
     
-    // Computed property to generate initials
-    private var initials: String {
-        let firstInitial = contact.firstName.first?.uppercased() ?? ""
-        let lastInitial = contact.lastName.first?.uppercased() ?? ""
-        
-        if firstInitial.isEmpty && lastInitial.isEmpty {
-            return "?"
-        } else if firstInitial.isEmpty {
-            return lastInitial
-        } else if lastInitial.isEmpty {
-            return firstInitial
-        } else {
-            return "\(firstInitial)\(lastInitial)"
-        }
-    }
-    
-    // Highlight matching text in notes - Simplified to reduce memory usage
-    private func highlightedNotes() -> Text {
-        if searchText.isEmpty || contact.notes.isEmpty {
-            return Text(contact.notes)
-        }
-        
-        // Simple highlighting without complex string operations
-        return Text(contact.notes)
-            .foregroundColor(.secondary)
-    }
-    
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            // Contact initials circle
+        HStack {
+            highlightedText(contact.displayName, searchText: searchText)
+                .font(.headline)
+                .foregroundColor(.primary)
+            
+            Spacer()
+            
+            // Circle with initials
             ZStack {
                 Circle()
                     .fill(themeColor)
-                    .frame(width: 40, height: 40)
+                    .frame(width: 32, height: 32)
                 
-                Text(initials)
-                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                Text(contact.initials)
+                    .font(.caption)
+                    .fontWeight(.semibold)
                     .foregroundColor(.white)
             }
-            
-            // Enhanced contact information for search results
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text(contact.displayName)
-                        .font(.headline)
-                    
-                    Spacer()
-                    
-                    if let age = contact.age {
-                        Text("(\(age))")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+        }
+        .padding(.vertical, 4)
+    }
+    
+    @ViewBuilder
+    private func highlightedText(_ text: String, searchText: String) -> some View {
+        if searchText.isEmpty {
+            Text(text)
+        } else {
+            let parts = text.components(separatedBy: searchText)
+            if parts.count > 1 {
+                HStack(spacing: 0) {
+                    ForEach(Array(parts.enumerated()), id: \.offset) { index, part in
+                        Group {
+                            Text(part)
+                            if index < parts.count - 1 {
+                                Text(searchText)
+                                    .background(themeColor.opacity(0.3))
+                                    .foregroundColor(.primary)
+                            }
+                        }
                     }
                 }
-                
-                // Show matching notes with highlighting
-                if !contact.notes.isEmpty {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Notes:")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.secondary)
-                        
-                        highlightedNotes()
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(3)
-                    }
-                }
-                
-                // Show kids information if relevant to search
-                if contact.hasKids {
-                    HStack {
-                        Image(systemName: "person.3")
-                            .font(.caption)
-                            .foregroundColor(themeColor)
-                        Text("\(contact.kidsCount) child\(contact.kidsCount == 1 ? "" : "ren")")
-                            .font(.caption)
-                            .foregroundColor(themeColor)
-                    }
-                }
+            } else {
+                Text(text)
             }
         }
-        .padding(.vertical, 8)
     }
 }
 
 #Preview {
     ContactListView()
         .environmentObject(AppSettings())
+        .modelContainer(for: Contact.self, inMemory: true)
 }

@@ -95,38 +95,38 @@ class DemoDataService {
             "John Doe": (
                 socialMedia: "https://linkedin.com/in/johndoe",
                 addresses: [
-                    Address(type: "Home", street: "123 Oak Street", city: "Boulder", state: "CO", zip: "80301", isDefault: true),
-                    Address(type: "Work", street: "456 Tech Avenue", city: "Denver", state: "CO", zip: "80202")
+                    Address(type: "Home", street: "123 Oak Street", street2: "Unit 5A", city: "Boulder", state: "CO", zip: "80301", isDefault: true),
+                    Address(type: "Work", street: "456 Tech Avenue", street2: "Suite 200", city: "Denver", state: "CO", zip: "80202")
                 ]
             ),
             "Sarah Smith": (
                 socialMedia: "https://twitter.com/sarahsmith",
                 addresses: [
-                    Address(type: "Home", street: "789 Pine Street", city: "San Francisco", state: "CA", zip: "94102", isDefault: true)
+                    Address(type: "Home", street: "789 Pine Street", street2: "", city: "San Francisco", state: "CA", zip: "94102", isDefault: true)
                 ]
             ),
             "Mike Johnson": (
                 socialMedia: "https://facebook.com/mike.johnson",
                 addresses: [
-                    Address(type: "Home", street: "321 Elm Street", city: "Chicago", state: "IL", zip: "60601", isDefault: true)
+                    Address(type: "Home", street: "321 Elm Street", street2: "Apt 12", city: "Chicago", state: "IL", zip: "60601", isDefault: true)
                 ]
             ),
             "Lisa Brown": (
                 socialMedia: "https://instagram.com/lisabrown",
                 addresses: [
-                    Address(type: "Home", street: "654 Maple Street", city: "Ann Arbor", state: "MI", zip: "48104", isDefault: true)
+                    Address(type: "Home", street: "654 Maple Street", street2: "", city: "Ann Arbor", state: "MI", zip: "48104", isDefault: true)
                 ]
             ),
             "David Wilson": (
                 socialMedia: "https://github.com/davidwilson",
                 addresses: [
-                    Address(type: "Home", street: "987 Cedar Street", city: "Cambridge", state: "MA", zip: "02139", isDefault: true)
+                    Address(type: "Home", street: "987 Cedar Street", street2: "Unit B", city: "Cambridge", state: "MA", zip: "02139", isDefault: true)
                 ]
             ),
             "Jennifer Garcia": (
                 socialMedia: "https://linkedin.com/in/jennifergarcia",
                 addresses: [
-                    Address(type: "Home", street: "147 Birch Street", city: "Los Angeles", state: "CA", zip: "90210", isDefault: true)
+                    Address(type: "Home", street: "147 Birch Street", street2: "Penthouse", city: "Los Angeles", state: "CA", zip: "90210", isDefault: true)
                 ]
             )
         ]
@@ -180,8 +180,8 @@ class DemoDataService {
         ]
         
         let addresses = [
-            Address(type: "Home", street: "123 Oak Street", city: "Boulder", state: "CO", zip: "80301", isDefault: true),
-            Address(type: "Work", street: "456 Tech Avenue", city: "Denver", state: "CO", zip: "80202")
+            Address(type: "Home", street: "123 Oak Street", street2: "Unit 5A", city: "Boulder", state: "CO", zip: "80301", isDefault: true),
+            Address(type: "Work", street: "456 Tech Avenue", street2: "Suite 200", city: "Denver", state: "CO", zip: "80202")
         ]
         
         return Contact(

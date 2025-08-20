@@ -3,6 +3,7 @@ import SwiftUI
 struct SocialMediaCard: View {
     let url: String
     let themeColor: Color
+    let onDelete: (() -> Void)?
     
     private var platformInfo: (name: String, icon: String, color: Color) {
         let lowercased = url.lowercased()
@@ -59,6 +60,16 @@ struct SocialMediaCard: View {
                 
                 Spacer()
                 
+                // Delete button
+                if let onDelete = onDelete {
+                    Button(action: onDelete) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                            .font(.title3)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                
                 // Action indicator
                 Image(systemName: "arrow.up.right.square")
                     .foregroundColor(themeColor)
@@ -78,10 +89,10 @@ struct SocialMediaCard: View {
 
 #Preview {
     VStack(spacing: 16) {
-        SocialMediaCard(url: "https://linkedin.com/in/johndoe", themeColor: .blue)
-        SocialMediaCard(url: "https://twitter.com/johndoe", themeColor: .blue)
-        SocialMediaCard(url: "https://instagram.com/johndoe", themeColor: .blue)
-        SocialMediaCard(url: "https://github.com/johndoe", themeColor: .blue)
+        SocialMediaCard(url: "https://linkedin.com/in/johndoe", themeColor: .blue, onDelete: {})
+        SocialMediaCard(url: "https://twitter.com/johndoe", themeColor: .blue, onDelete: {})
+        SocialMediaCard(url: "https://instagram.com/johndoe", themeColor: .blue, onDelete: {})
+        SocialMediaCard(url: "https://github.com/johndoe", themeColor: .blue, onDelete: {})
     }
     .padding()
 }

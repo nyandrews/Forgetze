@@ -47,6 +47,12 @@ struct AddressCard: View {
                         .fontWeight(.medium)
                 }
                 
+                if let street2 = address.street2, !street2.isEmpty {
+                    Text(street2)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                
                 if !address.city.isEmpty || !address.state.isEmpty || !address.zip.isEmpty {
                     Text([address.city, address.state, address.zip].filter { !$0.isEmpty }.joined(separator: ", "))
                         .font(.body)
@@ -115,6 +121,7 @@ struct AddressCard: View {
         address: Address(
             type: "Home",
             street: "123 Main Street",
+            street2: "Apt 4B",
             city: "New York",
             state: "NY",
             zip: "10001",

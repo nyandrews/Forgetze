@@ -118,6 +118,23 @@ final class Contact: Identifiable, Validatable {
         }
     }
     
+    var initials: String {
+        let first = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let last = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if first.isEmpty && last.isEmpty {
+            return "?"
+        } else if first.isEmpty {
+            return String(last.prefix(2)).uppercased()
+        } else if last.isEmpty {
+            return String(first.prefix(2)).uppercased()
+        } else {
+            let firstInitial = String(first.prefix(1))
+            let lastInitial = String(last.prefix(1))
+            return "\(firstInitial)\(lastInitial)".uppercased()
+        }
+    }
+    
     var age: Int? {
         return birthday?.age
     }
@@ -160,6 +177,26 @@ final class Contact: Identifiable, Validatable {
     
     var defaultAddress: Address? {
         return addresses.first { $0.isDefault } ?? addresses.first { $0.isValid }
+    }
+    
+    var shareText: String {
+        var text = "\(displayName)"
+        if !notes.isEmpty {
+            text += "\n\nNotes: \(notes)"
+        }
+        if let birthday = birthday {
+            text += "\n\nBirthday: \(birthday.displayString)"
+        }
+        if hasKids {
+            text += "\n\nChildren: \(kids.map { $0.displayName }.joined(separator: ", "))"
+        }
+        if hasAddresses {
+            text += "\n\nAddresses: \(addresses.map { $0.displayString }.joined(separator: "; "))"
+        }
+        if hasSocialMedia {
+            text += "\n\nSocial Media: \(socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }.joined(separator: ", "))"
+        }
+        return text
     }
     
     // MARK: - Validation
