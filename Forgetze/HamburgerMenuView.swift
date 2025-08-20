@@ -76,19 +76,25 @@ struct HamburgerMenuView: View {
                         Image(systemName: "paintpalette")
                             .foregroundColor(appSettings.primaryColor.color)
                         Spacer()
-                        Picker("Theme Color", selection: $appSettings.primaryColor) {
-                            ForEach(AppThemeColor.allCases, id: \.self) { color in
-                                HStack {
-                                    Circle()
-                                        .fill(color.color)
-                                        .frame(width: 16, height: 16)
-                                    Text(color.rawValue)
-                                        .foregroundColor(appSettings.primaryColor.color)
+                        HStack(spacing: 8) {
+                            Text(appSettings.primaryColor.rawValue)
+                                .foregroundColor(appSettings.primaryColor.color)
+                                .font(.body)
+                            Picker("Theme Color", selection: $appSettings.primaryColor) {
+                                ForEach(AppThemeColor.allCases, id: \.self) { color in
+                                    HStack {
+                                        Circle()
+                                            .fill(color.color)
+                                            .frame(width: 16, height: 16)
+                                        Text(color.rawValue)
+                                            .foregroundColor(appSettings.primaryColor.color)
+                                    }
+                                    .tag(color)
                                 }
-                                .tag(color)
                             }
+                            .pickerStyle(MenuPickerStyle())
+                            .accentColor(appSettings.primaryColor.color)
                         }
-                        .pickerStyle(MenuPickerStyle())
                     }
                 }
                 
@@ -130,48 +136,7 @@ struct HamburgerMenuView: View {
                     .buttonStyle(PlainButtonStyle())
                 }
                 
-                Section("MEMORY MANAGEMENT") {
-                    HStack {
-                        Image(systemName: "memorychip")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Current Memory")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Text(appSettings.getMemoryUsage())
-                            .foregroundColor(.secondary)
-                            .font(.caption)
-                    }
-                    
-                    Button(action: {
-                        appSettings.cleanupMemory()
-                    }) {
-                        HStack {
-                            Image(systemName: "trash")
-                                .foregroundColor(appSettings.primaryColor.color)
-                            Text("Clean Memory")
-                                .foregroundColor(appSettings.primaryColor.color)
-                            Spacer()
-                            Image(systemName: "arrow.clockwise")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                        }
-                    }
-                    
-                    Button(action: {
-                        appSettings.aggressiveMemoryCleanup()
-                    }) {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle")
-                                .foregroundColor(.orange)
-                            Text("Aggressive Cleanup")
-                                .foregroundColor(.orange)
-                            Spacer()
-                            Image(systemName: "arrow.clockwise")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                        }
-                    }
-                }
+
                 
                 // TODO: Uncomment when DataProtectionManager is added to Xcode project
                 /*
