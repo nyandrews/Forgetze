@@ -75,7 +75,7 @@ struct HamburgerMenuView: View {
                         Text("Theme Color")
                             .foregroundColor(appSettings.primaryColor.color)
                         Spacer()
-                        Picker(selection: $appSettings.primaryColor) {
+                        Picker("Theme Color", selection: $appSettings.primaryColor) {
                             ForEach(AppThemeColor.allCases, id: \.self) { color in
                                 HStack {
                                     Circle()

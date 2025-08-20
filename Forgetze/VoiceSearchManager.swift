@@ -20,7 +20,17 @@ class VoiceSearchManager: ObservableObject {
     
     deinit {
         // Note: deinit cannot be async, so we do minimal cleanup here
-        cleanup()
+        // Only do synchronous cleanup operations
+        searchTimeoutTimer?.invalidate()
+        searchTimeoutTimer = nil
+        
+        // Stop audio engine if running (synchronous operation)
+        if audioEngine.isRunning {
+            audioEngine.stop()
+        }
+        
+        // Cancel recognition task (synchronous operation)
+        recognitionTask?.cancel()
     }
     
     init() {
@@ -86,6 +96,7 @@ class VoiceSearchManager: ObservableObject {
         isRecording = false
     }
     
+    @MainActor
     private func cleanup() {
         stopTimeoutTimer()
         
