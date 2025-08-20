@@ -5,6 +5,7 @@ struct ContactListContent: View {
     let contacts: [Contact]
     @ObservedObject var searchManager: SearchManager
     let onDelete: (IndexSet) -> Void
+    let themeColor: Color
     
     var filteredContacts: [Contact] {
         if searchManager.hasActiveSearch() {
@@ -19,11 +20,12 @@ struct ContactListContent: View {
                                     ForEach(filteredContacts) { contact in
                             NavigationLink(destination: ContactDetailView(contact: contact)) {
                                 if searchManager.hasActiveSearch() {
-                                    EnhancedContactRowView(contact: contact, searchText: searchManager.searchText)
+                                    EnhancedContactRowView(contact: contact, searchText: searchManager.searchText, themeColor: themeColor)
                                 } else {
-                                    ContactRowView(contact: contact)
+                                    ContactRowView(contact: contact, themeColor: themeColor)
                                 }
                             }
+                            .accentColor(themeColor)
                         }
             .onDelete(perform: onDelete)
         }
@@ -35,6 +37,7 @@ struct ContactListContent: View {
     ContactListContent(
         contacts: [],
         searchManager: SearchManager(),
-        onDelete: { _ in }
+        onDelete: { _ in },
+        themeColor: .blue
     )
 }

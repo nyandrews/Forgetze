@@ -169,8 +169,8 @@ struct ContactEditView: View {
                                 Button(action: {
                                     socialMediaURLs.remove(at: index)
                                 }) {
-                                    Image(systemName: "minus.circle.fill")
-                                        .foregroundColor(.red)
+                                                                    Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(appSettings.primaryColor.color)
                                 }
                             }
                         }
@@ -194,12 +194,15 @@ struct ContactEditView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         saveContact()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
+                    .fontWeight(.semibold)
                     .disabled(firstName.isEmpty || lastName.isEmpty)
                 }
             }

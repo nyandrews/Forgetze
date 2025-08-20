@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PerformanceMonitorView: View {
+    @EnvironmentObject var appSettings: AppSettings
     @ObservedObject var searchManager: SearchManager
     
     var body: some View {
@@ -17,7 +18,7 @@ struct PerformanceMonitorView: View {
                     Spacer()
                     Text("\(String(format: "%.1f", searchManager.cacheHitRate * 100))%")
                         .font(.caption2)
-                        .foregroundColor(.blue)
+                        .foregroundColor(appSettings.primaryColor.color)
                 }
                 
                 HStack {
@@ -26,7 +27,7 @@ struct PerformanceMonitorView: View {
                     Spacer()
                     Text("\(searchManager.cacheSize) queries")
                         .font(.caption2)
-                        .foregroundColor(.green)
+                        .foregroundColor(appSettings.primaryColor.color)
                 }
                 
                 HStack {
@@ -35,7 +36,7 @@ struct PerformanceMonitorView: View {
                     Spacer()
                     Text(searchManager.memoryUsage)
                         .font(.caption2)
-                        .foregroundColor(.orange)
+                        .foregroundColor(appSettings.primaryColor.color)
                 }
             }
             .padding(.horizontal, 8)
@@ -48,6 +49,7 @@ struct PerformanceMonitorView: View {
             }
             .font(.caption2)
             .buttonStyle(.bordered)
+            .foregroundColor(appSettings.primaryColor.color)
         }
         .padding()
         .background(Color(.systemBackground))

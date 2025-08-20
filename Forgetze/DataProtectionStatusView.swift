@@ -13,6 +13,7 @@ import SwiftData
  */
 struct DataProtectionStatusView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var appSettings: AppSettings
     @StateObject private var protectionManager = DataProtectionManager.shared
     @State private var showingHealthCheck = false
     @State private var healthReport: DataHealthReport?
@@ -53,12 +54,12 @@ struct DataProtectionStatusView: View {
                 Section("💾 BACKUP INFORMATION") {
                     HStack {
                         Image(systemName: "archivebox")
-                            .foregroundColor(.blue)
+                            .foregroundColor(appSettings.primaryColor.color)
                         Text("Total Backups")
                         Spacer()
                         Text("\(protectionManager.backupCount)")
                             .font(.headline)
-                            .foregroundColor(.blue)
+                            .foregroundColor(appSettings.primaryColor.color)
                     }
                     
                     if let lastBackup = protectionManager.lastBackupDate {
@@ -77,8 +78,8 @@ struct DataProtectionStatusView: View {
                         showingBackupDetails = true
                     }) {
                         HStack {
-                            Image(systemName: "folder")
-                                .foregroundColor(.orange)
+                                                    Image(systemName: "folder")
+                            .foregroundColor(appSettings.primaryColor.color)
                             Text("View Backup Details")
                             Spacer()
                             Image(systemName: "chevron.right")
@@ -123,9 +124,9 @@ struct DataProtectionStatusView: View {
                         performHealthCheck()
                     }) {
                         HStack {
-                            Image(systemName: "stethoscope")
-                                .foregroundColor(.purple)
-                            Text("Run Health Check")
+                                                        Image(systemName: "stethoscope")
+                                .foregroundColor(appSettings.primaryColor.color)
+                                Text("Run Health Check")
                             Spacer()
                             if showingHealthCheck {
                                 ProgressView()
@@ -349,6 +350,7 @@ struct DataProtectionStatusView: View {
 
 struct BackupDetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appSettings: AppSettings
     @StateObject private var protectionManager = DataProtectionManager.shared
     @State private var backupFiles: [BackupFileInfo] = []
     
@@ -378,10 +380,10 @@ struct BackupDetailsView: View {
                                 
                                 Text(backup.operation)
                                     .font(.caption)
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(appSettings.primaryColor.color)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 2)
-                                    .background(Color.blue.opacity(0.1))
+                                    .background(appSettings.primaryColor.color.opacity(0.1))
                                     .cornerRadius(4)
                             }
                             .padding(.vertical, 2)

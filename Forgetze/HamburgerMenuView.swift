@@ -37,26 +37,26 @@ struct HamburgerMenuView: View {
                         }
                     }
                     
-                    HStack {
-                        Image(systemName: "globe")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Button(action: {
-                            if let url = URL(string: "https://www.forgetze.com") {
-                                UIApplication.shared.open(url)
-                            }
-                        }) {
+                    Button(action: {
+                        if let url = URL(string: "https://www.forgetze.com") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "globe")
+                                .foregroundColor(appSettings.primaryColor.color)
                             Text("www.forgetze.com")
                                 .foregroundColor(appSettings.primaryColor.color)
                                 .font(.body)
                                 .fontWeight(.medium)
-                                .underline() // Make it look more like a link
+                                .underline()
+                            Spacer()
+                            Image(systemName: "arrow.up.right.square")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        Spacer()
-                        Image(systemName: "arrow.up.right.square")
-                            .foregroundColor(.secondary)
-                            .font(.caption)
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 Section("APPEARANCE") {

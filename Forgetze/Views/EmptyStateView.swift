@@ -2,12 +2,13 @@ import SwiftUI
 
 struct EmptyStateView: View {
     let onAddContact: () -> Void
+    @EnvironmentObject var appSettings: AppSettings
     
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "person.crop.circle.badge.plus")
                 .font(.system(size: 60))
-                .foregroundColor(.blue)
+                .foregroundColor(appSettings.primaryColor.color)
             
             Text("No Contacts Yet")
                 .font(.title2)
@@ -22,6 +23,7 @@ struct EmptyStateView: View {
                 onAddContact()
             }
             .buttonStyle(.borderedProminent)
+            .tint(appSettings.primaryColor.color)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)

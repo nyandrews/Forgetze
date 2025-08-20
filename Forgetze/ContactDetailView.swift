@@ -122,7 +122,7 @@ struct ContactDetailView: View {
                 
                 // Social Media Section - At the bottom
                 if contact.hasSocialMedia {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 16) {
                         HStack {
                             Image(systemName: "link")
                                 .foregroundColor(appSettings.primaryColor.color)
@@ -131,7 +131,7 @@ struct ContactDetailView: View {
                                 .foregroundColor(appSettings.primaryColor.color)
                         }
                         
-                        VStack(spacing: 8) {
+                        LazyVStack(spacing: 12) {
                             ForEach(contact.socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { url in
                                 Button(action: {
                                     if let url = URL(string: url) {
@@ -139,16 +139,15 @@ struct ContactDetailView: View {
                                     }
                                 }) {
                                     HStack {
+                                        Image(systemName: "link")
+                                            .foregroundColor(appSettings.primaryColor.color)
                                         Text(url)
-                                            .font(.body)
                                             .foregroundColor(appSettings.primaryColor.color)
                                             .lineLimit(1)
-                                            .truncationMode(.middle)
-                                        
                                         Spacer()
-                                        
                                         Image(systemName: "arrow.up.right.square")
-                                            .foregroundColor(appSettings.primaryColor.color)
+                                            .foregroundColor(.secondary)
+                                            .font(.caption)
                                     }
                                     .padding()
                                     .background(Color(.systemGray6))

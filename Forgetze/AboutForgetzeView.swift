@@ -28,6 +28,7 @@ struct AboutForgetzeView: View {
                             .fontWeight(.semibold)
                         
                         VStack(alignment: .leading, spacing: 8) {
+                            FeatureRow(icon: "brain.head.profile", text: "Forgotten Name Reminder", color: appSettings.primaryColor.color)
                             FeatureRow(icon: "person.2", text: "Contact Management", color: appSettings.primaryColor.color)
                             FeatureRow(icon: "gift", text: "Birthday Tracking", color: appSettings.primaryColor.color)
                             FeatureRow(icon: "person.3", text: "Family & Children", color: appSettings.primaryColor.color)
@@ -73,7 +74,7 @@ struct FeatureRow: View {
     let color: Color
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Image(systemName: icon)
                 .foregroundColor(color)
                 .frame(width: 20)
