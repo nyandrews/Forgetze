@@ -37,24 +37,26 @@ struct HamburgerMenuView: View {
                         }
                     }
                     
-                    Button(action: {
-                        if let url = URL(string: "https://www.forgetze.com") {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "globe")
-                                .foregroundColor(appSettings.primaryColor.color)
+                    HStack {
+                        Image(systemName: "globe")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Button(action: {
+                            if let url = URL(string: "https://www.forgetze.com") {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
                             Text("www.forgetze.com")
                                 .foregroundColor(appSettings.primaryColor.color)
                                 .font(.body)
-                            Spacer()
-                            Image(systemName: "arrow.up.right.square")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
+                                .fontWeight(.medium)
+                                .underline() // Make it look more like a link
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        Spacer()
+                        Image(systemName: "arrow.up.right.square")
+                            .foregroundColor(.secondary)
+                            .font(.caption)
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 Section("APPEARANCE") {
@@ -88,7 +90,7 @@ struct HamburgerMenuView: View {
                                             .fill(color.color)
                                             .frame(width: 16, height: 16)
                                         Text(color.rawValue)
-                                            .foregroundColor(appSettings.primaryColor.color)
+                                            .foregroundColor(color.color) // Use the color itself, not the current theme
                                     }
                                 }
                             }
@@ -97,11 +99,13 @@ struct HamburgerMenuView: View {
                                 Text(appSettings.primaryColor.rawValue)
                                     .foregroundColor(appSettings.primaryColor.color)
                                     .font(.body)
+                                    .fontWeight(.medium) // Make it more prominent
                                 Image(systemName: "chevron.up.chevron.down")
                                     .foregroundColor(appSettings.primaryColor.color)
                                     .font(.caption)
                             }
                         }
+                        .accentColor(appSettings.primaryColor.color) // Force accent color
                     }
                 }
                 
@@ -182,6 +186,8 @@ struct HamburgerMenuView: View {
                     Button("Done") {
                         dismiss()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
+                    .fontWeight(.medium)
                 }
             }
         }
