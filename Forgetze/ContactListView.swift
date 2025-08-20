@@ -101,27 +101,25 @@ struct ContactListView: View {
                 Text(voiceSearchManager.errorMessage)
             }
             .onAppear {
-                // Load demo data if needed
-                loadDemoDataIfNeeded()
+                // Pre-emptive memory cleanup BEFORE loading demo data
+                print("🧹 Pre-startup memory cleanup...")
+                appSettings.aggressiveMemoryCleanup()
                 
-                // Memory cleanup when view appears
-                appSettings.cleanupMemory()
-                searchManager.cleanupMemory()
-                
-                // Aggressive memory cleanup if needed
-                if appSettings.getMemoryUsage().contains("MB") {
-                    let usage = appSettings.getMemoryUsage()
-                    if let mbValue = Float(usage.replacingOccurrences(of: " MB", with: "")) {
-                        if mbValue > 80.0 {
-                            print("⚠️ High memory detected, running aggressive cleanup")
-                            appSettings.aggressiveMemoryCleanup()
-                        }
-                    }
+                // Delay demo data loading to allow memory cleanup to complete
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    loadDemoDataIfNeeded()
                 }
                 
-                // Set loading to false after a brief delay to prevent memory issues
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                // Additional memory cleanup
+                searchManager.cleanupMemory()
+                
+                // Set loading to false after demo data has time to load
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     isLoading = false
+                    
+                    // Final cleanup after loading
+                    appSettings.cleanupMemory()
+                    print("✅ Startup sequence completed")
                 }
             }
             .onChange(of: searchManager.searchText) { _, newValue in

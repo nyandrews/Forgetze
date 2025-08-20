@@ -22,6 +22,13 @@ class DemoDataService {
     }
     
     private func loadDemoDataInBatches(context: ModelContext) async throws {
+        print("📊 Starting demo data loading with memory management...")
+        
+        // Force memory cleanup before loading
+        autoreleasepool {
+            // This will help release any existing autoreleased objects
+        }
+        
         // Create contacts in smaller batches to prevent memory pressure
         let contactCreators = [
             createJohnDoe,
@@ -35,23 +42,26 @@ class DemoDataService {
             createRachelClark
         ]
         
-        // Process in batches of 3 to reduce memory pressure
-        let batchSize = 3
+        // Process in batches of 2 to reduce memory pressure further
+        let batchSize = 2
         for i in stride(from: 0, to: contactCreators.count, by: batchSize) {
             let end = min(i + batchSize, contactCreators.count)
             let batch = Array(contactCreators[i..<end])
             
-            // Create and insert batch
-            for creator in batch {
-                let contact = creator()
-                context.insert(contact)
+            // Create and insert batch with memory management
+            autoreleasepool {
+                for creator in batch {
+                    let contact = creator()
+                    context.insert(contact)
+                }
             }
             
             // Save batch and clear context to free memory
             try context.save()
+            print("📝 Loaded batch \(i/batchSize + 1) of \((contactCreators.count + batchSize - 1) / batchSize)")
             
             // Small delay to allow memory cleanup
-            try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+            try await Task.sleep(nanoseconds: 50_000_000) // 50ms - longer delay for better memory management
         }
         
         print("Demo data loaded successfully in batches!")

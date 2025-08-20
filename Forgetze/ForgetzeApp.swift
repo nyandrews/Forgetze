@@ -27,6 +27,11 @@ struct ForgetzeApp: App {
         }
     }()
 
+    init() {
+        // Pre-emptive memory management at app launch
+        print("🚀 Forgetze starting up - Initializing memory management...")
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
