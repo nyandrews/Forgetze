@@ -109,6 +109,27 @@ struct HamburgerMenuView: View {
                     }
                 }
                 
+                Section("CONTACT VIEW") {
+                    HStack {
+                        Image(systemName: "eye")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Default View")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("View Mode", selection: $appSettings.defaultContactView) {
+                            Text("Basic").tag(ContactViewMode.basic)
+                            Text("Advanced").tag(ContactViewMode.advanced)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 140)
+                    }
+                    
+                    Text("Basic: Name, notes, DOB, age, children. Advanced: Includes social media and addresses.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
+                }
+                
                 Section("LEGAL") {
                     Button(action: {
                         showingPrivacyStatement = true

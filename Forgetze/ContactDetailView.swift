@@ -167,6 +167,9 @@ struct ContactDetailView: View {
         }
         .navigationTitle("Contact Details")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(false)
+        .toolbarColorScheme(appSettings.isDarkMode ? .dark : .light)
+        .accentColor(appSettings.primaryColor.color)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {

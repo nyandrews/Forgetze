@@ -45,6 +45,7 @@ final class Contact: Identifiable, Validatable {
     var socialMediaURLs: [String]
     var birthday: Birthday?
     var kids: [Kid]
+    var addresses: [Address]
     var createdAt: Date
     var updatedAt: Date
     
@@ -65,13 +66,14 @@ final class Contact: Identifiable, Validatable {
      * - Note: firstName and lastName are required for validation. Empty strings
      *   will cause the contact to fail validation.
      */
-    init(firstName: String, lastName: String, notes: String = "", socialMediaURLs: [String] = [], birthday: Birthday? = nil, kids: [Kid] = []) {
+    init(firstName: String, lastName: String, notes: String = "", socialMediaURLs: [String] = [], birthday: Birthday? = nil, kids: [Kid] = [], addresses: [Address] = []) {
         self.firstName = firstName
         self.lastName = lastName
         self.notes = notes
         self.socialMediaURLs = socialMediaURLs
         self.birthday = birthday
         self.kids = kids
+        self.addresses = addresses
         self.createdAt = Date()
         self.updatedAt = Date()
     }
@@ -146,6 +148,18 @@ final class Contact: Identifiable, Validatable {
     
     var hasSocialMedia: Bool {
         return !socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }.isEmpty
+    }
+    
+    var hasAddresses: Bool {
+        return !addresses.filter { $0.isValid }.isEmpty
+    }
+    
+    var addressesCount: Int {
+        return addresses.filter { $0.isValid }.count
+    }
+    
+    var defaultAddress: Address? {
+        return addresses.first { $0.isDefault } ?? addresses.first { $0.isValid }
     }
     
     // MARK: - Validation

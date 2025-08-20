@@ -36,6 +36,20 @@ enum AppThemeColor: String, CaseIterable {
     }
 }
 
+enum ContactViewMode: String, CaseIterable {
+    case basic = "Basic"
+    case advanced = "Advanced"
+    
+    var description: String {
+        switch self {
+        case .basic:
+            return "Name, notes, DOB, age, children"
+        case .advanced:
+            return "Includes social media and addresses"
+        }
+    }
+}
+
 class AppSettings: ObservableObject {
     static let shared = AppSettings()
     
@@ -57,6 +71,12 @@ class AppSettings: ObservableObject {
         }
     }
     
+    @Published var defaultContactView: ContactViewMode {
+        didSet {
+            UserDefaults.standard.set(defaultContactView.rawValue, forKey: "defaultContactView")
+        }
+    }
+    
     var currentColorScheme: ColorScheme? {
         isDarkMode ? .dark : .light
     }
@@ -66,6 +86,8 @@ class AppSettings: ObservableObject {
         let savedColor = UserDefaults.standard.string(forKey: "primaryColor") ?? "Blue"
         self.primaryColor = AppThemeColor(rawValue: savedColor) ?? .blue
         self.appVersion = UserDefaults.standard.string(forKey: "appVersion") ?? "1.0.0"
+        let savedViewMode = UserDefaults.standard.string(forKey: "defaultContactView") ?? "Basic"
+        self.defaultContactView = ContactViewMode(rawValue: savedViewMode) ?? .basic
     }
     
     func toggleTheme() {

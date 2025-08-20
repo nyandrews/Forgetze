@@ -29,6 +29,7 @@
 		916749C52E54F7DC002AA45F /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749C02E54F7DC002AA45F /* SearchBarView.swift */; };
 		9189427D2E562303009002CA /* DataProtectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9189427B2E562302009002CA /* DataProtectionManager.swift */; };
 		9189427E2E562303009002CA /* DataProtectionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9189427C2E562302009002CA /* DataProtectionStatusView.swift */; };
+		918942802E563E71009002CA /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9189427F2E563E71009002CA /* Address.swift */; };
 		91B94D5F2E4E52DE00BDE072 /* ForgetzeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */; };
 		91B94D612E4E52DE00BDE072 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D602E4E52DE00BDE072 /* ContentView.swift */; };
 		91B94D652E4E52E100BDE072 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91B94D642E4E52E100BDE072 /* Assets.xcassets */; };
@@ -78,6 +79,7 @@
 		916749C02E54F7DC002AA45F /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		9189427B2E562302009002CA /* DataProtectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProtectionManager.swift; sourceTree = "<group>"; };
 		9189427C2E562302009002CA /* DataProtectionStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProtectionStatusView.swift; sourceTree = "<group>"; };
+		9189427F2E563E71009002CA /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		91B94D5B2E4E52DE00BDE072 /* Forgetze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forgetze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetzeApp.swift; sourceTree = "<group>"; };
 		91B94D602E4E52DE00BDE072 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -140,8 +142,7 @@
 		91B94D5D2E4E52DE00BDE072 /* Forgetze */ = {
 			isa = PBXGroup;
 			children = (
-				9189427B2E562302009002CA /* DataProtectionManager.swift */,
-				9189427C2E562302009002CA /* DataProtectionStatusView.swift */,
+				9189427F2E563E71009002CA /* Address.swift */,
 				915CCCDA2E4E644600928251 /* AboutForgetzeView.swift */,
 				915CCCD52E4E644600928251 /* AddKidView.swift */,
 				915CCCD82E4E644600928251 /* AppSettings.swift */,
@@ -153,6 +154,8 @@
 				916749BE2E54F7DC002AA45F /* ContactListContent.swift */,
 				915CCCDD2E4E644700928251 /* ContactListView.swift */,
 				91B94D602E4E52DE00BDE072 /* ContentView.swift */,
+				9189427B2E562302009002CA /* DataProtectionManager.swift */,
+				9189427C2E562302009002CA /* DataProtectionStatusView.swift */,
 				916749B62E54F37E002AA45F /* DemoDataService.swift */,
 				916749BC2E54F7DC002AA45F /* EmptyStateView.swift */,
 				91B94D692E4E52E100BDE072 /* Forgetze.entitlements */,
@@ -336,6 +339,7 @@
 				915CCCE42E4E644700928251 /* AppSettings.swift in Sources */,
 				915CCCE92E4E644700928251 /* ContactListView.swift in Sources */,
 				916749C32E54F7DC002AA45F /* ContactListContent.swift in Sources */,
+				918942802E563E71009002CA /* Address.swift in Sources */,
 				9189427E2E562303009002CA /* DataProtectionStatusView.swift in Sources */,
 				916749B92E54F37E002AA45F /* DemoDataService.swift in Sources */,
 				915CCCE32E4E644700928251 /* Kid.swift in Sources */,

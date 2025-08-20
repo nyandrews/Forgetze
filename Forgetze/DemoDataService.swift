@@ -36,10 +36,7 @@ class DemoDataService {
             createMikeJohnson,
             createLisaBrown,
             createDavidWilson,
-            createJenniferGarcia,
-            createRobertTaylor,
-            createThomasAnderson,
-            createRachelClark
+            createJenniferGarcia
         ]
         
         // Process in batches of 2 to reduce memory pressure further
@@ -68,17 +65,45 @@ class DemoDataService {
     }
     
     private func updateExistingContactsWithSocialMedia(context: ModelContext, contacts: [Contact]) async throws {
-        // Map of contact names to their social media URLs
-        let socialMediaMap: [String: String] = [
-            "John Doe": "https://linkedin.com/in/johndoe",
-            "Sarah Smith": "https://twitter.com/sarahsmith",
-            "Mike Johnson": "https://facebook.com/mike.johnson",
-            "Lisa Brown": "https://instagram.com/lisabrown",
-            "David Wilson": "https://github.com/davidwilson",
-            "Jennifer Garcia": "https://linkedin.com/in/jennifergarcia",
-            "Robert Taylor": "https://instagram.com/roberttaylor.fitness",
-            "Thomas Anderson": "https://linkedin.com/in/thomasanderson",
-            "Rachel Clark": "https://twitter.com/rachelclark"
+        // Map of contact names to their social media URLs and addresses
+        let contactUpdates: [String: (socialMedia: String, addresses: [Address])] = [
+            "John Doe": (
+                socialMedia: "https://linkedin.com/in/johndoe",
+                addresses: [
+                    Address(type: "Home", street: "123 Oak Street", city: "Boulder", state: "CO", zip: "80301", isDefault: true),
+                    Address(type: "Work", street: "456 Tech Avenue", city: "Denver", state: "CO", zip: "80202")
+                ]
+            ),
+            "Sarah Smith": (
+                socialMedia: "https://twitter.com/sarahsmith",
+                addresses: [
+                    Address(type: "Home", street: "789 Pine Street", city: "San Francisco", state: "CA", zip: "94102", isDefault: true)
+                ]
+            ),
+            "Mike Johnson": (
+                socialMedia: "https://facebook.com/mike.johnson",
+                addresses: [
+                    Address(type: "Home", street: "321 Elm Street", city: "Chicago", state: "IL", zip: "60601", isDefault: true)
+                ]
+            ),
+            "Lisa Brown": (
+                socialMedia: "https://instagram.com/lisabrown",
+                addresses: [
+                    Address(type: "Home", street: "654 Maple Street", city: "Ann Arbor", state: "MI", zip: "48104", isDefault: true)
+                ]
+            ),
+            "David Wilson": (
+                socialMedia: "https://github.com/davidwilson",
+                addresses: [
+                    Address(type: "Home", street: "987 Cedar Street", city: "Cambridge", state: "MA", zip: "02139", isDefault: true)
+                ]
+            ),
+            "Jennifer Garcia": (
+                socialMedia: "https://linkedin.com/in/jennifergarcia",
+                addresses: [
+                    Address(type: "Home", street: "147 Birch Street", city: "Los Angeles", state: "CA", zip: "90210", isDefault: true)
+                ]
+            )
         ]
         
         var updatedCount = 0
@@ -91,10 +116,20 @@ class DemoDataService {
             
             for contact in batch {
                 let fullName = "\(contact.firstName) \(contact.lastName)"
-                if let socialMediaURL = socialMediaMap[fullName], contact.socialMediaURLs.isEmpty {
-                    contact.socialMediaURLs = [socialMediaURL]
+                if let update = contactUpdates[fullName] {
+                    // Update social media if empty
+                    if contact.socialMediaURLs.isEmpty {
+                        contact.socialMediaURLs = [update.socialMedia]
+                        print("Updated \(fullName) with social media URL: \(update.socialMedia)")
+                    }
+                    
+                    // Update addresses if empty
+                    if contact.addresses.isEmpty {
+                        contact.addresses = update.addresses
+                        print("Updated \(fullName) with \(update.addresses.count) addresses")
+                    }
+                    
                     updatedCount += 1
-                    print("Updated \(fullName) with social media URL: \(socialMediaURL)")
                 }
             }
             
@@ -106,7 +141,7 @@ class DemoDataService {
         }
         
         if updatedCount > 0 {
-            print("Successfully updated \(updatedCount) contacts with social media URLs!")
+            print("Successfully updated \(updatedCount) contacts with social media URLs and addresses!")
         }
     }
     
@@ -119,13 +154,19 @@ class DemoDataService {
             Kid(firstName: "Sophia", lastName: "Doe", birthday: Birthday(date: Date().addingTimeInterval(-1*365*24*60*60)))
         ]
         
+        let addresses = [
+            Address(type: "Home", street: "123 Oak Street", city: "Boulder", state: "CO", zip: "80301", isDefault: true),
+            Address(type: "Work", street: "456 Tech Avenue", city: "Denver", state: "CO", zip: "80202")
+        ]
+        
         return Contact(
             firstName: "John",
             lastName: "Doe",
             notes: "Family friend, loves hiking and outdoor activities. Met through mutual friends at the local hiking club. Always brings homemade trail mix to gatherings. Planning a camping trip next month. Drives a blue Subaru Outback. Graduated from University of Colorado Boulder with a degree in Environmental Science.",
             socialMediaURLs: ["https://linkedin.com/in/johndoe", "https://twitter.com/johndoe"],
             birthday: Birthday(date: Date().addingTimeInterval(-30*365*24*60*60)),
-            kids: kids
+            kids: kids,
+            addresses: addresses
         )
     }
     
@@ -206,53 +247,6 @@ class DemoDataService {
             notes: "Dentist at Downtown Dental. Very thorough and gentle with patients. Loves yoga and meditation. Always gives great health advice. Met through a mutual friend's recommendation. Drives a white Lexus RX. Graduated from UCLA with a Doctor of Dental Surgery degree.",
             socialMediaURLs: ["https://linkedin.com/in/jennifergarcia", "https://twitter.com/jennifergarcia"],
             birthday: Birthday(date: Date().addingTimeInterval(-38*365*24*60*60)),
-            kids: kids
-        )
-    }
-    
-    private func createRobertTaylor() -> Contact {
-        let kids = [
-            Kid(firstName: "William", lastName: "Taylor", birthday: Birthday(date: Date().addingTimeInterval(-6*365*24*60*60)))
-        ]
-        
-        return Contact(
-            firstName: "Robert",
-            lastName: "Taylor",
-            notes: "Gym buddy and fitness enthusiast. Personal trainer who gives great workout advice. Loves protein shakes and meal prep. We work out together three times a week. Always motivating. Drives a gray Toyota Camry. Graduated from Arizona State University with a degree in Exercise Science.",
-            birthday: Birthday(date: Date().addingTimeInterval(-29*365*24*60*60)),
-            kids: kids
-        )
-    }
-    
-    private func createThomasAnderson() -> Contact {
-        let kids = [
-            Kid(firstName: "Benjamin", lastName: "Anderson", birthday: Birthday(date: Date().addingTimeInterval(-13*365*24*60*60))),
-            Kid(firstName: "Zoe", lastName: "Anderson", birthday: Birthday(date: Date().addingTimeInterval(-9*365*24*60*60))),
-            Kid(firstName: "Henry", lastName: "Anderson", birthday: Birthday(date: Date().addingTimeInterval(-6*365*24*60*60))),
-            Kid(firstName: "Lily", lastName: "Anderson", birthday: Birthday(date: Date().addingTimeInterval(-3*365*24*60*60)))
-        ]
-        
-        return Contact(
-            firstName: "Thomas",
-            lastName: "Anderson",
-            notes: "Local coffee shop owner. Makes the best espresso in town. Loves jazz music and often plays it in the shop. Great conversationalist and knows everyone's name. Met while getting coffee. Drives a brown Ford Transit van for deliveries. Graduated from Seattle University with a degree in Business Administration.",
-            socialMediaURLs: ["https://instagram.com/coffeeanderson", "https://twitter.com/coffeeanderson"],
-            birthday: Birthday(date: Date().addingTimeInterval(-41*365*24*60*60)),
-            kids: kids
-        )
-    }
-    
-    private func createRachelClark() -> Contact {
-        let kids = [
-            Kid(firstName: "Grace", lastName: "Clark", birthday: Birthday(date: Date().addingTimeInterval(-10*365*24*60*60)))
-        ]
-        
-        return Contact(
-            firstName: "Rachel",
-            lastName: "Clark",
-            notes: "Volunteer coordinator at the animal shelter. Passionate about animal welfare and adoption. Loves hiking with her rescue dogs. Organizes monthly adoption events. Met while volunteering. Drives a silver Honda CR-V. Graduated from University of Oregon with a degree in Animal Science.",
-            socialMediaURLs: ["https://facebook.com/rachel.clark.volunteer", "https://instagram.com/rachelclark.volunteer"],
-            birthday: Birthday(month: 12, day: 3),
             kids: kids
         )
     }
