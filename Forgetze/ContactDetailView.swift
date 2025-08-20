@@ -170,6 +170,7 @@ struct ContactDetailView: View {
         .navigationBarBackButtonHidden(false)
         .toolbarColorScheme(appSettings.isDarkMode ? .dark : .light)
         .tint(appSettings.primaryColor.color)
+        .accentColor(appSettings.primaryColor.color)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {

@@ -10,6 +10,14 @@ class DemoDataService {
     // MARK: - Demo Data Management
     
     func loadDemoDataIfNeeded(context: ModelContext, existingContacts: [Contact]) async throws {
+        // Check if we need to reload demo data (e.g., if we have old 9-contact data)
+        if existingContacts.count == 9 {
+            print("🔄 Detected old 9-contact demo data, clearing and reloading with 6 contacts...")
+            try await clearAllContacts(context: context)
+            try await loadDemoDataInBatches(context: context)
+            return
+        }
+        
         // Only load demo data if no contacts exist in the database
         guard existingContacts.isEmpty else { 
             // Update existing contacts that don't have social media URLs
@@ -62,6 +70,23 @@ class DemoDataService {
         }
         
         print("Demo data loaded successfully in batches!")
+    }
+    
+    private func clearAllContacts(context: ModelContext) async throws {
+        print("🗑️ Clearing all existing contacts...")
+        
+        // Fetch all contacts
+        let contactDescriptor = FetchDescriptor<Contact>()
+        let contacts = try context.fetch(contactDescriptor)
+        
+        // Delete all contacts
+        for contact in contacts {
+            context.delete(contact)
+        }
+        
+        // Save the changes
+        try context.save()
+        print("✅ Cleared \(contacts.count) existing contacts")
     }
     
     private func updateExistingContactsWithSocialMedia(context: ModelContext, contacts: [Contact]) async throws {
