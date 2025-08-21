@@ -7,6 +7,7 @@ struct HamburgerMenuView: View {
     @State private var showingPrivacyStatement = false
     @State private var showingAboutForgetze = false
     @State private var showingDataProtection = false
+    @State private var showingColorPicker = false
     
     var body: some View {
         NavigationView {
@@ -80,32 +81,21 @@ struct HamburgerMenuView: View {
                         Text("Theme Color")
                             .foregroundColor(appSettings.primaryColor.color)
                         Spacer()
-                        Menu {
-                            ForEach(AppThemeColor.allCases, id: \.self) { color in
-                                Button(action: {
-                                    appSettings.primaryColor = color
-                                }) {
-                                    HStack {
-                                        Circle()
-                                            .fill(color.color)
-                                            .frame(width: 16, height: 16)
-                                        Text(color.rawValue)
-                                            .foregroundColor(color.color) // Use the color itself, not the current theme
-                                    }
-                                }
-                            }
-                        } label: {
+                        
+                        Button(action: {
+                            showingColorPicker = true
+                        }) {
                             HStack(spacing: 8) {
                                 Text(appSettings.primaryColor.rawValue)
                                     .foregroundColor(appSettings.primaryColor.color)
                                     .font(.body)
-                                    .fontWeight(.medium) // Make it more prominent
-                                Image(systemName: "chevron.up.chevron.down")
+                                    .fontWeight(.medium)
+                                Image(systemName: "chevron.down")
                                     .foregroundColor(appSettings.primaryColor.color)
                                     .font(.caption)
                             }
                         }
-                        .accentColor(appSettings.primaryColor.color) // Force accent color
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
                 
@@ -218,6 +208,53 @@ struct HamburgerMenuView: View {
         }
         .sheet(isPresented: $showingDataProtection) {
             DataProtectionStatusView()
+        }
+        .sheet(isPresented: $showingColorPicker) {
+            ColorPickerSheet(selectedColor: $appSettings.primaryColor)
+        }
+    }
+}
+
+// MARK: - Custom Color Picker Sheet
+struct ColorPickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedColor: AppThemeColor
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(AppThemeColor.allCases, id: \.self) { color in
+                    Button(action: {
+                        selectedColor = color
+                        dismiss()
+                    }) {
+                        HStack {
+                            Circle()
+                                .fill(color.color)
+                                .frame(width: 20, height: 20)
+                            Text(color.rawValue)
+                                .foregroundColor(color.color)
+                                .fontWeight(.medium)
+                            Spacer()
+                            if color == selectedColor {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(color.color)
+                                    .fontWeight(.bold)
+                            }
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+            .navigationTitle("Choose Theme Color")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
         }
     }
 }

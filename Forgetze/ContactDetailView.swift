@@ -7,6 +7,7 @@ import UIKit
 
 struct ContactDetailView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appSettings: AppSettings
     @State private var showingEditSheet = false
     @State private var showingDeleteAlert = false
@@ -36,11 +37,27 @@ struct ContactDetailView: View {
         }
         .navigationTitle("Contact Details")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(false)
+        .navigationBarBackButtonHidden(true)
         .toolbarColorScheme(appSettings.isDarkMode ? .dark : .light)
         .tint(appSettings.primaryColor.color)
         .accentColor(appSettings.primaryColor.color)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.body)
+                            .fontWeight(.medium)
+                        Text("Back")
+                            .font(.body)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(appSettings.primaryColor.color)
+                }
+            }
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     // Primary Actions
@@ -522,6 +539,7 @@ struct SocialMediaEditSheet: View {
 struct ExportOptionsView: View {
     let contact: Contact
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appSettings: AppSettings
     
     var body: some View {
         NavigationView {
@@ -530,14 +548,20 @@ struct ExportOptionsView: View {
                     Button("Export to Apple Contacts") {
                         exportToAppleContacts()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
+                    .fontWeight(.medium)
                     
                     Button("Export as PDF") {
                         exportAsPDF()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
+                    .fontWeight(.medium)
                     
                     Button("Export as vCard") {
                         exportAsVCard()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
+                    .fontWeight(.medium)
                 }
             }
             .navigationTitle("Export Contact")
@@ -547,6 +571,8 @@ struct ExportOptionsView: View {
                     Button("Done") {
                         dismiss()
                     }
+                    .foregroundColor(appSettings.primaryColor.color)
+                    .fontWeight(.medium)
                 }
             }
         }

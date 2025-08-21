@@ -207,12 +207,6 @@ struct ContactRowView: View {
     
     var body: some View {
         HStack {
-            Text(contact.displayName)
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            Spacer()
-            
             // Circle with initials
             ZStack {
                 Circle()
@@ -224,6 +218,15 @@ struct ContactRowView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
             }
+            
+            Spacer()
+                .frame(width: 12)
+            
+            Text(contact.displayName)
+                .font(.headline)
+                .foregroundColor(.primary)
+            
+            Spacer()
         }
         .padding(.vertical, 4)
     }
@@ -238,12 +241,6 @@ struct EnhancedContactRowView: View {
     
     var body: some View {
         HStack {
-            highlightedText(contact.displayName, searchText: searchText)
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            Spacer()
-            
             // Circle with initials
             ZStack {
                 Circle()
@@ -255,6 +252,15 @@ struct EnhancedContactRowView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
             }
+            
+            Spacer()
+                .frame(width: 12)
+            
+            highlightedText(contact.displayName, searchText: searchText)
+                .font(.headline)
+                .foregroundColor(.primary)
+            
+            Spacer()
         }
         .padding(.vertical, 4)
     }

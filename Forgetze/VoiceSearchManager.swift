@@ -34,12 +34,24 @@ class VoiceSearchManager: ObservableObject {
     }
     
     init() {
+        print("🔧 Initializing VoiceSearchManager...")
+        
         // Try to create speech recognizer with US English
         speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
+        print("US English speech recognizer: \(speechRecognizer != nil ? "✅ Created" : "❌ Failed")")
         
         // If US English fails, try system locale
         if speechRecognizer == nil {
+            print("Trying system locale speech recognizer...")
             speechRecognizer = SFSpeechRecognizer()
+            print("System locale speech recognizer: \(speechRecognizer != nil ? "✅ Created" : "❌ Failed")")
+        }
+        
+        if let recognizer = speechRecognizer {
+            print("Speech recognizer available: \(recognizer.isAvailable)")
+            print("Speech recognizer locale: \(recognizer.locale)")
+        } else {
+            print("❌ No speech recognizer available")
         }
         
         requestSpeechPermissions()
@@ -48,23 +60,35 @@ class VoiceSearchManager: ObservableObject {
     // MARK: - Permission Management
     
     private func requestSpeechPermissions() {
+        print("Requesting speech recognition permissions...")
         SFSpeechRecognizer.requestAuthorization { authStatus in
             Task { @MainActor in
+                print("Speech recognition authorization status: \(authStatus)")
                 switch authStatus {
                 case .authorized:
-                    print("Speech recognition authorized")
-                case .denied, .restricted, .notDetermined:
-                    print("Speech recognition not authorized: \(authStatus)")
+                    print("✅ Speech recognition authorized")
+                case .denied:
+                    print("❌ Speech recognition denied")
+                    self.showingPermissionAlert = true
+                case .restricted:
+                    print("❌ Speech recognition restricted")
+                    self.showingPermissionAlert = true
+                case .notDetermined:
+                    print("⏳ Speech recognition not determined")
                 @unknown default:
-                    print("Unknown authorization status")
+                    print("❓ Unknown authorization status: \(authStatus)")
                 }
             }
         }
         
+        print("Requesting microphone permissions...")
         AVAudioApplication.requestRecordPermission { granted in
             Task { @MainActor in
-                if !granted {
-                    print("Microphone permission denied")
+                if granted {
+                    print("✅ Microphone permission granted")
+                } else {
+                    print("❌ Microphone permission denied")
+                    self.showingPermissionAlert = true
                 }
             }
         }
@@ -73,18 +97,31 @@ class VoiceSearchManager: ObservableObject {
     // MARK: - Voice Search Control
     
     func startVoiceSearch() {
+        print("🎤 Starting voice search...")
+        // Reset completion flag for new search
+        isVoiceSearchComplete = false
+        
+
+        
         // Check permissions first
-        guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
+        let speechStatus = SFSpeechRecognizer.authorizationStatus()
+        print("Speech recognition status: \(speechStatus)")
+        
+        guard speechStatus == .authorized else {
+            print("❌ Speech recognition not authorized, showing permission alert")
             showingPermissionAlert = true
             return
         }
         
         // Check microphone permission
+        print("Checking microphone permission...")
         AVAudioApplication.requestRecordPermission { granted in
             Task { @MainActor in
                 if granted {
+                    print("✅ Microphone permission granted, proceeding with voice search")
                     self.proceedWithVoiceSearch()
                 } else {
+                    print("❌ Microphone permission denied, showing permission alert")
                     self.showingPermissionAlert = true
                 }
             }
@@ -114,8 +151,16 @@ class VoiceSearchManager: ObservableObject {
         recognitionTask?.cancel()
         recognitionTask = nil
         
-        // Clear any pending errors if we have transcription
+        // Don't clear completion flag if we have successful transcription
+        // Only clear errors, not the completion status
         if !transcribedText.isEmpty {
+            print("🔍 Cleanup: Has transcription, preserving completion flag")
+            // Clear errors but preserve completion status
+            showingError = false
+            errorMessage = ""
+            // Don't call clearErrors() as it clears isVoiceSearchComplete
+        } else {
+            print("🔍 Cleanup: No transcription, clearing completion flag")
             clearErrors()
         }
         
@@ -130,18 +175,56 @@ class VoiceSearchManager: ObservableObject {
         }
     }
     
+    @MainActor
+    private func cleanupAudioOnly() {
+        stopTimeoutTimer()
+        
+        // Stop audio engine and remove tap
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
+        }
+        
+        // End recognition request
+        recognitionRequest?.endAudio()
+        recognitionRequest = nil
+        
+        // Cancel recognition task
+        recognitionTask?.cancel()
+        recognitionTask = nil
+        
+        // Reset audio session
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            if audioSession.isOtherAudioPlaying {
+                try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            }
+        } catch {
+            print("Failed to deactivate audio session: \(error)")
+        }
+        
+        // DO NOT touch completion flag or transcription - preserve them for SearchBarView
+        print("🔍 CleanupAudioOnly: Preserving completion flag and transcription")
+    }
+    
     private func proceedWithVoiceSearch() {
+        print("🚀 Proceeding with voice search...")
+        
         // Check speech recognition permission first
         guard SFSpeechRecognizer.authorizationStatus() == .authorized else {
+            print("❌ Speech recognition not authorized in proceedWithVoiceSearch")
             showingPermissionAlert = true
             return
         }
         
         // Check if speech recognition is available
         guard let speechRecognizer = speechRecognizer, speechRecognizer.isAvailable else {
+            print("❌ Speech recognition not available")
             showError("Speech recognition is not available on this device. Please try on a physical device or check your iOS settings.")
             return
         }
+        
+        print("✅ Speech recognition is available and authorized")
         
         // Stop any existing recording
         if isRecording {
@@ -150,11 +233,14 @@ class VoiceSearchManager: ObservableObject {
         }
         
         // Configure audio session
+        print("🎵 Configuring audio session...")
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.record, mode: .measurement, options: [])
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+            print("✅ Audio session configured successfully")
         } catch {
+            print("❌ Failed to configure audio session: \(error.localizedDescription)")
             showError("Failed to configure audio session: \(error.localizedDescription)")
             return
         }
@@ -177,19 +263,25 @@ class VoiceSearchManager: ObservableObject {
         audioEngine.prepare()
         
         do {
+            print("🎤 Starting audio engine...")
             try audioEngine.start()
             isRecording = true
+            print("✅ Audio engine started, isRecording set to true")
             
+            print("🎯 Creating speech recognition task...")
             recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
+                print("🎯 Speech recognition callback triggered - result: \(result != nil), error: \(error != nil)")
                 Task { @MainActor in
                     if let error = error {
-                        print("Speech recognition callback received error: \(error.localizedDescription)")
+                        print("❌ Speech recognition callback received error: \(error.localizedDescription)")
                         
                         // Check if this is a post-success cleanup error (common with speech recognition)
                         if !self.transcribedText.isEmpty {
                             print("Ignoring error - we have successful transcription: \(self.transcribedText)")
                             self.isVoiceSearchComplete = true
-                            self.stopVoiceSearch()
+                            // Don't call stopVoiceSearch here since it clears isVoiceSearchComplete
+                            self.cleanup()
+                            self.isRecording = false
                             return
                         }
                         
@@ -214,16 +306,31 @@ class VoiceSearchManager: ObservableObject {
                     }
                     
                     if let result = result {
-                        print("Speech recognition result: \(result.bestTranscription.formattedString)")
+                        print("✅ Speech recognition result received: '\(result.bestTranscription.formattedString)'")
                         self.transcribedText = result.bestTranscription.formattedString
                         
                         // Check if this is the final result
                         if result.isFinal {
-                            print("Final result received, completing voice search")
-                            // Small delay to ensure final result is captured
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                self.stopVoiceSearch()
-                                self.isVoiceSearchComplete = true
+                            print("🏁 Final result received, completing voice search")
+                            // Set completion flag immediately for final results
+                            self.isVoiceSearchComplete = true
+                            print("✅ Completion flag set to true: \(self.isVoiceSearchComplete)")
+                            // Small delay to ensure final result is captured, then cleanup
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { // Reduced from 0.5 to 0.2
+                                print("⏰ Timer fired, cleaning up voice search")
+                                print("🔍 Completion flag before cleanup: \(self.isVoiceSearchComplete)")
+                                // Only cleanup audio, preserve completion state
+                                self.cleanupAudioOnly()
+                                self.isRecording = false
+                                print("🔍 Completion flag after cleanup: \(self.isVoiceSearchComplete)")
+                            }
+                        } else {
+                            print("📝 Partial result received, continuing...")
+                            // Send partial results for real-time updates
+                            self.isVoiceSearchComplete = true
+                            // Reset after a short delay to allow for more partial results
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                self.isVoiceSearchComplete = false
                             }
                         }
                     }
@@ -252,7 +359,9 @@ class VoiceSearchManager: ObservableObject {
                     print("Voice search timeout but we have transcription: \(self.transcribedText)")
                     self.isVoiceSearchComplete = true
                 }
-                self.stopVoiceSearch()
+                // Don't call stopVoiceSearch here since it clears isVoiceSearchComplete
+                self.cleanup()
+                self.isRecording = false
             }
         }
     }
@@ -302,8 +411,11 @@ class VoiceSearchManager: ObservableObject {
     
     func getTranscribedTextAndReset() -> String {
         let text = transcribedText
+        // Don't clear completion flag here - let SearchBarView handle it
         clearTranscribedText()
-        clearErrors()
+        // Only clear error states, preserve completion status
+        showingError = false
+        errorMessage = ""
         return text
     }
 }

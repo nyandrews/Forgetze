@@ -18,6 +18,8 @@ struct ContactEditView: View {
     @State private var kids: [Kid] = []
     
     @State private var showingAddKidSheet = false
+    @State private var showingEditKidSheet = false
+    @State private var selectedKid: Kid?
     @State private var showingError = false
     @State private var errorMessage = ""
     
@@ -131,20 +133,32 @@ struct ContactEditView: View {
                 
                 Section("Children") {
                     ForEach(kids) { kid in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(kid.displayName)
-                                .font(.headline)
-                            
-                            if let birthday = kid.birthday {
-                                Text("Born \(birthday.shortDisplayString)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(kid.displayName)
+                                    .font(.headline)
                                 
-                                if let age = birthday.age {
-                                    Text("(\(String(age)) years old)")
-                                        .font(.caption2)
+                                if let birthday = kid.birthday {
+                                    Text("Born \(birthday.shortDisplayString)")
+                                        .font(.caption)
                                         .foregroundColor(.secondary)
+                                    
+                                    if let age = birthday.age {
+                                        Text("(\(String(age)) years old)")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
+                            }
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                editKid(kid)
+                            }) {
+                                Image(systemName: "pencil.circle.fill")
+                                    .foregroundColor(appSettings.primaryColor.color)
+                                    .font(.title2)
                             }
                         }
                     }
@@ -211,6 +225,15 @@ struct ContactEditView: View {
                     kids.append(newKid)
                 }
             }
+            .sheet(isPresented: $showingEditKidSheet) {
+                if let selectedKid = selectedKid {
+                    EditKidSheet(kid: selectedKid) { updatedKid in
+                        if let index = kids.firstIndex(where: { $0.id == updatedKid.id }) {
+                            kids[index] = updatedKid
+                        }
+                    }
+                }
+            }
             .alert("Error", isPresented: $showingError) {
                 Button("OK") { }
             } message: {
@@ -260,8 +283,180 @@ struct ContactEditView: View {
         }
     }
     
+    private func editKid(_ kid: Kid) {
+        selectedKid = kid
+        showingEditKidSheet = true
+    }
+    
     private func deleteKids(offsets: IndexSet) {
         kids.remove(atOffsets: offsets)
+    }
+}
+
+// MARK: - EditKidSheet (Embedded)
+struct EditKidSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var firstName: String
+    @State private var lastName: String
+    @State private var birthday: Date
+    @State private var hasBirthday: Bool
+    @State private var showingError = false
+    @State private var errorMessage = ""
+    
+    let kid: Kid
+    let onSave: (Kid) -> Void
+    
+    init(kid: Kid, onSave: @escaping (Kid) -> Void) {
+        self.kid = kid
+        self.onSave = onSave
+        
+        // Initialize state with current kid data
+        _firstName = State(initialValue: kid.firstName)
+        _lastName = State(initialValue: kid.lastName)
+        
+        if let kidBirthday = kid.birthday {
+            _hasBirthday = State(initialValue: true)
+            // Create a Date from the birthday components
+            var components = DateComponents()
+            components.month = kidBirthday.month
+            components.day = kidBirthday.day
+            components.year = kidBirthday.year ?? 2000
+            _birthday = State(initialValue: Calendar.current.date(from: components) ?? Date())
+        } else {
+            _hasBirthday = State(initialValue: false)
+            _birthday = State(initialValue: Date())
+        }
+    }
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("Child Information") {
+                    TextField("First Name", text: $firstName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
+                    TextField("Last Name", text: $lastName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                
+                Section("Birthday") {
+                    Toggle("Has Birthday", isOn: $hasBirthday)
+                    
+                    if hasBirthday {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text("Month:")
+                                Picker("Month", selection: Binding<Int>(
+                                    get: { Calendar.current.component(.month, from: birthday) },
+                                    set: { newMonth in
+                                        let calendar = Calendar.current
+                                        var components = calendar.dateComponents([.year, .month, .day], from: birthday)
+                                        components.month = newMonth
+                                        birthday = calendar.date(from: components) ?? birthday
+                                    }
+                                )) {
+                                    ForEach(1...12, id: \.self) { month in
+                                        Text(Calendar.current.monthSymbols[month - 1]).tag(month)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                            }
+                            
+                            HStack {
+                                Text("Day:")
+                                Picker("Day", selection: Binding<Int>(
+                                    get: { Calendar.current.component(.day, from: birthday) },
+                                    set: { newDay in
+                                        let calendar = Calendar.current
+                                        var components = calendar.dateComponents([.year, .month, .day], from: birthday)
+                                        components.day = newDay
+                                        birthday = calendar.date(from: components) ?? birthday
+                                    }
+                                )) {
+                                    ForEach(1...31, id: \.self) { day in
+                                        Text("\(day)").tag(day)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                            }
+                            
+                            HStack {
+                                Text("Year:")
+                                Toggle("Include Year", isOn: Binding<Bool>(
+                                    get: { Calendar.current.component(.year, from: birthday) != 2000 },
+                                    set: { includeYear in
+                                        let calendar = Calendar.current
+                                        var components = calendar.dateComponents([.year, .month, .day], from: birthday)
+                                        if includeYear {
+                                            components.year = Calendar.current.component(.year, from: Date())
+                                        } else {
+                                            components.year = 2000
+                                        }
+                                        birthday = calendar.date(from: components) ?? birthday
+                                    }
+                                ))
+                                
+                                if Calendar.current.component(.year, from: birthday) != 2000 {
+                                    Picker("Year", selection: Binding<Int>(
+                                        get: { Calendar.current.component(.year, from: birthday) },
+                                        set: { newYear in
+                                            let calendar = Calendar.current
+                                            var components = calendar.dateComponents([.year, .month, .day], from: birthday)
+                                            components.year = newYear
+                                            birthday = calendar.date(from: components) ?? birthday
+                                        }
+                                    )) {
+                                        ForEach(1900...Calendar.current.component(.year, from: Date()), id: \.self) { year in
+                                            Text("\(year)").tag(year)
+                                        }
+                                    }
+                                    .pickerStyle(MenuPickerStyle())
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Edit Child")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Save") {
+                        let updatedKid = Kid(
+                            firstName: firstName.trimmingCharacters(in: .whitespaces),
+                            lastName: lastName.trimmingCharacters(in: .whitespaces),
+                            birthday: hasBirthday ? Birthday(
+                                month: Calendar.current.component(.month, from: birthday),
+                                day: Calendar.current.component(.day, from: birthday),
+                                year: Calendar.current.component(.year, from: birthday) != 2000 ? Calendar.current.component(.year, from: birthday) : nil
+                            ) : nil
+                        )
+                        
+                        if updatedKid.isValid {
+                            // Preserve the original ID
+                            updatedKid.id = kid.id
+                            onSave(updatedKid)
+                            dismiss()
+                        } else {
+                            errorMessage = updatedKid.validationErrors.joined(separator: ", ")
+                            showingError = true
+                        }
+                    }
+                    .disabled(firstName.isEmpty)
+                }
+            }
+            .alert("Error", isPresented: $showingError) {
+                Button("OK") { }
+            } message: {
+                Text(errorMessage)
+            }
+        }
     }
 }
 

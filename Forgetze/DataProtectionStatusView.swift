@@ -13,6 +13,7 @@ import SwiftData
  */
 struct DataProtectionStatusView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appSettings: AppSettings
     @StateObject private var protectionManager = DataProtectionManager.shared
     @State private var showingHealthCheck = false
@@ -175,6 +176,23 @@ struct DataProtectionStatusView: View {
             }
             .navigationTitle("Data Protection")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                                .font(.body)
+                                .fontWeight(.medium)
+                            Text("Back")
+                                .font(.body)
+                                .fontWeight(.medium)
+                        }
+                        .foregroundColor(appSettings.primaryColor.color)
+                    }
+                }
+            }
             .refreshable {
                 // Refresh protection status
                 await refreshProtectionStatus()

@@ -8,8 +8,7 @@ enum AppThemeColor: String, CaseIterable {
     case yellow = "Yellow"
     case green = "Green"
     case blue = "Blue"
-    case indigo = "Indigo"
-    case violet = "Violet"
+    case purple = "Purple"
     
     var color: Color {
         switch self {
@@ -18,8 +17,7 @@ enum AppThemeColor: String, CaseIterable {
         case .yellow: return Color(red: 0.9, green: 0.8, blue: 0.1)
         case .green: return Color(red: 0.2, green: 0.7, blue: 0.3)
         case .blue: return Color(red: 0.2, green: 0.5, blue: 0.9)
-        case .indigo: return Color(red: 0.4, green: 0.3, blue: 0.8)
-        case .violet: return Color(red: 0.6, green: 0.3, blue: 0.8)
+        case .purple: return Color(red: 0.6, green: 0.3, blue: 0.8)
         }
     }
     
@@ -30,8 +28,7 @@ enum AppThemeColor: String, CaseIterable {
         case .yellow: return Color(red: 1.0, green: 0.9, blue: 0.2)
         case .green: return Color(red: 0.3, green: 0.8, blue: 0.4)
         case .blue: return Color(red: 0.3, green: 0.6, blue: 1.0)
-        case .indigo: return Color(red: 0.5, green: 0.4, blue: 0.9)
-        case .violet: return Color(red: 0.7, green: 0.4, blue: 0.9)
+        case .purple: return Color(red: 0.7, green: 0.4, blue: 0.9)
         }
     }
 }
@@ -84,7 +81,12 @@ class AppSettings: ObservableObject {
     init() {
         self.isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
         let savedColor = UserDefaults.standard.string(forKey: "primaryColor") ?? "Blue"
-        self.primaryColor = AppThemeColor(rawValue: savedColor) ?? .blue
+        // Handle migration from old indigo/violet colors to purple
+        var colorToUse = savedColor
+        if savedColor == "Indigo" || savedColor == "Violet" {
+            colorToUse = "Purple"
+        }
+        self.primaryColor = AppThemeColor(rawValue: colorToUse) ?? .blue
         self.appVersion = UserDefaults.standard.string(forKey: "appVersion") ?? "1.0.0"
         let savedViewMode = UserDefaults.standard.string(forKey: "defaultContactView") ?? "Basic"
         self.defaultContactView = ContactViewMode(rawValue: savedViewMode) ?? .basic
