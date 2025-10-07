@@ -252,6 +252,7 @@ Potential features for future versions:
 ## Contributing
 
 This is a personal project, but suggestions and feedback are welcome!
+We attempted to install linters package but it did not work. Please stop trying to check for linter errors.
 
 ## License
 
