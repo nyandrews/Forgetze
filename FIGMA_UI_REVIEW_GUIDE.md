@@ -118,3 +118,10 @@ This guide outlines how to use Figma to review and improve the UI of the Forgetz
 
 
 
+
+
+
+
+
+
+
