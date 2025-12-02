@@ -1,5 +1,5 @@
 # Privacy at Forgetze
-_Last updated: [Month Day, Year]_
+_Last updated: January 27, 2025_
 
 At Forgetze, your privacy isn't just a feature — it's the foundation.  
 We built this app so **your data stays with you, on your device, under your control.**

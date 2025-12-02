@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Voice search requires access to your microphone to transcribe your spoken search terms. All audio is processed locally and never stored or transmitted.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Voice search uses speech recognition to convert your spoken words into search text. All processing happens locally on your device for maximum privacy.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Search notes in your Apple Contacts to find people you've saved there. Your contacts remain private and are never stored or transmitted.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Set birthday reminders in your Calendar to never miss important dates.</string>
+</dict>
+</plist>
