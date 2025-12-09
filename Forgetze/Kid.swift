@@ -4,8 +4,8 @@ import SwiftData
 @Model
 final class Kid: Identifiable, Validatable {
     var id = UUID()
-    var firstName: String
-    var lastName: String
+    var firstName: String = ""
+    var lastName: String = ""
     var birthday: Birthday?
     
     init(firstName: String, lastName: String, birthday: Birthday? = nil) {

@@ -35,8 +35,11 @@ struct SearchBarView: View {
                 .accessibilityHidden(true)
             
             // Search text field
-            TextField("Search contacts...", text: $searchManager.searchText)
+            TextField("", text: $searchManager.searchText, prompt: Text("Search for a contact by what you recall").foregroundColor(appSettings.primaryColor.color).bold())
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .font(.body.weight(.bold)) // Bold text
+                .foregroundColor(appSettings.primaryColor.color) // Match theme color
+                .accentColor(appSettings.primaryColor.color) // Match cursor color
                 .accessibilityIdentifier("searchTextField")
                 .accessibilityLabel("Search contacts")
                 .accessibilityHint("Type to search through your contacts")

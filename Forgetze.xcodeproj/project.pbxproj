@@ -26,8 +26,9 @@
 		916749B92E54F37E002AA45F /* DemoDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749B62E54F37E002AA45F /* DemoDataService.swift */; };
 		916749BA2E54F37E002AA45F /* SearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749B72E54F37E002AA45F /* SearchManager.swift */; };
 		916749BB2E54F37E002AA45F /* VoiceSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749B82E54F37E002AA45F /* VoiceSearchManager.swift */; };
-		916749BC2E54F37F002AA45F /* AppleContactsSearchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BD2E54F37F002AA45F /* AppleContactsSearchManager.swift */; };
 		916749C12E54F7DC002AA45F /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BC2E54F7DC002AA45F /* EmptyStateView.swift */; };
+		916749D22E54F7DC002AA45F /* UserInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749D02E54F7DC002AA45F /* UserInstructionsView.swift */; };
+		916749D32E54F7DC002AA45F /* SiriShortcutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749D12E54F7DC002AA45F /* SiriShortcutsView.swift */; };
 		916749C22E54F7DC002AA45F /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BD2E54F7DC002AA45F /* LoadingView.swift */; };
 		916749C42E54F7DC002AA45F /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749BF2E54F7DC002AA45F /* SampleData.swift */; };
 		916749C52E54F7DC002AA45F /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916749C02E54F7DC002AA45F /* SearchBarView.swift */; };
@@ -41,18 +42,6 @@
 		91B94D742E4E52E200BDE072 /* ForgetzeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D732E4E52E200BDE072 /* ForgetzeTests.swift */; };
 		91B94D7E2E4E52E200BDE072 /* ForgetzeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D7D2E4E52E200BDE072 /* ForgetzeUITests.swift */; };
 		91B94D802E4E52E200BDE072 /* ForgetzeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B94D7F2E4E52E200BDE072 /* ForgetzeUITestsLaunchTests.swift */; };
-		91C1271D2EB4FE280093DF5F /* ContentColumnModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C1271C2EB4FE280093DF5F /* ContentColumnModifier.swift */; };
-		91C1271F2EB505980093DF5F /* URLUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C1271E2EB505980093DF5F /* URLUtilities.swift */; };
-		91C127212EB505CE0093DF5F /* SocialPlatformDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C127202EB505CE0093DF5F /* SocialPlatformDetector.swift */; };
-		91C127232EB506000093DF5F /* UserInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C127222EB506000093DF5F /* UserInstructionsView.swift */; };
-		91EC0BCB2EB927CB0079705C /* ExportOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BCA2EB927CB0079705C /* ExportOptionsView.swift */; };
-		91EC0BCD2EB92C520079705C /* GlassEffectModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BCC2EB92C520079705C /* GlassEffectModifier.swift */; };
-		91EC0BCE2EB92C530079705C /* PDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BCF2EB92C530079705C /* PDFGenerator.swift */; };
-		91EC0BD02EB92C540079705C /* ArchiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BD12EB92C540079705C /* ArchiveModels.swift */; };
-		91EC0BD22EB92C550079705C /* ContactImportExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BD32EB92C550079705C /* ContactImportExportManager.swift */; };
-		91EC0BD42EB92C560079705C /* ImportExportUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BD52EB92C560079705C /* ImportExportUtilities.swift */; };
-		91EC0BD62EB92C570079705C /* ForgetzeFileFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BD72EB92C570079705C /* ForgetzeFileFormat.swift */; };
-		91EC0BD72EB92C580079705C /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EC0BD82EB92C580079705C /* AppConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,8 +63,8 @@
 
 /* Begin PBXFileReference section */
 		910DA9E52E569128008BE3D5 /* MemoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryManager.swift; sourceTree = "<group>"; };
-		910DA9E72E569128008BE3D5 /* AddressCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressCard.swift; sourceTree = "<group>"; };
-		910DA9E82E569128008BE3D5 /* SocialMediaCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialMediaCard.swift; sourceTree = "<group>"; };
+		910DA9E72E569128008BE3D5 /* AddressCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/AddressCard.swift"; sourceTree = "<group>"; };
+		910DA9E82E569128008BE3D5 /* SocialMediaCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/SocialMediaCard.swift"; sourceTree = "<group>"; };
 		910DA9E92E569128008BE3D5 /* AddressEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressEditView.swift; sourceTree = "<group>"; };
 		915CCCD42E4E644600928251 /* Birthday.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Birthday.swift; sourceTree = "<group>"; };
 		915CCCD52E4E644600928251 /* AddKidView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddKidView.swift; sourceTree = "<group>"; };
@@ -93,11 +82,12 @@
 		916749B62E54F37E002AA45F /* DemoDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoDataService.swift; sourceTree = "<group>"; };
 		916749B72E54F37E002AA45F /* SearchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchManager.swift; sourceTree = "<group>"; };
 		916749B82E54F37E002AA45F /* VoiceSearchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceSearchManager.swift; sourceTree = "<group>"; };
-		916749BD2E54F37F002AA45F /* AppleContactsSearchManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleContactsSearchManager.swift; sourceTree = "<group>"; };
 		916749BC2E54F7DC002AA45F /* EmptyStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		916749BD2E54F7DC002AA45F /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		916749BF2E54F7DC002AA45F /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		916749C02E54F7DC002AA45F /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
+		916749D02E54F7DC002AA45F /* UserInstructionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/UserInstructionsView.swift"; sourceTree = "<group>"; };
+		916749D12E54F7DC002AA45F /* SiriShortcutsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/SiriShortcutsView.swift"; sourceTree = "<group>"; };
 		9189427B2E562302009002CA /* DataProtectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProtectionManager.swift; sourceTree = "<group>"; };
 		9189427C2E562302009002CA /* DataProtectionStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProtectionStatusView.swift; sourceTree = "<group>"; };
 		9189427F2E563E71009002CA /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
@@ -113,17 +103,6 @@
 		91B94D792E4E52E200BDE072 /* ForgetzeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ForgetzeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		91B94D7D2E4E52E200BDE072 /* ForgetzeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetzeUITests.swift; sourceTree = "<group>"; };
 		91B94D7F2E4E52E200BDE072 /* ForgetzeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetzeUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		91C1271C2EB4FE280093DF5F /* ContentColumnModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentColumnModifier.swift; sourceTree = "<group>"; };
-		91C1271E2EB505980093DF5F /* URLUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLUtilities.swift; sourceTree = "<group>"; };
-		91C127202EB505CE0093DF5F /* SocialPlatformDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialPlatformDetector.swift; sourceTree = "<group>"; };
-		91C127222EB506000093DF5F /* UserInstructionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInstructionsView.swift; sourceTree = "<group>"; };
-		91EC0BCA2EB927CB0079705C /* ExportOptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportOptionsView.swift; sourceTree = "<group>"; };
-		91EC0BCC2EB92C520079705C /* GlassEffectModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlassEffectModifier.swift; sourceTree = "<group>"; };
-		91EC0BCF2EB92C530079705C /* PDFGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFGenerator.swift; sourceTree = "<group>"; };
-		91EC0BD12EB92C540079705C /* ArchiveModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveModels.swift; sourceTree = "<group>"; };
-		91EC0BD32EB92C550079705C /* ContactImportExportManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactImportExportManager.swift; sourceTree = "<group>"; };
-		91EC0BD52EB92C560079705C /* ImportExportUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportExportUtilities.swift; sourceTree = "<group>"; };
-		91EC0BD72EB92C570079705C /* ForgetzeFileFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForgetzeFileFormat.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,48 +157,37 @@
 				915CCCD52E4E644600928251 /* AddKidView.swift */,
 				91EC0BD12EB92C540079705C /* ArchiveModels.swift */,
 				9189427F2E563E71009002CA /* Address.swift */,
-				910DA9E72E569128008BE3D5 /* AddressCard.swift */,
 				910DA9E92E569128008BE3D5 /* AddressEditView.swift */,
 				915CCCD82E4E644600928251 /* AppSettings.swift */,
 				91B94D642E4E52E100BDE072 /* Assets.xcassets */,
+				910DA9E72E569128008BE3D5 /* AddressCard.swift */,
 				915CCCD42E4E644600928251 /* Birthday.swift */,
 				915CCCDC2E4E644700928251 /* Contact.swift */,
-				91C1271C2EB4FE280093DF5F /* ContentColumnModifier.swift */,
 				915CCCDF2E4E644700928251 /* ContactDetailView.swift */,
 				915CCCD62E4E644600928251 /* ContactEditView.swift */,
 				915CCCDD2E4E644700928251 /* ContactListView.swift */,
-				91EC0BD32EB92C550079705C /* ContactImportExportManager.swift */,
 				91B94D602E4E52DE00BDE072 /* ContentView.swift */,
 				9189427B2E562302009002CA /* DataProtectionManager.swift */,
 				9189427C2E562302009002CA /* DataProtectionStatusView.swift */,
 				916749B62E54F37E002AA45F /* DemoDataService.swift */,
 				916749BC2E54F7DC002AA45F /* EmptyStateView.swift */,
-				91EC0BCA2EB927CB0079705C /* ExportOptionsView.swift */,
-				91EC0BD12EB92C540079705C /* ArchiveModels.swift */,
-				91EC0BD82EB92C580079705C /* AppConfiguration.swift */,
 				91B94D692E4E52E100BDE072 /* Forgetze.entitlements */,
-				91EC0BD72EB92C570079705C /* ForgetzeFileFormat.swift */,
 				91B94D5E2E4E52DE00BDE072 /* ForgetzeApp.swift */,
-				91EC0BCC2EB92C520079705C /* GlassEffectModifier.swift */,
-				91EC0BD52EB92C560079705C /* ImportExportUtilities.swift */,
 				915CCCDB2E4E644700928251 /* HamburgerMenuView.swift */,
 				91B94D6A2E4E52E100BDE072 /* Info.plist */,
 				915CCCD72E4E644600928251 /* Kid.swift */,
 				916749BD2E54F7DC002AA45F /* LoadingView.swift */,
 				910DA9E52E569128008BE3D5 /* MemoryManager.swift */,
-				91EC0BCF2EB92C530079705C /* PDFGenerator.swift */,
 				91B94D662E4E52E100BDE072 /* Preview Content */,
 				915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */,
 				916749BF2E54F7DC002AA45F /* SampleData.swift */,
 				916749C02E54F7DC002AA45F /* SearchBarView.swift */,
+				916749D02E54F7DC002AA45F /* UserInstructionsView.swift */,
+				916749D12E54F7DC002AA45F /* SiriShortcutsView.swift */,
 				916749B72E54F37E002AA45F /* SearchManager.swift */,
-				916749BD2E54F37F002AA45F /* AppleContactsSearchManager.swift */,
 				910DA9E82E569128008BE3D5 /* SocialMediaCard.swift */,
-				91C127202EB505CE0093DF5F /* SocialPlatformDetector.swift */,
 				915CCCD92E4E644600928251 /* Validatable.swift */,
 				916749B82E54F37E002AA45F /* VoiceSearchManager.swift */,
-				91C127222EB506000093DF5F /* UserInstructionsView.swift */,
-				91C1271E2EB505980093DF5F /* URLUtilities.swift */,
 			);
 			path = Forgetze;
 			sourceTree = "<group>";
@@ -384,16 +352,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				916749C12E54F7DC002AA45F /* EmptyStateView.swift in Sources */,
+				916749D22E54F7DC002AA45F /* UserInstructionsView.swift in Sources */,
+				916749D32E54F7DC002AA45F /* SiriShortcutsView.swift in Sources */,
 				916749C42E54F7DC002AA45F /* SampleData.swift in Sources */,
 				91B94D612E4E52DE00BDE072 /* ContentView.swift in Sources */,
 				91B94D5F2E4E52DE00BDE072 /* ForgetzeApp.swift in Sources */,
-				91EC0BCD2EB92C520079705C /* GlassEffectModifier.swift in Sources */,
 				9189427D2E562303009002CA /* DataProtectionManager.swift in Sources */,
-				91C1271D2EB4FE280093DF5F /* ContentColumnModifier.swift in Sources */,
-				910DA9ED2E569128008BE3D5 /* SocialMediaCard.swift in Sources */,
 				915CCCEB2E4E644700928251 /* ContactDetailView.swift in Sources */,
 				915CCCE42E4E644700928251 /* AppSettings.swift in Sources */,
-				91EC0BD72EB92C580079705C /* AppConfiguration.swift in Sources */,
 				915CCCE92E4E644700928251 /* ContactListView.swift in Sources */,
 				918942802E563E71009002CA /* Address.swift in Sources */,
 				9189427E2E562303009002CA /* DataProtectionStatusView.swift in Sources */,
@@ -404,26 +370,17 @@
 				915CCCE52E4E644700928251 /* Validatable.swift in Sources */,
 				915CCCE82E4E644700928251 /* Contact.swift in Sources */,
 				910DA9EA2E569128008BE3D5 /* MemoryManager.swift in Sources */,
-				91C127212EB505CE0093DF5F /* SocialPlatformDetector.swift in Sources */,
 				915CCCE02E4E644700928251 /* Birthday.swift in Sources */,
 				910DA9EC2E569128008BE3D5 /* AddressCard.swift in Sources */,
-				91EC0BCB2EB927CB0079705C /* ExportOptionsView.swift in Sources */,
-				91EC0BCE2EB92C530079705C /* PDFGenerator.swift in Sources */,
-				91EC0BD02EB92C540079705C /* ArchiveModels.swift in Sources */,
-				91EC0BD22EB92C550079705C /* ContactImportExportManager.swift in Sources */,
-				91EC0BD42EB92C560079705C /* ImportExportUtilities.swift in Sources */,
-				91EC0BD62EB92C570079705C /* ForgetzeFileFormat.swift in Sources */,
+				910DA9ED2E569128008BE3D5 /* SocialMediaCard.swift in Sources */,
 				916749BB2E54F37E002AA45F /* VoiceSearchManager.swift in Sources */,
 				915CCCE72E4E644700928251 /* HamburgerMenuView.swift in Sources */,
 				915CCCE62E4E644700928251 /* AboutForgetzeView.swift in Sources */,
-				91C1271F2EB505980093DF5F /* URLUtilities.swift in Sources */,
-				91C127232EB506000093DF5F /* UserInstructionsView.swift in Sources */,
 				916749C52E54F7DC002AA45F /* SearchBarView.swift in Sources */,
 				910DA9EE2E569128008BE3D5 /* AddressEditView.swift in Sources */,
 				915CCCE12E4E644700928251 /* AddKidView.swift in Sources */,
 				916749C22E54F7DC002AA45F /* LoadingView.swift in Sources */,
 				916749BA2E54F37E002AA45F /* SearchManager.swift in Sources */,
-				916749BC2E54F37F002AA45F /* AppleContactsSearchManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

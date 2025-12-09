@@ -17,8 +17,9 @@ struct ForgetzeApp: App {
             Contact.self,
             Kid.self,
             Birthday.self,
+            Address.self,
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
@@ -65,6 +66,12 @@ struct ForgetzeApp: App {
             ContentView()
                 .environmentObject(appSettings)
                 .preferredColorScheme(appSettings.currentColorScheme)
+                .onAppear {
+                    Task { @MainActor in
+                        // Run deduplication on startup
+                        await appSettings.removeDuplicateContacts(context: sharedModelContainer.mainContext)
+                    }
+                }
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)) { _ in
                     // Handle memory warnings using enhanced memory manager
                     print("🚨 MEMORY WARNING RECEIVED - Running emergency cleanup")

@@ -4,8 +4,8 @@ import SwiftData
 @Model
 final class Birthday: Identifiable, Validatable {
     var id = UUID()
-    var month: Int
-    var day: Int
+    var month: Int = 1
+    var day: Int = 1
     var year: Int?
     
     init(month: Int, day: Int, year: Int? = nil) {

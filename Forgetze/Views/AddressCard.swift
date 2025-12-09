@@ -6,6 +6,7 @@ struct AddressCard: View {
     let onEdit: () -> Void
     let onDelete: () -> Void
     let onSetDefault: () -> Void
+    @EnvironmentObject var appSettings: AppSettings
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -107,8 +108,7 @@ struct AddressCard: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
+        .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .stroke(themeColor.opacity(0.3), lineWidth: 1)
@@ -132,5 +132,6 @@ struct AddressCard: View {
         onDelete: {},
         onSetDefault: {}
     )
+    .environmentObject(AppSettings())
     .padding()
 }

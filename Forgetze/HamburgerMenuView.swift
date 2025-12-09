@@ -12,6 +12,17 @@ struct HamburgerMenuView: View {
     var body: some View {
         NavigationView {
             List {
+                Section("HELP") {
+                    NavigationLink(destination: UserInstructionsView()) {
+                        HStack {
+                            Image(systemName: "book")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Instructions")
+                                .foregroundColor(appSettings.primaryColor.color)
+                        }
+                    }
+                }
+                
                 Section("APP INFORMATION") {
                     HStack {
                         Image(systemName: "info.circle")
@@ -101,6 +112,34 @@ struct HamburgerMenuView: View {
                 
                 Section("CONTACT VIEW") {
                     HStack {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Sort By")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("Sort By", selection: $appSettings.sortOption) {
+                            Text("First Name").tag(ContactSortOrder.firstName)
+                            Text("Last Name").tag(ContactSortOrder.lastName)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 180)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "person.text.rectangle")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Display Name")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("Display Name", selection: $appSettings.displayOrder) {
+                            Text("First Last").tag(ContactDisplayOrder.firstNameFirst)
+                            Text("Last, First").tag(ContactDisplayOrder.lastNameFirst)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 180)
+                    }
+                    
+                    HStack {
                         Image(systemName: "eye")
                             .foregroundColor(appSettings.primaryColor.color)
                         Text("Default View")
@@ -158,7 +197,16 @@ struct HamburgerMenuView: View {
                     .buttonStyle(PlainButtonStyle())
                 }
                 
-
+                Section("VOICE CONTROL") {
+                    NavigationLink(destination: SiriShortcutsView()) {
+                        HStack {
+                            Image(systemName: "mic.circle")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Siri Shortcuts")
+                                .foregroundColor(appSettings.primaryColor.color)
+                        }
+                    }
+                }
                 
                 Section("DATA PROTECTION") {
                     Button(action: {
@@ -174,6 +222,17 @@ struct HamburgerMenuView: View {
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                         }
+                    }
+                    
+                    HStack {
+                        Image(systemName: "icloud")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("iCloud Sync")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Text("Active")
+                            .foregroundColor(appSettings.primaryColor.color)
+                            .font(.caption)
                     }
                     
                     HStack {

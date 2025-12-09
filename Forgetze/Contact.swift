@@ -38,16 +38,16 @@ import SwiftData
 @Model
 final class Contact: Identifiable, Validatable {
     var id = UUID()
-    var firstName: String
-    var lastName: String
-    var notes: String
+    var firstName: String = ""
+    var lastName: String = ""
+    var notes: String = ""
 
-    var socialMediaURLs: [String]
+    var socialMediaURLs: [String] = []
     var birthday: Birthday?
-    var kids: [Kid]
-    var addresses: [Address]
-    var createdAt: Date
-    var updatedAt: Date
+    var kids: [Kid] = []
+    var addresses: [Address] = []
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     
     /**
      * Initialize a new Contact
@@ -115,6 +115,23 @@ final class Contact: Identifiable, Validatable {
             return firstName
         } else {
             return "\(firstName) \(lastName)"
+        }
+    }
+    
+    func displayName(order: ContactDisplayOrder) -> String {
+        if firstName.isEmpty && lastName.isEmpty {
+            return "Unnamed Contact"
+        }
+        
+        switch order {
+        case .firstNameFirst:
+            if firstName.isEmpty { return lastName }
+            if lastName.isEmpty { return firstName }
+            return "\(firstName) \(lastName)"
+        case .lastNameFirst:
+            if lastName.isEmpty { return firstName }
+            if firstName.isEmpty { return lastName }
+            return "\(lastName), \(firstName)"
         }
     }
     

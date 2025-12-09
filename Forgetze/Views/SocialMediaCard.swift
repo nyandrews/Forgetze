@@ -4,6 +4,7 @@ struct SocialMediaCard: View {
     let url: String
     let themeColor: Color
     let onDelete: (() -> Void)?
+    @EnvironmentObject var appSettings: AppSettings
     
     private var platformInfo: (name: String, icon: String, color: Color) {
         let lowercased = url.lowercased()
@@ -76,11 +77,10 @@ struct SocialMediaCard: View {
                     .font(.title2)
             }
             .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
+            .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(platformInfo.color.opacity(0.3), lineWidth: 1)
+                    .stroke(themeColor.opacity(0.3), lineWidth: 1)
             )
         }
         .buttonStyle(PlainButtonStyle())
@@ -94,5 +94,6 @@ struct SocialMediaCard: View {
         SocialMediaCard(url: "https://instagram.com/johndoe", themeColor: .blue, onDelete: {})
         SocialMediaCard(url: "https://github.com/johndoe", themeColor: .blue, onDelete: {})
     }
+    .environmentObject(AppSettings())
     .padding()
 }

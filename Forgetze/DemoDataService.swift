@@ -10,23 +10,78 @@ class DemoDataService {
     // MARK: - Demo Data Management
     
     func loadDemoDataIfNeeded(context: ModelContext, existingContacts: [Contact]) async throws {
+        // First check for and remove duplicates
+        try await deduplicateContacts(context: context, contacts: existingContacts)
+        
+        // Re-fetch existing contacts after deduplication (since we might have deleted some)
+        let descriptor = FetchDescriptor<Contact>()
+        let currentContacts = try context.fetch(descriptor)
+        
         // Check if we need to reload demo data (e.g., if we have old 9-contact data)
-        if existingContacts.count == 9 {
+        if currentContacts.count == 9 {
             print("🔄 Detected old 9-contact demo data, clearing and reloading with 6 contacts...")
             try await clearAllContacts(context: context)
             try await loadDemoDataInBatches(context: context)
             return
         }
         
+        // Force loading demo data if no valid contacts exist
+        if currentContacts.isEmpty {
+            print("⚠️ No contacts found, forcing demo data reload...")
+            try await loadDemoDataInBatches(context: context)
+            return
+        }
+        
         // Only load demo data if no contacts exist in the database
-        guard existingContacts.isEmpty else { 
+        guard currentContacts.isEmpty else { 
             // Update existing contacts that don't have social media URLs
-            try await updateExistingContactsWithSocialMedia(context: context, contacts: existingContacts)
+            try await updateExistingContactsWithSocialMedia(context: context, contacts: currentContacts)
             return 
         }
         
         // Load demo data in smaller batches to prevent memory pressure
         try await loadDemoDataInBatches(context: context)
+    }
+    
+    private func deduplicateContacts(context: ModelContext, contacts: [Contact]) async throws {
+        print("🔍 Checking for duplicates...")
+        
+        // Group contacts by full name
+        let groupedContacts = Dictionary(grouping: contacts) { contact in
+            "\(contact.firstName.lowercased())|\(contact.lastName.lowercased())"
+        }
+        
+        var duplicatesRemoved = 0
+        
+        for (_, matches) in groupedContacts {
+            // If we have more than one contact with the same name
+            if matches.count > 1 {
+                print("Found duplicate for: \(matches[0].displayName)")
+                
+                // Keep the one with the most information (e.g. most kids, or most recent)
+                // For simplicity, we'll sort by kids count descending, then delete the rest
+                let sortedMatches = matches.sorted { 
+                    ($0.kids.count + $0.addresses.count + $0.socialMediaURLs.count) > 
+                    ($1.kids.count + $1.addresses.count + $1.socialMediaURLs.count) 
+                }
+                
+                // The first one is the "best" one, keep it
+                // let keeper = sortedMatches[0]
+                
+                // Delete the rest
+                for duplicate in sortedMatches.dropFirst() {
+                    context.delete(duplicate)
+                    duplicatesRemoved += 1
+                }
+            }
+        }
+        
+        if duplicatesRemoved > 0 {
+            try context.save()
+            print("✅ Removed \(duplicatesRemoved) duplicate contacts")
+        } else {
+            print("✅ No duplicates found")
+        }
     }
     
     private func loadDemoDataInBatches(context: ModelContext) async throws {

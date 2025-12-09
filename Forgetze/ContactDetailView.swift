@@ -15,7 +15,7 @@ struct ContactDetailView: View {
     @State private var showingExportOptions = false
     @State private var showingSuccessAlert = false
     @State private var successMessage = ""
-    @State private var viewMode: ContactViewMode = .basic
+    @State private var viewMode: ContactViewMode = .advanced // Default to advanced
     @State private var showingAddressEdit = false
     @State private var selectedAddress: Address?
     @State private var showingSocialMediaEdit = false
@@ -27,7 +27,7 @@ struct ContactDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 headerSection
-                viewModeToggle
+                // viewModeToggle removed
                 birthdaySection
                 childrenSection
                 addressesSection
@@ -126,6 +126,7 @@ struct ContactDetailView: View {
             Text(contact.displayName)
                 .font(.largeTitle)
                 .fontWeight(.bold)
+                .padding(.horizontal)
             
             if !contact.notes.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
@@ -139,35 +140,11 @@ struct ContactDetailView: View {
                         .multilineTextAlignment(.leading)
                 }
                 .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                .padding(.horizontal)
             }
         }
-        .padding(.horizontal)
-    }
-    
-    // MARK: - View Mode Toggle
-    private var viewModeToggle: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "eye")
-                    .foregroundColor(appSettings.primaryColor.color)
-                Text("View Mode")
-                    .font(.headline)
-                    .foregroundColor(appSettings.primaryColor.color)
-                Spacer()
-                Picker("View Mode", selection: $viewMode) {
-                    Text("Basic").tag(ContactViewMode.basic)
-                    Text("Advanced").tag(ContactViewMode.advanced)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(width: 140)
-            }
-        }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-        .padding(.horizontal)
     }
     
     // MARK: - Birthday Section
@@ -193,8 +170,8 @@ struct ContactDetailView: View {
                     }
                 }
                 .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
                 .padding(.horizontal)
             }
         }
@@ -244,8 +221,8 @@ struct ContactDetailView: View {
                     }
                 }
                 .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
                 .padding(.horizontal)
             }
         }
@@ -254,126 +231,119 @@ struct ContactDetailView: View {
     // MARK: - Addresses Section
     private var addressesSection: some View {
         Group {
-            if viewMode == .advanced {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Image(systemName: "location")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text(contact.addressesCount == 1 ? "Address" : "Addresses")
-                            .font(.headline)
-                            .foregroundColor(appSettings.primaryColor.color)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            selectedAddress = nil
-                            showingAddressEdit = true
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(appSettings.primaryColor.color)
-                                .font(.title2)
-                        }
-                    }
+            // Always show addresses
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Image(systemName: "location")
+                        .foregroundColor(appSettings.primaryColor.color)
+                    Text(contact.addressesCount == 1 ? "Address" : "Addresses")
+                        .font(.headline)
+                        .foregroundColor(appSettings.primaryColor.color)
                     
-                    if contact.hasAddresses {
-                        VStack(spacing: 12) {
-                            ForEach(contact.addresses) { address in
-                                AddressCard(
-                                    address: address,
-                                    themeColor: appSettings.primaryColor.color,
-                                    onEdit: {
-                                        selectedAddress = address
-                                        showingAddressEdit = true
-                                    },
-                                    onDelete: {
-                                        deleteAddress(address)
-                                    },
-                                    onSetDefault: {
-                                        setDefaultAddress(address)
-                                    }
-                                )
-                            }
-                        }
-                    } else {
-                        VStack(spacing: 8) {
-                            Text("No addresses added yet")
-                                .foregroundColor(.secondary)
-                                .font(.subheadline)
-                            
-                            Button("Add First Address") {
-                                selectedAddress = nil
-                                showingAddressEdit = true
-                            }
+                    Spacer()
+                    
+                    Button(action: {
+                        selectedAddress = nil
+                        showingAddressEdit = true
+                    }) {
+                        Image(systemName: "plus.circle.fill")
                             .foregroundColor(appSettings.primaryColor.color)
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                            .font(.title2)
                     }
                 }
-                .padding(.horizontal)
+                
+                if contact.hasAddresses {
+                    VStack(spacing: 12) {
+                        ForEach(contact.addresses) { address in
+                            AddressCard(
+                                address: address,
+                                themeColor: appSettings.primaryColor.color,
+                                onEdit: {
+                                    selectedAddress = address
+                                    showingAddressEdit = true
+                                },
+                                onDelete: {
+                                    deleteAddress(address)
+                                },
+                                onSetDefault: {
+                                    setDefaultAddress(address)
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    VStack(spacing: 8) {
+                        Text("No addresses added yet")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                        
+                        Button("Add First Address") {
+                            selectedAddress = nil
+                            showingAddressEdit = true
+                        }
+                        .foregroundColor(appSettings.primaryColor.color)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                }
             }
+            .padding(.horizontal)
         }
     }
     
     // MARK: - Social Media Section
     private var socialMediaSection: some View {
         Group {
-            if viewMode == .advanced {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Image(systemName: "link")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Social Media")
-                            .font(.headline)
-                            .foregroundColor(appSettings.primaryColor.color)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            showingSocialMediaEdit = true
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(appSettings.primaryColor.color)
-                                .font(.title2)
-                        }
-                    }
+            // Always show social media
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Image(systemName: "link")
+                        .foregroundColor(appSettings.primaryColor.color)
+                    Text("Social Media")
+                        .font(.headline)
+                        .foregroundColor(appSettings.primaryColor.color)
                     
-                    if contact.hasSocialMedia {
-                        LazyVStack(spacing: 12) {
-                                                    ForEach(contact.socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { url in
+                    Spacer()
+                    
+                    Button(action: {
+                        showingSocialMediaEdit = true
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(appSettings.primaryColor.color)
+                            .font(.title2)
+                    }
+                }
+                
+                if contact.hasSocialMedia {
+                    LazyVStack(spacing: 12) {
+                        ForEach(contact.socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { url in
                             SocialMediaCard(
-                                url: url, 
+                                url: url,
                                 themeColor: appSettings.primaryColor.color,
                                 onDelete: {
                                     deleteSocialMedia(url)
                                 }
                             )
                         }
-                        }
-                    } else {
-                        VStack(spacing: 8) {
-                            Text("No social media links added yet")
-                                .foregroundColor(.secondary)
-                                .font(.subheadline)
-                            
-                            Button("Add First Social Media Link") {
-                                showingSocialMediaEdit = true
-                            }
-                            .foregroundColor(appSettings.primaryColor.color)
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
                     }
+                } else {
+                    VStack(spacing: 8) {
+                        Text("No social media links added yet")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                        
+                        Button("Add First Social Media Link") {
+                            showingSocialMediaEdit = true
+                        }
+                        .foregroundColor(appSettings.primaryColor.color)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
                 }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.horizontal)
             }
+            .padding(.horizontal)
         }
     }
     

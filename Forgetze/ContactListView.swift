@@ -24,7 +24,7 @@ struct ContactListView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 // Search bar with voice search
                 SearchBarView(
@@ -32,9 +32,7 @@ struct ContactListView: View {
                     voiceSearchManager: voiceSearchManager,
                     contacts: contacts
                 )
-                
-                // Divider line
-                Divider()
+                .background(Color(.systemGroupedBackground)) // Match list background for seamless look
                 
                 // Content based on state
                 if isLoading {
@@ -48,11 +46,14 @@ struct ContactListView: View {
                         contacts: contacts,
                         searchManager: searchManager,
                         onDelete: deleteContacts,
-                        themeColor: appSettings.primaryColor.color
+                        themeColor: appSettings.primaryColor.color,
+                        sortOption: appSettings.sortOption,
+                        displayOrder: appSettings.displayOrder
                     )
                 }
             }
             .navigationTitle("Contacts")
+            .background(Color(.systemGroupedBackground)) // Ensure background consistency
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
@@ -172,12 +173,33 @@ struct ContactListContent: View {
     @ObservedObject var searchManager: SearchManager
     let onDelete: (IndexSet) -> Void
     let themeColor: Color
+    let sortOption: ContactSortOrder
+    let displayOrder: ContactDisplayOrder
     
     var filteredContacts: [Contact] {
+        let results: [Contact]
         if searchManager.hasActiveSearch() {
-            return searchManager.getResults()
+            results = searchManager.getResults()
         } else {
-            return contacts
+            results = contacts
+        }
+        
+        // Sort based on user preference
+        return results.sorted { contact1, contact2 in
+            let option = sortOption // Use passed sortOption
+            let name1: String
+            let name2: String
+            
+            switch option {
+            case .firstName:
+                name1 = contact1.firstName.isEmpty ? contact1.lastName : contact1.firstName
+                name2 = contact2.firstName.isEmpty ? contact2.lastName : contact2.firstName
+            case .lastName:
+                name1 = contact1.lastName.isEmpty ? contact1.firstName : contact1.lastName
+                name2 = contact2.lastName.isEmpty ? contact2.firstName : contact2.lastName
+            }
+            
+            return name1.localizedCaseInsensitiveCompare(name2) == .orderedAscending
         }
     }
     
@@ -186,43 +208,62 @@ struct ContactListContent: View {
             ForEach(filteredContacts) { contact in
                 NavigationLink(destination: ContactDetailView(contact: contact)) {
                     if searchManager.hasActiveSearch() {
-                        EnhancedContactRowView(contact: contact, searchText: searchManager.searchText, themeColor: themeColor)
+                        EnhancedContactRowView(
+                            contact: contact, 
+                            searchText: searchManager.searchText, 
+                            themeColor: themeColor, 
+                            sortOption: sortOption,
+                            displayOrder: displayOrder
+                        )
                     } else {
-                        ContactRowView(contact: contact, themeColor: themeColor)
+                        ContactRowView(
+                            contact: contact, 
+                            themeColor: themeColor, 
+                            sortOption: sortOption,
+                            displayOrder: displayOrder
+                        )
                     }
                 }
-                .accentColor(themeColor)
             }
             .onDelete(perform: onDelete)
         }
-        .listStyle(PlainListStyle())
+        .listStyle(.insetGrouped)
     }
 }
 
-// MARK: - ContactRowView
+    // MARK: - ContactRowView
 
 struct ContactRowView: View {
     let contact: Contact
     let themeColor: Color
+    let sortOption: ContactSortOrder
+    let displayOrder: ContactDisplayOrder
     
     var body: some View {
         HStack {
             // Circle with initials
             ZStack {
                 Circle()
-                    .fill(themeColor)
-                    .frame(width: 32, height: 32)
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [themeColor, themeColor.opacity(0.8)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 36, height: 36)
+                    .shadow(color: themeColor.opacity(0.3), radius: 2, x: 0, y: 1)
                 
                 Text(contact.initials)
                     .font(.caption)
-                    .fontWeight(.semibold)
+                    .fontWeight(.bold)
                     .foregroundColor(.white)
             }
             
             Spacer()
                 .frame(width: 12)
             
-            Text(contact.displayName)
+            Text(contact.displayName(order: displayOrder))
                 .font(.headline)
                 .foregroundColor(.primary)
             
@@ -238,25 +279,34 @@ struct EnhancedContactRowView: View {
     let contact: Contact
     let searchText: String
     let themeColor: Color
+    let sortOption: ContactSortOrder
+    let displayOrder: ContactDisplayOrder
     
     var body: some View {
         HStack {
             // Circle with initials
             ZStack {
                 Circle()
-                    .fill(themeColor)
-                    .frame(width: 32, height: 32)
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [themeColor, themeColor.opacity(0.8)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 36, height: 36)
+                    .shadow(color: themeColor.opacity(0.3), radius: 2, x: 0, y: 1)
                 
                 Text(contact.initials)
                     .font(.caption)
-                    .fontWeight(.semibold)
+                    .fontWeight(.bold)
                     .foregroundColor(.white)
             }
             
             Spacer()
                 .frame(width: 12)
             
-            highlightedText(contact.displayName, searchText: searchText)
+            highlightedText(contact.displayName(order: displayOrder), searchText: searchText)
                 .font(.headline)
                 .foregroundColor(.primary)
             

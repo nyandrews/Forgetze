@@ -3,23 +3,22 @@ import SwiftData
 
 @Model
 final class Address {
-    var id: UUID
-    var type: String // "Home", "Work", "Other", or custom names
-    var street: String
+    var id: UUID = UUID()
+    var type: String = "Home" // "Home", "Work", "Other", or custom names
+    var street: String = ""
     var street2: String? // Apartment, suite, unit, etc. (optional for backward compatibility)
-    var city: String
-    var state: String // 2-letter state code
-    var zip: String
-    var country: String
-    var isDefault: Bool // Whether this is the primary address
-    var createdAt: Date
-    var updatedAt: Date
+    var city: String = ""
+    var state: String = "" // 2-letter state code
+    var zip: String = ""
+    var country: String = "United States"
+    var isDefault: Bool = false // Whether this is the primary address
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     
     // Relationship to Contact
     var contact: Contact?
     
     init(type: String = "Home", street: String = "", street2: String? = nil, city: String = "", state: String = "", zip: String = "", country: String = "United States", isDefault: Bool = false) {
-        self.id = UUID()
         self.type = type
         self.street = street
         self.street2 = street2
@@ -28,8 +27,6 @@ final class Address {
         self.zip = zip
         self.country = country
         self.isDefault = isDefault
-        self.createdAt = Date()
-        self.updatedAt = Date()
     }
     
     // Computed property for full address string
