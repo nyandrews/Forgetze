@@ -10,19 +10,23 @@ struct SocialMediaCard: View {
         let lowercased = url.lowercased()
         
         if lowercased.contains("linkedin") {
-            return ("LinkedIn", "linkedin", Color(red: 0.1, green: 0.6, blue: 0.9))
+            // "linkedin" is not a valid SF Symbol. Using "briefcase.fill" as a professional networking proxy.
+            return ("LinkedIn", "briefcase.fill", Color(red: 0.0, green: 0.47, blue: 0.71))
         } else if lowercased.contains("twitter") || lowercased.contains("x.com") {
-            return ("Twitter", "bird", Color(red: 0.2, green: 0.6, blue: 1.0))
+            // "bird" is not a valid SF Symbol. Using "at" or "bubble.left" as proxy.
+            return ("X (Twitter)", "at", Color(red: 0.0, green: 0.0, blue: 0.0))
         } else if lowercased.contains("facebook") {
-            return ("Facebook", "person.2", Color(red: 0.2, green: 0.4, blue: 0.8))
+            return ("Facebook", "person.2.fill", Color(red: 0.2, green: 0.4, blue: 0.8))
         } else if lowercased.contains("instagram") {
-            return ("Instagram", "camera", Color(red: 0.8, green: 0.3, blue: 0.6))
+            return ("Instagram", "camera.fill", Color(red: 0.8, green: 0.3, blue: 0.6))
         } else if lowercased.contains("github") {
-            return ("GitHub", "chevron.left.forwardslash.chevron.right", Color(red: 0.2, green: 0.2, blue: 0.2))
+            return ("GitHub", "terminal.fill", Color(red: 0.2, green: 0.2, blue: 0.2))
         } else if lowercased.contains("youtube") {
-            return ("YouTube", "play.rectangle", Color(red: 1.0, green: 0.0, blue: 0.0))
+            return ("YouTube", "play.rectangle.fill", Color(red: 1.0, green: 0.0, blue: 0.0))
         } else if lowercased.contains("tiktok") {
             return ("TikTok", "music.note", Color(red: 0.0, green: 0.0, blue: 0.0))
+        } else if lowercased.contains("snapchat") {
+             return ("Snapchat", "message.fill", Color(red: 1.0, green: 1.0, blue: 0.0))
         } else {
             return ("Social Media", "link", themeColor)
         }

@@ -5,124 +5,165 @@ struct UserInstructionsView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Welcome
-                Group {
+            VStack(alignment: .leading, spacing: 24) {
+                // MARK: - Welcome
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Welcome to Forgetze")
-                        .font(.title)
+                        .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(appSettings.primaryColor.color)
                     
-                    Text("Forgetze helps you remember a person's name by storing little details that matter most. Never forget a name again.")
+                    Text("\"Never forget a person's name ever again.\"")
+                        .font(.title3)
+                        .italic()
+                        .foregroundColor(.secondary)
+                    
+                    Text("Forgetze is your personal relationship manager, designed to help you keep track of the important people in your life—their birthdays, families, and milestones.")
                         .font(.body)
+                        .padding(.top, 4)
                 }
+                .padding(.horizontal)
                 
                 Divider()
+                    .padding(.horizontal)
                 
-                // Getting Started
-                Group {
-                    Text("Getting Started")
+                // MARK: - Home Screen
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("🏠 at a Glance")
                         .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(appSettings.primaryColor.color)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+                    
+                    Text("The Home Screen is your command center. It gives you a clean, sorted list of everyone you care about.")
+                        .padding(.horizontal)
+                    
+                    Image("forgetze_home_screen")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .cornerRadius(12)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
                     
                     VStack(alignment: .leading, spacing: 8) {
-                        instructionRow(text: "Tap the + Add Contact button in the top-right corner")
-                        instructionRow(text: "Enter at least one name (first or last)")
-                        instructionRow(text: "Add notes about how you know them")
-                        instructionRow(text: "Include birthdays, family members, addresses and social media links")
+                        featureBullet(icon: "magnifyingglass", title: "Search", desc: "Tap the search bar or use the microphone to find people instantly.")
+                        featureBullet(icon: "plus.circle.fill", title: "Add Contact", desc: "Tap the big blue + button to add someone new.")
+                        featureBullet(icon: "list.bullet", title: "Quick Details", desc: "See names, birthdays, and key info right from the list.")
                     }
+                    .padding(.horizontal)
                 }
                 
                 Divider()
+                    .padding(.horizontal)
                 
-                // Finding Contacts
-                Group {
-                    Text("Finding Contacts")
+                // MARK: - Adding & Editing
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("✏️ Adding & Editing")
                         .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(appSettings.primaryColor.color)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        instructionRow(text: "Use the search bar at the top")
-                        instructionRow(text: "Search by name, notes, or any detail you remember")
-                        instructionRow(text: "Try searching for: 'met at conference', 'lives in Seattle', 'has blue car'")
-                        instructionRow(text: "Use Siri shortcuts for hands-free searching")
-                    }
-                }
-                
-                Divider()
-                
-                // Editing Contacts
-                Group {
-                    Text("Editing Contacts")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(appSettings.primaryColor.color)
+                    Text("Adding a contact is simple but powerful. You can track as little or as much as you want.")
+                        .padding(.horizontal)
                     
-                    VStack(alignment: .leading, spacing: 8) {
-                        instructionRow(text: "Tap any contact to view their details")
-                        instructionRow(text: "Tap the three-dot menu (⋮) to edit")
-                        instructionRow(text: "Add or edit addresses, social media, and family")
-                        instructionRow(text: "Share individual addresses or social media")
-                    }
-                }
-                
-                Divider()
-                
-                // Pro Tips
-                Group {
-                    Text("Pro Tips")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(appSettings.primaryColor.color)
+                    Image("forgetze_edit_contact")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .cornerRadius(12)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
                     
                     VStack(alignment: .leading, spacing: 12) {
-                        proTipRow(text: "Include context clues: where you met, mutual friends, shared interests")
-                        proTipRow(text: "Add family members (children need at least one name) and their relationships to build a complete picture")
-                        proTipRow(text: "Use the voice search feature for quick hands-free lookups")
+
+                        
+                        Text("Family Tracking")
+                            .font(.headline)
+                            .padding(.top, 4)
+                        featureBullet(icon: "heart.fill", title: "Spouse", desc: "Add their partner's name and birthday.")
+                        featureBullet(icon: "figure.2.and.child.holdinghands", title: "Children", desc: "Track names and ages so you never forget.")
                     }
+                    .padding(.horizontal)
                 }
                 
                 Divider()
+                    .padding(.horizontal)
                 
-                // Privacy
-                Group {
-                    Text("Privacy & Security")
+                // MARK: - Comprehensive Details
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("📋 Comprehensive Details")
                         .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(appSettings.primaryColor.color)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+                    
+                    Text("Tap any contact to see their full profile.")
+                        .padding(.horizontal)
+                    
+                    Image("forgetze_contact_detail")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .cornerRadius(12)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
                     
                     VStack(alignment: .leading, spacing: 8) {
-                        instructionRow(text: "All data is stored locally on your device")
-                        instructionRow(text: "Optional iCloud sync keeps your data backed up")
-                        instructionRow(text: "No data is shared with third parties")
+                        featureBullet(icon: "person.text.rectangle", title: "Personal Info", desc: "Birthday, Age, and Next Birthday countdown.")
+                        featureBullet(icon: "person.2.fill", title: "Family", desc: "Dedicated section for spouse and children.")
+                        featureBullet(icon: "note.text", title: "Notes", desc: "A place for those little things you want to remember.")
+                        featureBullet(icon: "link", title: "Social", desc: "One-tap links to their social profiles.")
                     }
+                    .padding(.horizontal)
                 }
+                
+                Divider()
+                    .padding(.horizontal)
+                
+                // MARK: - Data Protection
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("🛡️ Data Protection")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+                    
+                    Text("We take your data seriously. Forgetze includes an industrial-strength Data Protection System.")
+                        .padding(.horizontal)
+                    
+                    Image("forgetze_data_protection")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .cornerRadius(12)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        featureBullet(icon: "arrow.clockwise", title: "Automatic Backups", desc: "Backups created instantly on every save or delete.")
+                        featureBullet(icon: "stethoscope", title: "Health Check", desc: "Diagnostic scan to ensure data integrity.")
+                        featureBullet(icon: "exclamationmark.shield", title: "Emergency Recovery", desc: "One tap restores your data to the last safe state.")
+                    }
+                    .padding(.horizontal)
+                }
+                
+                // Bottom Spacing
+                Color.clear.frame(height: 40)
             }
-            .padding()
+            .padding(.top)
         }
-        .navigationTitle("Instructions")
+        .navigationTitle("User Guide")
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    private func instructionRow(text: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("•")
-                .fontWeight(.bold)
+    private func featureBullet(icon: String, title: String, desc: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
                 .foregroundColor(appSettings.primaryColor.color)
-            Text(text)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-    
-    private func proTipRow(text: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("💡")
-            Text(text)
-                .fixedSize(horizontal: false, vertical: true)
-                .font(.callout)
-                .italic()
+                .frame(width: 24, height: 24)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(appSettings.primaryColor.color)
+                Text(desc)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 }

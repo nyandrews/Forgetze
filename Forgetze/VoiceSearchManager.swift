@@ -306,8 +306,13 @@ class VoiceSearchManager: ObservableObject {
                     }
                     
                     if let result = result {
-                        print("✅ Speech recognition result received: '\(result.bestTranscription.formattedString)'")
-                        self.transcribedText = result.bestTranscription.formattedString
+                        let newText = result.bestTranscription.formattedString
+                        print("✅ Speech recognition result received: '\(newText)'")
+                        
+                        // Only update if not empty, to prevent overwriting with final empty callback
+                        if !newText.isEmpty {
+                            self.transcribedText = newText
+                        }
                         
                         // Check if this is the final result
                         if result.isFinal {

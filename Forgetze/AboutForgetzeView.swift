@@ -13,7 +13,7 @@ struct AboutForgetzeView: View {
                             .font(.largeTitle)
                             .fontWeight(.bold)
                         
-                        Text("Version 1.0")
+                        Text("Version 2025.12")
                             .font(.title3)
                             .foregroundColor(.secondary)
                         
@@ -49,7 +49,7 @@ struct AboutForgetzeView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                         
-                        Text("Website: www.forgetze.com\nEmail: support@forgetze.com")
+                        Text("Website: www.forgetze.com\nEmail: hello@forgetze.com")
                             .foregroundColor(.secondary)
                     }
                 }
@@ -74,10 +74,10 @@ struct FeatureRow: View {
     let color: Color
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 16) {
             Image(systemName: icon)
                 .foregroundColor(color)
-                .frame(width: 20)
+                .frame(width: 24)
             Text(text)
             Spacer()
         }

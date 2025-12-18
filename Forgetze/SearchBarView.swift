@@ -27,66 +27,118 @@ struct SearchBarView: View {
     @EnvironmentObject var appSettings: AppSettings
     let contacts: [Contact]
     
+    @FocusState private var isSearchFieldFocused: Bool
+    
     var body: some View {
-        HStack(spacing: 12) {
-            // Search icon
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.secondary)
-                .accessibilityHidden(true)
-            
-            // Search text field
-            TextField("", text: $searchManager.searchText, prompt: Text("Search for a contact by what you recall").foregroundColor(appSettings.primaryColor.color).bold())
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .font(.body.weight(.bold)) // Bold text
-                .foregroundColor(appSettings.primaryColor.color) // Match theme color
-                .accentColor(appSettings.primaryColor.color) // Match cursor color
+        HStack {
+            HStack(alignment: .bottom, spacing: 12) {
+                // Search text field constrained to match prompt text width exactly
+                ZStack(alignment: .leading) {
+                    Text("Search for a contact by what you recall")
+                        .font(.body.weight(.bold))
+                        .opacity(0)
+                        .padding(.horizontal, 14) // Accounting for RoundedBorderTextFieldStyle padding
+                    
+                    TextField("", text: $searchManager.searchText, prompt: Text("Search for a contact by what you recall").foregroundColor(appSettings.primaryColor.color).bold())
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .font(.body.weight(.bold))
+                        .foregroundColor(appSettings.primaryColor.color)
+                        .accentColor(appSettings.primaryColor.color)
+                        .focused($isSearchFieldFocused)
+                        .onChange(of: searchManager.searchText) { _, _ in
+                            searchManager.performSearch(in: contacts)
+                        }
+                }
+                .fixedSize(horizontal: true, vertical: false)
                 .accessibilityIdentifier("searchTextField")
                 .accessibilityLabel("Search contacts")
                 .accessibilityHint("Type to search through your contacts")
-            
-            // Voice search button
-            Button(action: {
-                if voiceSearchManager.isRecording {
-                    voiceSearchManager.stopVoiceSearch()
-                } else {
-                    voiceSearchManager.startVoiceSearch()
-                }
-            }) {
-                Image(systemName: voiceSearchManager.isRecording ? "stop.circle.fill" : "mic.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(voiceSearchManager.isRecording ? .red : appSettings.primaryColor.color)
-                    .scaleEffect(voiceSearchManager.isRecording ? 1.2 : 1.0)
-                    .animation(.easeInOut(duration: 0.2), value: voiceSearchManager.isRecording)
-            }
-            .accessibilityIdentifier("voiceSearchButton")
-            .accessibilityLabel(voiceSearchManager.isRecording ? "Stop voice search" : "Start voice search")
-            .accessibilityHint("Tap to search using your voice")
-            .onChange(of: voiceSearchManager.isVoiceSearchComplete) { _, isComplete in
-                if isComplete {
-                    // Transfer transcribed text to search field
-                    let transcribedText = voiceSearchManager.getTranscribedTextAndReset()
-                    searchManager.searchText = transcribedText
-                    // Trigger search with the transcribed text
-                    searchManager.performSearch(in: contacts)
-                }
-            }
-            
-            // Clear button (only show when there's text)
-            if !searchManager.searchText.isEmpty {
+                
+                // Keyboard toggle button (moved to replace magnifying glass)
                 Button(action: {
-                    searchManager.reset()
+                    isSearchFieldFocused = true
                 }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
-                        .font(.title2)
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [appSettings.primaryColor.color, appSettings.primaryColor.color.opacity(0.8)]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "keyboard")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .shadow(color: appSettings.primaryColor.color.opacity(0.3), radius: 2, x: 0, y: 1)
                 }
-                .accessibilityIdentifier("clearSearchButton")
-                .accessibilityLabel("Clear search")
-                .accessibilityHint("Tap to clear the search text")
+                .accessibilityIdentifier("keyboardToggleButton")
+                .accessibilityLabel("Toggle keyboard")
+                .accessibilityHint("Tap to toggle the keyboard")
+                
+                // Voice search button
+                Button(action: {
+                    if voiceSearchManager.isRecording {
+                        voiceSearchManager.stopVoiceSearch()
+                    } else {
+                        voiceSearchManager.startVoiceSearch()
+                    }
+                }) {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        voiceSearchManager.isRecording ? Color.red : appSettings.primaryColor.color,
+                                        (voiceSearchManager.isRecording ? Color.red : appSettings.primaryColor.color).opacity(0.8)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 44, height: 44)
+                        Image(systemName: voiceSearchManager.isRecording ? "stop.fill" : "mic.fill")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .shadow(color: (voiceSearchManager.isRecording ? Color.red : appSettings.primaryColor.color).opacity(0.3), radius: 2, x: 0, y: 1)
+                    .scaleEffect(voiceSearchManager.isRecording ? 1.15 : 1.0)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: voiceSearchManager.isRecording)
+                }
+                .accessibilityIdentifier("voiceSearchButton")
+                .accessibilityLabel(voiceSearchManager.isRecording ? "Stop voice search" : "Start voice search")
+                .accessibilityHint("Tap to search using your voice")
+                .onChange(of: voiceSearchManager.isVoiceSearchComplete) { _, isComplete in
+                    if isComplete {
+                        let transcribedText = voiceSearchManager.getTranscribedTextAndReset()
+                        searchManager.searchText = transcribedText
+                        searchManager.performSearch(in: contacts)
+                    }
+                }
+                
+                // Clear button
+                if !searchManager.searchText.isEmpty {
+                    Button(action: {
+                        withAnimation(.spring()) {
+                            searchManager.reset()
+                        }
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(appSettings.primaryColor.color.opacity(0.8))
+                            .font(.system(size: 28, weight: .medium))
+                    }
+                    .accessibilityIdentifier("clearSearchButton")
+                    .padding(.leading, 4)
+                }
             }
+            Spacer()
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
+        .padding(.leading, 20) // Line up with hamburger, contacts header and contacts list cards
+        .padding(.trailing, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 20) // Perfectly balanced with leading padding
         .background(Color(.systemBackground))
         .overlay(
             // Bottom border

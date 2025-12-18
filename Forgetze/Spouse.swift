@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Kid: Identifiable, Validatable {
+final class Spouse: Identifiable, Validatable {
     var id = UUID()
     var firstName: String = ""
     var lastName: String = ""
@@ -20,7 +20,7 @@ final class Kid: Identifiable, Validatable {
         let last = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if first.isEmpty && last.isEmpty {
-            return "Unknown Child"
+            return "Unknown Spouse"
         } else if first.isEmpty {
             return last
         } else if last.isEmpty {
@@ -32,7 +32,7 @@ final class Kid: Identifiable, Validatable {
     
     var displayName: String {
         if firstName.isEmpty && lastName.isEmpty {
-            return "Unnamed Child"
+            return "Unnamed Spouse"
         } else if firstName.isEmpty {
             return lastName
         } else if lastName.isEmpty {

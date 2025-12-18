@@ -15,11 +15,13 @@ struct ContactDetailView: View {
     @State private var showingExportOptions = false
     @State private var showingSuccessAlert = false
     @State private var successMessage = ""
-    @State private var viewMode: ContactViewMode = .advanced // Default to advanced
+
     @State private var showingAddressEdit = false
     @State private var selectedAddress: Address?
     @State private var showingSocialMediaEdit = false
     @State private var newSocialMediaURL = ""
+    @State private var showingErrorAlert = false
+    @State private var errorMessage = ""
     
     let contact: Contact
     
@@ -27,15 +29,20 @@ struct ContactDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 headerSection
-                // viewModeToggle removed
+                notesSection // Moved to top
+                if contact.hasPhoneNumber {
+                    phoneSection
+                }
                 birthdaySection
+                spouseSection
                 childrenSection
                 addressesSection
                 socialMediaSection
             }
             .padding(.vertical)
         }
-        .navigationTitle("Contact Details")
+        .ignoresSafeArea(edges: .top)
+        .navigationTitle("") // Hidden to allow hero header to shine
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbarColorScheme(appSettings.isDarkMode ? .dark : .light)
@@ -118,10 +125,25 @@ struct ContactDetailView: View {
         } message: {
             Text(successMessage)
         }
+        .alert("Error", isPresented: $showingErrorAlert) {
+            Button("OK") { }
+        } message: {
+            Text(errorMessage)
+        }
     }
     
     // MARK: - Header Section
+    // SWITCH: Change this to use legacyHeaderSection to rollback
     private var headerSection: some View {
+        ContactHeroHeader(
+            contact: contact,
+            appSettings: appSettings
+        )
+        .listRowInsets(EdgeInsets()) // If in list
+    }
+
+    // MARK: - Legacy Header (Rollback)
+    private var legacyHeaderSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(contact.displayName)
                 .font(.largeTitle)
@@ -142,6 +164,10 @@ struct ContactDetailView: View {
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                )
                 .padding(.horizontal)
             }
         }
@@ -168,10 +194,90 @@ struct ContactDetailView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                    )
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                .padding(.horizontal)
+            }
+        }
+    }
+    
+    // MARK: - Spouse Section
+    private var spouseSection: some View {
+        Group {
+            if let spouse = contact.spouse {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Spouse")
+                            .font(.headline)
+                            .foregroundColor(appSettings.primaryColor.color)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(spouse.displayName)
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        
+                        if let birthday = spouse.birthday {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Born \(birthday.shortDisplayString)")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                
+                                Text("(\(birthday.ageDisplayString))")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        } else {
+                            Text("No birthday set")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                    )
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+    
+    // MARK: - Notes Section
+    private var notesSection: some View {
+        Group {
+            if !contact.notes.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "note.text")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Notes")
+                            .font(.headline)
+                            .foregroundColor(appSettings.primaryColor.color)
+                    }
+                    
+                    Text(contact.notes)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                        )
+                }
                 .padding(.horizontal)
             }
         }
@@ -215,14 +321,21 @@ struct ContactDetailView: View {
                             }
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                            .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                            )
                         }
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                    )
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
                 .padding(.horizontal)
             }
         }
@@ -231,119 +344,62 @@ struct ContactDetailView: View {
     // MARK: - Addresses Section
     private var addressesSection: some View {
         Group {
-            // Always show addresses
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Image(systemName: "location")
-                        .foregroundColor(appSettings.primaryColor.color)
-                    Text(contact.addressesCount == 1 ? "Address" : "Addresses")
-                        .font(.headline)
-                        .foregroundColor(appSettings.primaryColor.color)
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        selectedAddress = nil
-                        showingAddressEdit = true
-                    }) {
-                        Image(systemName: "plus.circle.fill")
+            if contact.hasAddresses {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Image(systemName: "location")
                             .foregroundColor(appSettings.primaryColor.color)
-                            .font(.title2)
+                        Text(contact.addressesCount == 1 ? "Address" : "Addresses")
+                            .font(.headline)
+                            .foregroundColor(appSettings.primaryColor.color)
+                        
+                        Spacer()
                     }
-                }
-                
-                if contact.hasAddresses {
+                    
                     VStack(spacing: 12) {
                         ForEach(contact.addresses) { address in
                             AddressCard(
                                 address: address,
                                 themeColor: appSettings.primaryColor.color,
-                                onEdit: {
-                                    selectedAddress = address
-                                    showingAddressEdit = true
-                                },
-                                onDelete: {
-                                    deleteAddress(address)
-                                },
-                                onSetDefault: {
-                                    setDefaultAddress(address)
-                                }
+                                onEdit: nil,
+                                onDelete: nil,
+                                onSetDefault: nil
                             )
                         }
                     }
-                } else {
-                    VStack(spacing: 8) {
-                        Text("No addresses added yet")
-                            .foregroundColor(.secondary)
-                            .font(.subheadline)
-                        
-                        Button("Add First Address") {
-                            selectedAddress = nil
-                            showingAddressEdit = true
-                        }
-                        .foregroundColor(appSettings.primaryColor.color)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }
     }
     
     // MARK: - Social Media Section
     private var socialMediaSection: some View {
         Group {
-            // Always show social media
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Image(systemName: "link")
-                        .foregroundColor(appSettings.primaryColor.color)
-                    Text("Social Media")
-                        .font(.headline)
-                        .foregroundColor(appSettings.primaryColor.color)
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showingSocialMediaEdit = true
-                    }) {
-                        Image(systemName: "plus.circle.fill")
+            if contact.hasSocialMedia {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Image(systemName: "link")
                             .foregroundColor(appSettings.primaryColor.color)
-                            .font(.title2)
+                        Text("Social Media")
+                            .font(.headline)
+                            .foregroundColor(appSettings.primaryColor.color)
+                        
+                        Spacer()
                     }
-                }
-                
-                if contact.hasSocialMedia {
+                    
                     LazyVStack(spacing: 12) {
                         ForEach(contact.socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { url in
                             SocialMediaCard(
                                 url: url,
                                 themeColor: appSettings.primaryColor.color,
-                                onDelete: {
-                                    deleteSocialMedia(url)
-                                }
+                                onDelete: nil
                             )
                         }
                     }
-                } else {
-                    VStack(spacing: 8) {
-                        Text("No social media links added yet")
-                            .foregroundColor(.secondary)
-                            .font(.subheadline)
-                        
-                        Button("Add First Social Media Link") {
-                            showingSocialMediaEdit = true
-                        }
-                        .foregroundColor(appSettings.primaryColor.color)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }
     }
     
@@ -354,8 +410,8 @@ struct ContactDetailView: View {
                 try await DataProtectionManager.shared.safeDelete(contact, in: modelContext)
                 // Deletion successful - navigation will handle going back
             } catch {
-                successMessage = "Failed to delete contact: \(error.localizedDescription)"
-                showingSuccessAlert = true
+                errorMessage = "Failed to delete contact: \(error.localizedDescription)"
+                showingErrorAlert = true
             }
         }
     }
@@ -364,13 +420,16 @@ struct ContactDetailView: View {
     private func deleteAddress(_ address: Address) {
         Task {
             do {
+                // Safe Delete for Address
+                // Ideally this would be safeDelete, but since address is a relationship, we remove it from the array
+                // and then perform a safeSave on the parent contact
                 contact.addresses.removeAll { $0.id == address.id }
-                try modelContext.save()
+                try await DataProtectionManager.shared.safeSave(contact, in: modelContext)
                 successMessage = "Address deleted successfully"
                 showingSuccessAlert = true
             } catch {
-                successMessage = "Failed to delete address: \(error.localizedDescription)"
-                showingSuccessAlert = true
+                errorMessage = "Failed to delete address: \(error.localizedDescription)"
+                showingErrorAlert = true
             }
         }
     }
@@ -385,12 +444,12 @@ struct ContactDetailView: View {
                 // Set this address as default
                 address.isDefault = true
                 address.updateTimestamp()
-                try modelContext.save()
+                try await DataProtectionManager.shared.safeSave(contact, in: modelContext)
                 successMessage = "Default address updated"
                 showingSuccessAlert = true
             } catch {
-                successMessage = "Failed to set default address: \(error.localizedDescription)"
-                showingSuccessAlert = true
+                errorMessage = "Failed to set default address: \(error.localizedDescription)"
+                showingErrorAlert = true
             }
         }
     }
@@ -406,14 +465,14 @@ struct ContactDetailView: View {
                     // Add new address
                     contact.addresses.append(address)
                 }
-                try modelContext.save()
+                try await DataProtectionManager.shared.safeSave(contact, in: modelContext)
                 successMessage = "Address saved successfully"
                 showingSuccessAlert = true
                 self.selectedAddress = nil
                 showingAddressEdit = false
             } catch {
-                successMessage = "Failed to save address: \(error.localizedDescription)"
-                showingSuccessAlert = true
+                errorMessage = "Failed to save address: \(error.localizedDescription)"
+                showingErrorAlert = true
             }
         }
     }
@@ -424,13 +483,13 @@ struct ContactDetailView: View {
                 let trimmedURL = url.trimmingCharacters(in: .whitespacesAndNewlines)
                 if !trimmedURL.isEmpty {
                     contact.socialMediaURLs.append(trimmedURL)
-                    try modelContext.save()
+                    try await DataProtectionManager.shared.safeSave(contact, in: modelContext)
                     successMessage = "Social media link added successfully"
                     showingSuccessAlert = true
                 }
             } catch {
-                successMessage = "Failed to add social media link: \(error.localizedDescription)"
-                showingSuccessAlert = true
+                errorMessage = "Failed to add social media link: \(error.localizedDescription)"
+                showingErrorAlert = true
             }
         }
     }
@@ -439,13 +498,64 @@ struct ContactDetailView: View {
         Task {
             do {
                 contact.socialMediaURLs.removeAll { $0 == url }
-                try modelContext.save()
+                try await DataProtectionManager.shared.safeSave(contact, in: modelContext)
                 successMessage = "Social media link deleted successfully"
                 showingSuccessAlert = true
             } catch {
-                successMessage = "Failed to delete social media link: \(error.localizedDescription)"
-                showingSuccessAlert = true
+                errorMessage = "Failed to delete social media link: \(error.localizedDescription)"
+                showingErrorAlert = true
             }
+        }
+    }
+    // MARK: - Phone Section
+    private var phoneSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "phone.fill")
+                    .foregroundColor(appSettings.primaryColor.color)
+                Text("Phone Numbers")
+                    .font(.headline)
+                    .foregroundColor(appSettings.primaryColor.color)
+            }
+            
+            ForEach(contact.displayPhoneNumbers) { phoneNumber in
+                Button(action: {
+                    callNumber(phoneNumber.number)
+                }) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(phoneNumber.number)
+                                .font(.title3)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
+                            Text(phoneNumber.label)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "phone.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.green)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .modernCardBackground(glassEffectEnabled: appSettings.glassEffectEnabled)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(appSettings.primaryColor.color.opacity(0.3), lineWidth: 1)
+                    )
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    private func callNumber(_ phoneNumber: String) {
+        let cleanNumber = phoneNumber.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        if let url = URL(string: "tel://\(cleanNumber)"), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
         }
     }
 }
@@ -461,108 +571,83 @@ struct ShareSheet: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
-// MARK: - Social Media Edit Sheet
-struct SocialMediaEditSheet: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var appSettings: AppSettings
-    
-    let onSave: (String) -> Void
-    
-    @State private var url = ""
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                Section("Social Media URL") {
-                    TextField("https://example.com", text: $url)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.URL)
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-                }
-            }
-            .navigationTitle("Add Social Media")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .foregroundColor(appSettings.primaryColor.color)
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        onSave(url)
-                        dismiss()
-                    }
-                    .foregroundColor(appSettings.primaryColor.color)
-                    .fontWeight(.medium)
-                    .disabled(url.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Export Options View
-struct ExportOptionsView: View {
-    let contact: Contact
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var appSettings: AppSettings
-    
-    var body: some View {
-        NavigationView {
-            List {
-                Section("Export Options") {
-                    Button("Export to Apple Contacts") {
-                        exportToAppleContacts()
-                    }
-                    .foregroundColor(appSettings.primaryColor.color)
-                    .fontWeight(.medium)
-                    
-                    Button("Export as PDF") {
-                        exportAsPDF()
-                    }
-                    .foregroundColor(appSettings.primaryColor.color)
-                    .fontWeight(.medium)
-                    
-                    Button("Export as vCard") {
-                        exportAsVCard()
-                    }
-                    .foregroundColor(appSettings.primaryColor.color)
-                    .fontWeight(.medium)
-                }
-            }
-            .navigationTitle("Export Contact")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .foregroundColor(appSettings.primaryColor.color)
-                    .fontWeight(.medium)
-                }
-            }
-        }
-    }
-    
-    private func exportToAppleContacts() {
-        // Implementation for Apple Contacts export
-    }
-    
-    private func exportAsPDF() {
-        // Implementation for PDF export
-    }
-    
-    private func exportAsVCard() {
-        // Implementation for vCard export
-    }
-}
-
 #Preview {
-    ContactDetailView(contact: Contact(firstName: "John", lastName: "Doe"))
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Contact.self, Address.self, Spouse.self, Kid.self, Birthday.self, PhoneNumber.self, configurations: config)
+    
+    let contact = Contact(firstName: "Preview", lastName: "User", phoneNumbers: [PhoneNumber(number: "555-1234")])
+    container.mainContext.insert(contact)
+    
+    return ContactDetailView(contact: contact)
         .environmentObject(AppSettings())
-        .modelContainer(for: Contact.self, inMemory: true)
+        .modelContainer(container)
+}
+
+// MARK: - Hero Header Components
+
+struct ContactHeroHeader: View {
+    let contact: Contact
+    let appSettings: AppSettings
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            // 1. Immersive Background
+            // We use a gradient based on the app's primary color
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    appSettings.primaryColor.color.opacity(0.8),
+                    appSettings.primaryColor.color.opacity(0.4),
+                    Color(.systemBackground)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 280)
+            .ignoresSafeArea()
+            .offset(y: -40) // Push up slightly
+            
+            // 2. Content Stack
+            VStack(spacing: 16) {
+                // Avatar
+                ZStack {
+                    Circle()
+                        .fill(Color(.systemBackground))
+                        .frame(width: 110, height: 110)
+                        .shadow(radius: 8)
+                    
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [appSettings.primaryColor.color, appSettings.primaryColor.color.opacity(0.7)]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 100, height: 100)
+                    
+                    Text(contact.initials)
+                        .font(.system(size: 40, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                .padding(.top, 60) // Push down to avoid navigation bar overlap
+                
+                // Name & Info
+                VStack(spacing: 4) {
+                    Text(contact.displayName)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.primary)
+                    
+                    if let birthday = contact.birthday {
+                        Label(birthday.ageDisplayString, systemImage: "gift.fill")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.bottom, 20) // Add bottom padding since action bar is gone
+            }
+            .padding(.bottom, 20)
+        }
+    }
 }

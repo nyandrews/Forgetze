@@ -62,7 +62,26 @@ final class Address {
     
     // Computed property for address validation
     var isValid: Bool {
-        return !street.isEmpty && !city.isEmpty && !state.isEmpty && !zip.isEmpty
+        // Minimum requirement is JUST a street name to be "good enough" for the database
+        // This is a "frictionless" approach that avoids blocking the user.
+        return !street.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
+    // Detailed validation for data health and deliverability
+    var isStrictlyValid: Bool {
+        return !street.isEmpty && !city.isEmpty && !state.isEmpty && !zip.isEmpty &&
+               validateState() && validateZIP()
+    }
+    
+    // Friendly localized warnings for imperfect data
+    var validationWarnings: [String] {
+        var warnings: [String] = []
+        if city.isEmpty { warnings.append("City is missing") }
+        if state.isEmpty { warnings.append("State code is missing") }
+        else if !validateState() { warnings.append("State code '\(state)' is not a recognized 2-letter code") }
+        if zip.isEmpty { warnings.append("ZIP code is missing") }
+        else if !validateZIP() { warnings.append("ZIP code format is incorrect") }
+        return warnings
     }
     
     // Method to update timestamp

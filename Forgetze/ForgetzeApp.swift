@@ -11,6 +11,25 @@ import SwiftData
 @main
 struct ForgetzeApp: App {
     @StateObject private var appSettings = AppSettings()
+    @StateObject private var searchManager = SearchManager()
+    
+    private func handleDeepLink(_ url: URL) {
+        print("🔗 Deep link received: \(url.absoluteString)")
+        guard url.scheme == "forgetze" else { return }
+        
+        // Handle search: forgetze://search?query=Honda
+        if url.host == "search" {
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            if let queryItems = components?.queryItems,
+               let query = queryItems.first(where: { $0.name == "query" })?.value {
+                print("🔍 Deep link search query: \(query)")
+                // Add a small delay to ensure UI is ready if launching from cold start
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    searchManager.searchText = query
+                }
+            }
+        }
+    }
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -29,42 +48,15 @@ struct ForgetzeApp: App {
     }()
 
     init() {
-        // Pre-emptive memory management at app launch
-        print("🚀 Forgetze starting up - Initializing memory management...")
-        
-        // Force immediate memory cleanup before any other operations
-        print("🧹 Pre-startup memory cleanup...")
-        
-        // Multiple aggressive autorelease pool cycles
-        for _ in 1...5 {
-            autoreleasepool {
-                // Force garbage collection if available
-                // This will help release any autoreleased objects
-            }
-        }
-        
-        // Request system memory cleanup
-        if #available(iOS 13.0, *) {
-            // iOS 13+ has better memory management
-            print("📱 iOS 13+ detected - Using enhanced memory management")
-        }
-        
-        // Additional system-level memory management
-        print("🔧 Requesting system memory cleanup...")
-        
-        // Force immediate memory pressure handling
-        DispatchQueue.global(qos: .background).async {
-            // Request system to free up memory
-            autoreleasepool {
-                // Background memory cleanup
-            }
-        }
+        // Standard app initialization
+        print("🚀 Forgetze starting up")
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(appSettings)
+                .environmentObject(searchManager)
                 .preferredColorScheme(appSettings.currentColorScheme)
                 .onAppear {
                     Task { @MainActor in
@@ -72,20 +64,8 @@ struct ForgetzeApp: App {
                         await appSettings.removeDuplicateContacts(context: sharedModelContainer.mainContext)
                     }
                 }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)) { _ in
-                    // Handle memory warnings using enhanced memory manager
-                    print("🚨 MEMORY WARNING RECEIVED - Running emergency cleanup")
-                    MemoryManager.shared.performAggressiveCleanup()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-                    // Clean up when app goes to background
-                    print("📱 App going to background - Cleaning up memory")
-                    MemoryManager.shared.performBackgroundCleanup()
-                }
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-                    // Check memory when app becomes active
-                    print("📱 App becoming active - Checking memory")
-                    MemoryManager.shared.checkMemoryStatus()
+                .onOpenURL { url in
+                    handleDeepLink(url)
                 }
         }
         .modelContainer(sharedModelContainer)

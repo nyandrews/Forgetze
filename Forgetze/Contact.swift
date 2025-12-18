@@ -21,9 +21,9 @@ import SwiftData
  * ## Usage Example:
  * ```swift
  * let contact = Contact(
- *     firstName: "John",
- *     lastName: "Doe",
- *     notes: "Software engineer and friend"
+ *     firstName: "Akira",
+ *     lastName: "Zushi",
+ *     notes: "Friend from college"
  * )
  * 
  * if contact.isValid {
@@ -36,15 +36,41 @@ import SwiftData
  * and timestamp tracking for creation and updates.
  */
 @Model
+final class PhoneNumber: Identifiable {
+    var id: UUID = UUID()
+    var number: String = ""
+    var label: String = "Mobile" // e.g., "Mobile", "Home", "Work"
+    
+    init(number: String, label: String = "Mobile") {
+        self.number = number
+        self.label = label
+    }
+}
+
+@Model
 final class Contact: Identifiable, Validatable {
     var id = UUID()
     var firstName: String = ""
     var lastName: String = ""
     var notes: String = ""
+    var phoneLabel: String = "Mobile"
+    var isSample: Bool = false
 
     var socialMediaURLs: [String] = []
+    
+    @Relationship(deleteRule: .cascade)
+    var phoneNumbers: [PhoneNumber] = []
+    
+    @Relationship(deleteRule: .cascade)
     var birthday: Birthday?
+    
+    @Relationship(deleteRule: .cascade)
     var kids: [Kid] = []
+    
+    @Relationship(deleteRule: .cascade)
+    var spouse: Spouse?
+    
+    @Relationship(deleteRule: .cascade)
     var addresses: [Address] = []
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
@@ -59,23 +85,40 @@ final class Contact: Identifiable, Validatable {
      *   - firstName: The contact's first name (required)
      *   - lastName: The contact's last name (required)
      *   - notes: Additional notes about the contact (optional, defaults to empty)
+     *   - phoneNumber: The contact's primary phone number (deprecated, use phoneNumbers)
+     *   - phoneLabel: The label for the primary phone number (deprecated)
+     *   - phoneNumbers: Array of phone numbers (optional, defaults to empty)
      *   - socialMediaURLs: Array of social media profile URLs (optional, defaults to empty)
      *   - birthday: The contact's birthday information (optional)
      *   - kids: Array of children/family members (optional, defaults to empty)
+     *   - spouse: The contact's spouse (optional)
      * 
      * - Note: firstName and lastName are required for validation. Empty strings
      *   will cause the contact to fail validation.
      */
-    init(firstName: String, lastName: String, notes: String = "", socialMediaURLs: [String] = [], birthday: Birthday? = nil, kids: [Kid] = [], addresses: [Address] = []) {
+    init(firstName: String, lastName: String, notes: String = "", phoneNumber: String = "", phoneLabel: String = "Mobile", phoneNumbers: [PhoneNumber] = [], socialMediaURLs: [String] = [], birthday: Birthday? = nil, kids: [Kid] = [], spouse: Spouse? = nil, addresses: [Address] = [], isSample: Bool = false) {
+        // Initialize simple properties
         self.firstName = firstName
         self.lastName = lastName
         self.notes = notes
+        self.phoneLabel = phoneLabel // This property still exists in the model based on my previous read? Let's check.
+        // Wait, the error said "Value of type 'Contact' has no member 'phoneNumber'". It didn't say phoneLabel.
+        // But I should treat them same.
+        
+        self.isSample = isSample
         self.socialMediaURLs = socialMediaURLs
         self.birthday = birthday
         self.kids = kids
+        self.spouse = spouse
         self.addresses = addresses
+        self.phoneNumbers = phoneNumbers
         self.createdAt = Date()
         self.updatedAt = Date()
+        
+        // Auto-migrate single phone number to list if list is empty but single is provided
+        if self.phoneNumbers.isEmpty && !phoneNumber.isEmpty {
+            self.phoneNumbers = [PhoneNumber(number: phoneNumber, label: phoneLabel)]
+        }
     }
     
     /**
@@ -87,7 +130,7 @@ final class Contact: Identifiable, Validatable {
      * - Returns: A formatted full name string
      * 
      * ## Examples:
-     * - "John Doe" for firstName: "John", lastName: "Doe"
+     * - "Akira Zushi" for firstName: "Akira", lastName: "Zushi"
      * - "Smith" for firstName: "", lastName: "Smith"
      * - "Unknown Contact" for firstName: "", lastName: ""
      */
@@ -180,8 +223,21 @@ final class Contact: Identifiable, Validatable {
         return kids.count
     }
     
+    var hasSpouse: Bool {
+        return spouse != nil
+    }
+    
     var hasSocialMedia: Bool {
         return !socialMediaURLs.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }.isEmpty
+    }
+    
+    var hasPhoneNumber: Bool {
+        return !phoneNumbers.isEmpty
+    }
+    
+    // Helper to get displayable phone numbers (merging legacy and new)
+    var displayPhoneNumbers: [PhoneNumber] {
+        return phoneNumbers
     }
     
     var hasAddresses: Bool {
@@ -203,6 +259,12 @@ final class Contact: Identifiable, Validatable {
         }
         if let birthday = birthday {
             text += "\n\nBirthday: \(birthday.displayString)"
+        }
+        if let spouse = spouse {
+            text += "\n\nSpouse: \(spouse.displayName)"
+            if let bday = spouse.birthday {
+                 text += " (Born \(bday.shortDisplayString))"
+            }
         }
         if hasKids {
             text += "\n\nChildren: \(kids.map { $0.displayName }.joined(separator: ", "))"

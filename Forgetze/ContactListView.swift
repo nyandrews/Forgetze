@@ -14,7 +14,7 @@ struct ContactListView: View {
     @State private var isLoading = true
     
     // MARK: - State Objects
-    @StateObject private var searchManager = SearchManager()
+    @EnvironmentObject var searchManager: SearchManager
     @StateObject private var voiceSearchManager = VoiceSearchManager()
     
     // MARK: - Computed Properties
@@ -32,7 +32,9 @@ struct ContactListView: View {
                     voiceSearchManager: voiceSearchManager,
                     contacts: contacts
                 )
-                .background(Color(.systemGroupedBackground)) // Match list background for seamless look
+                .background(Color(.systemGroupedBackground))
+                
+                .background(Color(.systemGroupedBackground))
                 
                 // Content based on state
                 if isLoading {
@@ -52,8 +54,9 @@ struct ContactListView: View {
                     )
                 }
             }
-            .navigationTitle("Contacts")
-            .background(Color(.systemGroupedBackground)) // Ensure background consistency
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Color(.systemGroupedBackground))
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
@@ -102,26 +105,16 @@ struct ContactListView: View {
                 Text(voiceSearchManager.errorMessage)
             }
             .onAppear {
-                // Pre-emptive memory cleanup BEFORE loading demo data
-                print("🧹 Pre-startup memory cleanup...")
-                appSettings.aggressiveMemoryCleanup()
+                // Load data immediately
+                loadDemoDataIfNeeded()
                 
-                // Longer delay to allow system memory to stabilize
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    loadDemoDataIfNeeded()
-                }
-                
-                // Additional memory cleanup
-                searchManager.cleanupMemory()
-                
-                // Set loading to false after demo data has time to load
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    isLoading = false
-                    
-                    // Final cleanup after loading
-                    appSettings.cleanupMemory()
-                    print("✅ Startup sequence completed")
-                }
+                // Reveal UI immediately
+                isLoading = false
+                print("✅ Ready")
+            }
+
+            .navigationDestination(for: Contact.self) { contact in
+                ContactDetailView(contact: contact)
             }
         }
     }
@@ -205,27 +198,41 @@ struct ContactListContent: View {
     
     var body: some View {
         List {
-            ForEach(filteredContacts) { contact in
-                NavigationLink(destination: ContactDetailView(contact: contact)) {
-                    if searchManager.hasActiveSearch() {
-                        EnhancedContactRowView(
-                            contact: contact, 
-                            searchText: searchManager.searchText, 
-                            themeColor: themeColor, 
-                            sortOption: sortOption,
-                            displayOrder: displayOrder
-                        )
-                    } else {
-                        ContactRowView(
-                            contact: contact, 
-                            themeColor: themeColor, 
-                            sortOption: sortOption,
-                            displayOrder: displayOrder
-                        )
+            Section(header: HStack(spacing: 8) {
+                Image(systemName: "person.2.fill")
+                    .font(.headline)
+                Text("Contacts")
+                    .font(.headline)
+                    .fontWeight(.bold)
+            }
+            .foregroundColor(themeColor)
+            .textCase(nil)
+            .padding(.leading, -16)
+            .padding(.top, -10)
+            .padding(.bottom, 6)
+            ) {
+                ForEach(filteredContacts) { contact in
+                    NavigationLink(value: contact) {
+                        if searchManager.hasActiveSearch() {
+                            EnhancedContactRowView(
+                                contact: contact, 
+                                searchText: searchManager.searchText, 
+                                themeColor: themeColor, 
+                                sortOption: sortOption,
+                                displayOrder: displayOrder
+                            )
+                        } else {
+                            ContactRowView(
+                                contact: contact, 
+                                themeColor: themeColor, 
+                                sortOption: sortOption,
+                                displayOrder: displayOrder
+                            )
+                        }
                     }
                 }
+                .onDelete(perform: onDelete)
             }
-            .onDelete(perform: onDelete)
         }
         .listStyle(.insetGrouped)
     }
@@ -255,8 +262,7 @@ struct ContactRowView: View {
                     .shadow(color: themeColor.opacity(0.3), radius: 2, x: 0, y: 1)
                 
                 Text(contact.initials)
-                    .font(.caption)
-                    .fontWeight(.bold)
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.white)
             }
             
@@ -266,6 +272,16 @@ struct ContactRowView: View {
             Text(contact.displayName(order: displayOrder))
                 .font(.headline)
                 .foregroundColor(.primary)
+            
+            if contact.isSample {
+                Text("Sample")
+                    .font(.caption2)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.gray.opacity(0.2))
+                    .foregroundColor(.secondary)
+                    .cornerRadius(8)
+            }
             
             Spacer()
         }
@@ -298,8 +314,7 @@ struct EnhancedContactRowView: View {
                     .shadow(color: themeColor.opacity(0.3), radius: 2, x: 0, y: 1)
                 
                 Text(contact.initials)
-                    .font(.caption)
-                    .fontWeight(.bold)
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.white)
             }
             
@@ -310,34 +325,91 @@ struct EnhancedContactRowView: View {
                 .font(.headline)
                 .foregroundColor(.primary)
             
+            if contact.isSample {
+                Text("Sample")
+                    .font(.caption2)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.gray.opacity(0.2))
+                    .foregroundColor(.secondary)
+                    .cornerRadius(8)
+            }
+            
             Spacer()
         }
         .padding(.vertical, 4)
     }
     
+
+    
+    // Safer, pre-calculated approach
+    private struct TextChunk: Identifiable {
+        let id = UUID()
+        let text: String
+        let isHighlight: Bool
+    }
+    
+    private func getChunks(text: String, searchText: String) -> [TextChunk] {
+        guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return [TextChunk(text: text, isHighlight: false)]
+        }
+        
+        let tokens = searchText.lowercased().components(separatedBy: .whitespaces).filter { !$0.isEmpty }
+        if tokens.isEmpty { return [TextChunk(text: text, isHighlight: false)] }
+        
+        let pattern = tokens.map { NSRegularExpression.escapedPattern(for: $0) }.joined(separator: "|")
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+             return [TextChunk(text: text, isHighlight: false)]
+        }
+        
+        let nsString = text as NSString
+        let range = NSRange(location: 0, length: nsString.length)
+        let matches = regex.matches(in: text, options: [], range: range)
+        
+        var chunks: [TextChunk] = []
+        var currentIndex = 0
+        
+        for match in matches {
+            // Safety check for ranges
+            if match.range.location == NSNotFound || match.range.location + match.range.length > nsString.length {
+                continue
+            }
+            
+            // Text before match
+            if match.range.location > currentIndex {
+                let length = match.range.location - currentIndex
+                if length > 0 {
+                    let substring = nsString.substring(with: NSRange(location: currentIndex, length: length))
+                    chunks.append(TextChunk(text: substring, isHighlight: false))
+                }
+            }
+            
+            // Matched text
+            let matchSubstring = nsString.substring(with: match.range)
+            chunks.append(TextChunk(text: matchSubstring, isHighlight: true))
+            
+            currentIndex = match.range.location + match.range.length
+        }
+        
+        // Remaining text
+        if currentIndex < nsString.length {
+            let substring = nsString.substring(with: NSRange(location: currentIndex, length: nsString.length - currentIndex))
+            chunks.append(TextChunk(text: substring, isHighlight: false))
+        }
+        
+        return chunks
+    }
+
     @ViewBuilder
     private func highlightedText(_ text: String, searchText: String) -> some View {
-        if searchText.isEmpty {
-            Text(text)
-        } else {
-            let parts = text.components(separatedBy: searchText)
-            if parts.count > 1 {
-                HStack(spacing: 0) {
-                    ForEach(Array(parts.enumerated()), id: \.offset) { index, part in
-                        Group {
-                            Text(part)
-                            if index < parts.count - 1 {
-                                Text(searchText)
-                                    .background(themeColor.opacity(0.3))
-                                    .foregroundColor(.primary)
-                            }
-                        }
-                    }
-                }
-            } else {
-                Text(text)
-            }
-        }
+         let chunks = getChunks(text: text, searchText: searchText)
+         HStack(spacing: 0) {
+             ForEach(chunks) { chunk in
+                 Text(chunk.text)
+                     .background(chunk.isHighlight ? themeColor.opacity(0.3) : Color.clear)
+                     .foregroundColor(.primary)
+             }
+         }
     }
 }
 

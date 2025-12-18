@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AddKidView: View {
+struct AddSpouseView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var firstName = ""
     @State private var lastName = ""
@@ -13,12 +13,26 @@ struct AddKidView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
     
-    let onSave: (Kid) -> Void
+    let onSave: (Spouse) -> Void
+    
+    // Optional: Pre-fill data if editing
+    init(spouse: Spouse? = nil, onSave: @escaping (Spouse) -> Void) {
+        self.onSave = onSave
+        if let spouse = spouse {
+            _firstName = State(initialValue: spouse.firstName)
+            _lastName = State(initialValue: spouse.lastName)
+            if let bday = spouse.birthday {
+                _birthMonth = State(initialValue: bday.month)
+                _birthDay = State(initialValue: bday.day)
+                _birthYear = State(initialValue: bday.year ?? 0)
+            }
+        }
+    }
     
     var body: some View {
         NavigationView {
             Form {
-                Section("Child Information") {
+                Section("Spouse Information") {
                     TextField("First Name", text: $firstName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     
@@ -63,7 +77,7 @@ struct AddKidView: View {
                     }
                 }
             }
-            .navigationTitle("Add Child")
+            .navigationTitle("Spouse Details")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -84,17 +98,17 @@ struct AddKidView: View {
                             )
                         }
                         
-                        let newKid = Kid(
+                        let newSpouse = Spouse(
                             firstName: firstName.trimmingCharacters(in: .whitespaces),
                             lastName: lastName.trimmingCharacters(in: .whitespaces),
                             birthday: newBirthday
                         )
                         
-                        if newKid.isValid {
-                            onSave(newKid)
+                        if newSpouse.isValid {
+                            onSave(newSpouse)
                             dismiss()
                         } else {
-                            errorMessage = newKid.validationErrors.joined(separator: ", ")
+                            errorMessage = newSpouse.validationErrors.joined(separator: ", ")
                             showingError = true
                         }
                     }
@@ -111,5 +125,5 @@ struct AddKidView: View {
 }
 
 #Preview {
-    AddKidView { _ in }
+    AddSpouseView { _ in }
 }

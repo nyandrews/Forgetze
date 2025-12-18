@@ -12,17 +12,166 @@ struct HamburgerMenuView: View {
     var body: some View {
         NavigationView {
             List {
+                // 1. Contact View Settings (Most Functional)
+                Section("CONTACT VIEW") {
+                    HStack {
+                        Image(systemName: "arrow.up.arrow.down")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Sort By")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("Sort By", selection: $appSettings.sortOption) {
+                            Text("First Name").tag(ContactSortOrder.firstName)
+                            Text("Last Name").tag(ContactSortOrder.lastName)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 180)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "person.text.rectangle")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Display Name")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("Display Name", selection: $appSettings.displayOrder) {
+                            Text("First Last").tag(ContactDisplayOrder.firstNameFirst)
+                            Text("Last, First").tag(ContactDisplayOrder.lastNameFirst)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 180)
+                    }
+                    
+
+                }
+                
+                // 2. Appearance
+                Section("APPEARANCE") {
+                    HStack {
+                        Image(systemName: "paintbrush")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Theme")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Picker("Theme", selection: $appSettings.isDarkMode) {
+                            Text("Light").tag(false)
+                            Text("Dark").tag(true)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 120)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "paintpalette")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Theme Color")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        
+                        Button(action: {
+                            showingColorPicker = true
+                        }) {
+                            HStack(spacing: 8) {
+                                Text(appSettings.primaryColor.rawValue)
+                                    .foregroundColor(appSettings.primaryColor.color)
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Image(systemName: "chevron.down")
+                                    .foregroundColor(appSettings.primaryColor.color)
+                                    .font(.caption)
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+                
+                // 3. Help (Instructions)
                 Section("HELP") {
                     NavigationLink(destination: UserInstructionsView()) {
                         HStack {
                             Image(systemName: "book")
                                 .foregroundColor(appSettings.primaryColor.color)
-                            Text("Instructions")
+                            Text("User Guide")
                                 .foregroundColor(appSettings.primaryColor.color)
                         }
                     }
                 }
                 
+                // 4. Voice Control
+                Section("VOICE CONTROL") {
+                    NavigationLink(destination: SiriShortcutsView()) {
+                        HStack {
+                            Image(systemName: "mic.circle")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Siri Shortcuts")
+                                .foregroundColor(appSettings.primaryColor.color)
+                        }
+                    }
+                }
+                
+                // 5. Data Protection
+                Section("DATA PROTECTION") {
+                    Button(action: {
+                        showingDataProtection = true
+                    }) {
+                        HStack {
+                            Image(systemName: "shield.checkered")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Data Protection Status")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                    
+                    HStack {
+                        Image(systemName: "icloud")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("iCloud Sync")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Text("Active")
+                            .foregroundColor(appSettings.primaryColor.color)
+                            .font(.caption)
+                    }
+                    
+                    HStack {
+                        Image(systemName: "archivebox")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Text("Backup Status")
+                            .foregroundColor(appSettings.primaryColor.color)
+                        Spacer()
+                        Text("Active")
+                            .foregroundColor(appSettings.primaryColor.color)
+                            .font(.caption)
+                    }
+                }
+                
+                // 6. Support
+                Section("SUPPORT") {
+                    Button(action: {
+                        if let url = URL(string: "mailto:hello@forgetze.com") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "envelope")
+                                .foregroundColor(appSettings.primaryColor.color)
+                            Text("Contact Support")
+                                .foregroundColor(appSettings.primaryColor.color)
+                                .font(.body)
+                            Spacer()
+                            Image(systemName: "arrow.up.right.square")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                
+                // 7. App Information
                 Section("APP INFORMATION") {
                     HStack {
                         Image(systemName: "info.circle")
@@ -71,94 +220,7 @@ struct HamburgerMenuView: View {
                     .buttonStyle(PlainButtonStyle())
                 }
                 
-                Section("APPEARANCE") {
-                    HStack {
-                        Image(systemName: "paintbrush")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Theme")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Picker("Theme", selection: $appSettings.isDarkMode) {
-                            Text("Light").tag(false)
-                            Text("Dark").tag(true)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 120)
-                    }
-                    
-                    HStack {
-                        Image(systemName: "paintpalette")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Theme Color")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        
-                        Button(action: {
-                            showingColorPicker = true
-                        }) {
-                            HStack(spacing: 8) {
-                                Text(appSettings.primaryColor.rawValue)
-                                    .foregroundColor(appSettings.primaryColor.color)
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Image(systemName: "chevron.down")
-                                    .foregroundColor(appSettings.primaryColor.color)
-                                    .font(.caption)
-                            }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                }
-                
-                Section("CONTACT VIEW") {
-                    HStack {
-                        Image(systemName: "arrow.up.arrow.down")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Sort By")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Picker("Sort By", selection: $appSettings.sortOption) {
-                            Text("First Name").tag(ContactSortOrder.firstName)
-                            Text("Last Name").tag(ContactSortOrder.lastName)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 180)
-                    }
-                    
-                    HStack {
-                        Image(systemName: "person.text.rectangle")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Display Name")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Picker("Display Name", selection: $appSettings.displayOrder) {
-                            Text("First Last").tag(ContactDisplayOrder.firstNameFirst)
-                            Text("Last, First").tag(ContactDisplayOrder.lastNameFirst)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 180)
-                    }
-                    
-                    HStack {
-                        Image(systemName: "eye")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Default View")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Picker("View Mode", selection: $appSettings.defaultContactView) {
-                            Text("Basic").tag(ContactViewMode.basic)
-                            Text("Advanced").tag(ContactViewMode.advanced)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 140)
-                    }
-                    
-                    Text("Basic: Name, notes, DOB, age, children. Advanced: Includes social media and addresses.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.top, 4)
-                }
-                
+                // 8. Legal
                 Section("LEGAL") {
                     Button(action: {
                         showingPrivacyStatement = true
@@ -173,77 +235,6 @@ struct HamburgerMenuView: View {
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                         }
-                    }
-                }
-                
-                Section("SUPPORT") {
-                    Button(action: {
-                        if let url = URL(string: "mailto:support@forgetze.com") {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "envelope")
-                                .foregroundColor(appSettings.primaryColor.color)
-                            Text("Contact Support")
-                                .foregroundColor(appSettings.primaryColor.color)
-                                .font(.body)
-                            Spacer()
-                            Image(systemName: "arrow.up.right.square")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                
-                Section("VOICE CONTROL") {
-                    NavigationLink(destination: SiriShortcutsView()) {
-                        HStack {
-                            Image(systemName: "mic.circle")
-                                .foregroundColor(appSettings.primaryColor.color)
-                            Text("Siri Shortcuts")
-                                .foregroundColor(appSettings.primaryColor.color)
-                        }
-                    }
-                }
-                
-                Section("DATA PROTECTION") {
-                    Button(action: {
-                        showingDataProtection = true
-                    }) {
-                        HStack {
-                            Image(systemName: "shield.checkered")
-                                .foregroundColor(appSettings.primaryColor.color)
-                            Text("Data Protection Status")
-                                .foregroundColor(appSettings.primaryColor.color)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                        }
-                    }
-                    
-                    HStack {
-                        Image(systemName: "icloud")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("iCloud Sync")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Text("Active")
-                            .foregroundColor(appSettings.primaryColor.color)
-                            .font(.caption)
-                    }
-                    
-                    HStack {
-                        Image(systemName: "archivebox")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Text("Backup Status")
-                            .foregroundColor(appSettings.primaryColor.color)
-                        Spacer()
-                        Text("Active")
-                            .foregroundColor(appSettings.primaryColor.color)
-                            .font(.caption)
                     }
                 }
             }
@@ -289,8 +280,8 @@ struct ColorPickerSheet: View {
                     }) {
                         HStack {
                             Circle()
-                                .fill(color.color)
-                                .frame(width: 20, height: 20)
+                            .fill(color.color)
+                            .frame(width: 20, height: 20)
                             Text(color.rawValue)
                                 .foregroundColor(color.color)
                                 .fontWeight(.medium)

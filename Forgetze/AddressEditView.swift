@@ -91,19 +91,15 @@ struct AddressEditView: View {
                         .foregroundColor(appSettings.primaryColor.color)
                 }
                 
-                Section("Address Details") {
+                Section {
                     TextField("Street Address", text: $street)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
                     
                     TextField("Street Address 2 (Apt, Suite, etc.)", text: $street2)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
                     
                     HStack {
                         TextField("City", text: $city)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
                         
                         TextField("State", text: $state)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
                             .frame(maxWidth: 80)
                             .textInputAutocapitalization(.characters)
                             .onChange(of: state) { _, newValue in
@@ -113,33 +109,38 @@ struct AddressEditView: View {
                     
                     HStack {
                         TextField("ZIP Code", text: $zip)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
                             .keyboardType(.numberPad)
                         
                         TextField("Country", text: $country)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
-                }
-                
-                Section("Validation") {
-                    HStack {
-                        Image(systemName: state.isEmpty ? "circle" : (Address(type: "", street: "", street2: nil, city: "", state: state, zip: "").validateState() ? "checkmark.circle.fill" : "xmark.circle.fill"))
-                            .foregroundColor(state.isEmpty ? .secondary : (Address(type: "", street: "", street2: "", city: "", state: state, zip: "").validateState() ? .green : .red))
-                        Text("State Code")
-                        Spacer()
-                        Text(state.isEmpty ? "Required" : (Address(type: "", street: "", street2: nil, city: "", state: state, zip: "").validateState() ? "Valid" : "Invalid"))
-                            .font(.caption)
-                            .foregroundColor(state.isEmpty ? .secondary : (Address(type: "", street: "", street2: nil, city: "", state: state, zip: "").validateState() ? .green : .red))
-                    }
-                    
-                    HStack {
-                        Image(systemName: zip.isEmpty ? "circle" : (Address(type: "", street: "", street2: nil, city: "", state: "", zip: zip).validateZIP() ? "checkmark.circle.fill" : "xmark.circle.fill"))
-                            .foregroundColor(zip.isEmpty ? .secondary : (Address(type: "", street: "", street2: nil, city: "", state: "", zip: zip).validateZIP() ? .green : .red))
-                        Text("ZIP Code")
-                        Spacer()
-                        Text(zip.isEmpty ? "Required" : (Address(type: "", street: "", street2: "", city: "", state: "", zip: zip).validateZIP() ? "Valid" : "Invalid"))
-                            .font(.caption)
-                            .foregroundColor(zip.isEmpty ? .secondary : (Address(type: "", street: "", street2: "", city: "", state: "", zip: zip).validateZIP() ? .green : .red))
+                } header: {
+                    Text("Address Details")
+                } footer: {
+                    if !validationWarnings.isEmpty && !street.isEmpty {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Recommendations:")
+                                .font(.caption2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.secondary)
+                                .padding(.top, 4)
+                            
+                            ForEach(validationWarnings, id: \.self) { warning in
+                                HStack(spacing: 4) {
+                                    Image(systemName: "info.circle.fill")
+                                        .font(.caption2)
+                                    Text(warning)
+                                }
+                                .foregroundColor(.orange)
+                            }
+                        }
+                    } else if !street.isEmpty {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                            Text("Address format looks great")
+                        }
+                        .font(.caption2)
+                        .foregroundColor(.green)
+                        .padding(.top, 4)
                     }
                 }
             }
@@ -159,32 +160,69 @@ struct AddressEditView: View {
                     }
                     .foregroundColor(appSettings.primaryColor.color)
                     .fontWeight(.medium)
-                    .disabled(!isValid)
+                    .disabled(street.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }
     }
     
     private var isValid: Bool {
-        return !street.isEmpty && !city.isEmpty && !state.isEmpty && !zip.isEmpty &&
-               Address(type: "", street: "", street2: "", city: "", state: state, zip: zip).validateState() &&
-               Address(type: "", street: "", street2: "", city: "", state: "", zip: zip).validateZIP()
+        return Address(
+            type: type,
+            street: street,
+            street2: street2,
+            city: city,
+            state: state,
+            zip: zip,
+            country: country,
+            isDefault: isDefault
+        ).isValid
+    }
+    
+    private var validationWarnings: [String] {
+        return Address(
+            type: type,
+            street: street,
+            street2: street2,
+            city: city,
+            state: state,
+            zip: zip,
+            country: country,
+            isDefault: isDefault
+        ).validationWarnings
     }
     
     private func saveAddress() {
         let finalType = showingCustomTypeInput && !customType.isEmpty ? customType : type
-        let newAddress = Address(
-            type: finalType,
-            street: street.trimmingCharacters(in: .whitespacesAndNewlines),
-            street2: street2.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : street2.trimmingCharacters(in: .whitespacesAndNewlines),
-            city: city.trimmingCharacters(in: .whitespacesAndNewlines),
-            state: state.trimmingCharacters(in: .whitespacesAndNewlines),
-            zip: zip.trimmingCharacters(in: .whitespacesAndNewlines),
-            country: country.trimmingCharacters(in: .whitespacesAndNewlines),
-            isDefault: isDefault
-        )
         
-        onSave(newAddress)
+        if let existingAddress = address {
+            // Update existing address in place to preserve ID and relationships
+            existingAddress.type = finalType
+            existingAddress.street = street.trimmingCharacters(in: .whitespacesAndNewlines)
+            existingAddress.street2 = street2.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : street2.trimmingCharacters(in: .whitespacesAndNewlines)
+            existingAddress.city = city.trimmingCharacters(in: .whitespacesAndNewlines)
+            existingAddress.state = state.trimmingCharacters(in: .whitespacesAndNewlines)
+            existingAddress.zip = zip.trimmingCharacters(in: .whitespacesAndNewlines)
+            existingAddress.country = country.trimmingCharacters(in: .whitespacesAndNewlines)
+            existingAddress.isDefault = isDefault
+            existingAddress.updatedAt = Date()
+            
+            onSave(existingAddress)
+        } else {
+            // Create new address
+            let newAddress = Address(
+                type: finalType,
+                street: street.trimmingCharacters(in: .whitespacesAndNewlines),
+                street2: street2.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : street2.trimmingCharacters(in: .whitespacesAndNewlines),
+                city: city.trimmingCharacters(in: .whitespacesAndNewlines),
+                state: state.trimmingCharacters(in: .whitespacesAndNewlines),
+                zip: zip.trimmingCharacters(in: .whitespacesAndNewlines),
+                country: country.trimmingCharacters(in: .whitespacesAndNewlines),
+                isDefault: isDefault
+            )
+            onSave(newAddress)
+        }
+        
         dismiss()
     }
 }

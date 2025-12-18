@@ -50,7 +50,7 @@ struct PrivacyStatementView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                         
-                        Text("If you have questions about this privacy statement, please contact us at support@forgetze.com")
+                        Text("If you have questions about this privacy statement, please contact us at hello@forgetze.com")
                     }
                 }
                 .padding()

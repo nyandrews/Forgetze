@@ -1,82 +1,65 @@
 import Foundation
 import SwiftUI
-import Darwin
 import SwiftData
 
-enum AppThemeColor: String, CaseIterable {
-    case red = "Red"
-    case rose = "Rose"
+public enum AppThemeColor: String, CaseIterable {
+    case merlot = "Merlot"     // Sophisticated Deep Red
+    case red = "Red"           // LEGO Red
     case coral = "Coral"
-    case sunset = "Sunset"
-    case orange = "Orange"
-    case gold = "Gold"
-    case mint = "Mint"
-    case emerald = "Emerald"
-    case green = "Green"
-    case forest = "Forest"
-    case ocean = "Ocean"
-    case blue = "Blue"
-    case indigo = "Indigo"
-    case lavender = "Lavender"
-    case purple = "Purple"
-    case steel = "Steel"
-    case midnight = "Midnight"
+    case orange = "Orange"     // LEGO Orange
+    case amber = "Amber"       // Enhanced Gold
+    case sunshine = "Sunshine" // LEGO Yellow #FFD700
+    case green = "Green"       // Refined Emerald Pigment
+    case pine = "Pine"         // Deep Organic Green
+    case teal = "Teal"         // Vibrant Blue-Green
+    case blue = "Blue"         // LEGO Blue
+    case purple = "Purple"     // LEGO Purple
+    case sand = "Sand"         // Warm Luxury Neutral
+    case slate = "Slate"       // Refined Steel
+    case midnight = "Midnight" // Intensely Blue Deep Navy
+    case charcoal = "Charcoal"
+    case jet = "Jet"           // True OLED Black
     
-    var color: Color {
+    public var color: Color {
         switch self {
-        case .red: return Color(red: 1.0, green: 0.23, blue: 0.19)
-        case .rose: return Color(red: 1.0, green: 0.2, blue: 0.4)
+        case .merlot: return Color(red: 0.5, green: 0.05, blue: 0.1)
+        case .red: return Color(red: 0.85, green: 0.16, blue: 0.11) // LEGO Red #DA291C
         case .coral: return Color(red: 1.0, green: 0.5, blue: 0.45)
-        case .sunset: return Color(red: 1.0, green: 0.4, blue: 0.2)
-        case .orange: return Color.orange
-        case .gold: return Color(red: 1.0, green: 0.84, blue: 0.0)
-        case .mint: return Color.mint
-        case .emerald: return Color(red: 0.0, green: 0.6, blue: 0.4)
-        case .green: return Color.green
-        case .forest: return Color(red: 0.0, green: 0.4, blue: 0.2)
-        case .ocean: return Color(red: 0.0, green: 0.5, blue: 0.8)
-        case .blue: return Color.blue
-        case .indigo: return Color.indigo
-        case .lavender: return Color(red: 0.7, green: 0.6, blue: 0.9)
-        case .purple: return Color.purple
-        case .steel: return Color(red: 0.4, green: 0.4, blue: 0.5)
-        case .midnight: return Color(red: 0.1, green: 0.1, blue: 0.3)
+        case .orange: return Color(red: 1.0, green: 0.58, blue: 0.13) // LEGO Orange #FF9320
+        case .amber: return Color(red: 1.0, green: 0.75, blue: 0.0)
+        case .sunshine: return Color(red: 1.0, green: 0.84, blue: 0.0) // LEGO Yellow #FFD700
+        case .green: return Color(red: 0.0, green: 0.6, blue: 0.4) // Emerald refinement
+        case .pine: return Color(red: 0.05, green: 0.35, blue: 0.25)
+        case .teal: return Color(red: 0.0, green: 0.5, blue: 0.5)
+        case .blue: return Color(red: 0.09, green: 0.45, blue: 0.74) // LEGO Blue #1873BC
+        case .purple: return Color(red: 0.51, green: 0.0, blue: 0.48) // LEGO Purple #81007B
+        case .sand: return Color(red: 0.89, green: 0.85, blue: 0.79) // Warm Sand
+        case .slate: return Color(red: 0.44, green: 0.5, blue: 0.56)
+        case .midnight: return Color(red: 0.05, green: 0.15, blue: 0.55)
+        case .charcoal: return Color(red: 0.2, green: 0.2, blue: 0.25)
+        case .jet: return .black // True OLED Black
         }
     }
     
-    var accentColor: Color {
+    public var accentColor: Color {
+        // Professional Hue-Shifting for gradients
         switch self {
-        case .red: return Color(red: 1.0, green: 0.3, blue: 0.3)
-        case .rose: return Color(red: 1.0, green: 0.4, blue: 0.6)
-        case .coral: return Color(red: 1.0, green: 0.6, blue: 0.5)
-        case .sunset: return Color(red: 1.0, green: 0.5, blue: 0.3)
-        case .orange: return Color(red: 1.0, green: 0.7, blue: 0.2)
-        case .gold: return Color(red: 1.0, green: 0.9, blue: 0.2)
-        case .mint: return Color(red: 0.4, green: 0.9, blue: 0.7)
-        case .emerald: return Color(red: 0.2, green: 0.8, blue: 0.5)
-        case .green: return Color(red: 0.3, green: 0.9, blue: 0.4)
-        case .forest: return Color(red: 0.2, green: 0.6, blue: 0.3)
-        case .ocean: return Color(red: 0.2, green: 0.7, blue: 0.9)
-        case .blue: return Color(red: 0.3, green: 0.6, blue: 1.0)
-        case .indigo: return Color(red: 0.4, green: 0.4, blue: 1.0)
-        case .lavender: return Color(red: 0.8, green: 0.7, blue: 1.0)
-        case .purple: return Color(red: 0.8, green: 0.4, blue: 1.0)
-        case .steel: return Color(red: 0.6, green: 0.6, blue: 0.7)
-        case .midnight: return Color(red: 0.3, green: 0.3, blue: 0.5)
-        }
-    }
-}
-
-enum ContactViewMode: String, CaseIterable {
-    case basic = "Basic"
-    case advanced = "Advanced"
-    
-    var description: String {
-        switch self {
-        case .basic:
-            return "Name, notes, DOB, age, children"
-        case .advanced:
-            return "Includes social media and addresses"
+        case .merlot: return Color(red: 0.7, green: 0.1, blue: 0.2)
+        case .red: return Color(red: 1.0, green: 0.3, blue: 0.25)
+        case .coral: return Color(red: 1.0, green: 0.65, blue: 0.5)
+        case .orange: return Color(red: 1.0, green: 0.75, blue: 0.3)
+        case .amber: return Color(red: 1.0, green: 0.85, blue: 0.3)
+        case .sunshine: return Color(red: 1.0, green: 0.95, blue: 0.4) // Bright Sunshine
+        case .green: return Color(red: 0.1, green: 0.8, blue: 0.5)
+        case .pine: return Color(red: 0.1, green: 0.5, blue: 0.4)
+        case .teal: return Color(red: 0.2, green: 0.7, blue: 0.8)
+        case .blue: return Color(red: 0.3, green: 0.6, blue: 0.9)
+        case .purple: return Color(red: 0.7, green: 0.45, blue: 0.75)
+        case .sand: return Color(red: 0.95, green: 0.92, blue: 0.88) // Lighter Sand
+        case .slate: return Color(red: 0.6, green: 0.65, blue: 0.7)
+        case .midnight: return Color(red: 0.2, green: 0.5, blue: 0.9)
+        case .charcoal: return Color(red: 0.4, green: 0.4, blue: 0.45)
+        case .jet: return Color(red: 0.2, green: 0.2, blue: 0.2) // Stealth Gray Shift
         }
     }
 }
@@ -106,17 +89,9 @@ class AppSettings: ObservableObject {
         }
     }
     
-    @Published var appVersion: String {
-        didSet {
-            UserDefaults.standard.set(appVersion, forKey: "appVersion")
-        }
-    }
+    @Published var appVersion: String
     
-    @Published var defaultContactView: ContactViewMode {
-        didSet {
-            UserDefaults.standard.set(defaultContactView.rawValue, forKey: "defaultContactView")
-        }
-    }
+
     
     @Published var glassEffectEnabled: Bool {
         didSet {
@@ -143,15 +118,32 @@ class AppSettings: ObservableObject {
     init() {
         self.isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
         let savedColor = UserDefaults.standard.string(forKey: "primaryColor") ?? "Blue"
-        // Handle migration from old indigo/violet colors to purple
+        
+        // Migration logic for "Premium 12" palette consolidation
         var colorToUse = savedColor
-        if savedColor == "Indigo" || savedColor == "Violet" {
-            colorToUse = "Purple"
+        let migrationMap = [
+            "Indigo": "Purple",
+            "Violet": "Purple",
+            "Lavender": "Purple",
+            "Royal Purple": "Purple",
+            "Purple": "Purple",
+            "Rose": "Red",
+            "Mint": "Green",
+            "Ocean": "Blue",
+            "Emerald": "Green",
+            "Forest": "Green",
+            "Gold": "Amber",
+            "Steel": "Slate",
+            "Sunset": "Orange"
+        ]
+        
+        if let migrated = migrationMap[savedColor] {
+            colorToUse = migrated
         }
+        
         self.primaryColor = AppThemeColor(rawValue: colorToUse) ?? .blue
-        self.appVersion = UserDefaults.standard.string(forKey: "appVersion") ?? "1.0.0"
-        let savedViewMode = UserDefaults.standard.string(forKey: "defaultContactView") ?? "Advanced"
-        self.defaultContactView = ContactViewMode(rawValue: savedViewMode) ?? .advanced
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        self.appVersion = version
         self.glassEffectEnabled = UserDefaults.standard.bool(forKey: "glassEffectEnabled")
         
         // Migration for sort option
@@ -170,88 +162,16 @@ class AppSettings: ObservableObject {
         isDarkMode = isDark
     }
     
+
     func setPrimaryColor(_ color: AppThemeColor) {
         primaryColor = color
     }
     
     // MARK: - Memory Management
     
-    func getMemoryUsage() -> String {
-        // Simple memory usage estimation using autorelease pool
-        return "Memory monitoring active"
-    }
-    
-    func logMemoryUsage() {
-        let usage = getMemoryUsage()
-        print("Current memory usage: \(usage)")
-    }
-    
-    func cleanupMemory() {
-        // Force garbage collection if available
-        autoreleasepool {
-            // This will help release autoreleased objects
-        }
-        
-        logMemoryUsage()
-    }
-    
-    // MARK: - Aggressive Memory Management
-    
-    func aggressiveMemoryCleanup() {
-        print("🔄 Starting aggressive memory cleanup...")
-        
-        // Force multiple autorelease pool cycles
-        for _ in 1...3 {
-            autoreleasepool {
-                // Create and immediately release objects to trigger cleanup
-                let _ = Array<Int>(repeating: 0, count: 1000)
-            }
-        }
-        
-        // Log memory before and after
-        let beforeUsage = getMemoryUsage()
-        print("Memory before cleanup: \(beforeUsage)")
-        
-        // Force system memory cleanup
-        if #available(iOS 13.0, *) {
-            // Trigger system-level memory cleanup
-            let _ = ProcessInfo.processInfo.thermalState
-        }
-        
-        // Small delay to allow cleanup
-        Thread.sleep(forTimeInterval: 0.1)
-        
-        let afterUsage = getMemoryUsage()
-        print("Memory after cleanup: \(afterUsage)")
-        
-        // Check if we're in a critical memory state
-        checkMemoryPressure()
-    }
-    
-    private func checkMemoryPressure() {
-        let usage = getMemoryUsage()
-        print("✅ Memory cleanup completed: \(usage)")
-    }
-    
-    func emergencyMemoryCleanup() {
-        print("🚨 EMERGENCY MEMORY CLEANUP TRIGGERED")
-        
-        // Most aggressive cleanup possible
-        autoreleasepool {
-            // Force release of all autoreleased objects
-            let _ = Array<Int>(repeating: 0, count: 10000)
-        }
-        
-        // Request system memory cleanup
-        if #available(iOS 13.0, *) {
-            // Trigger system memory pressure handling
-            let _ = ProcessInfo.processInfo.thermalState
-        }
-        
-        // Log final memory state
-        let finalUsage = getMemoryUsage()
-        print("Emergency cleanup complete. Final memory: \(finalUsage)")
-    }
+    // Memory management methods have been removed as they were providing no benefit and potentially causing overhead.
+    // The system (ARC and OS memory management) handles this automatically.
+
     
     // MARK: - Data Management
     
@@ -304,12 +224,16 @@ class AppSettings: ObservableObject {
 }
 
 // MARK: - Modern Card Background Modifier
-struct ModernCardBackground: ViewModifier {
-    let glassEffectEnabled: Bool
-    let cornerRadius: CGFloat = 12
+public struct ModernCardBackground: ViewModifier {
+    public let glassEffectEnabled: Bool
+    public let cornerRadius: CGFloat = 12
     @Environment(\.colorScheme) var colorScheme
     
-    func body(content: Content) -> some View {
+    public init(glassEffectEnabled: Bool) {
+        self.glassEffectEnabled = glassEffectEnabled
+    }
+    
+    public func body(content: Content) -> some View {
         content
             .background(
                 Group {
@@ -319,7 +243,6 @@ struct ModernCardBackground: ViewModifier {
                             .background(Material.regularMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                     } else {
-                        // Use explicit systemGray6 for consistent light gray background in light mode
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .fill(Color(.systemGray6))
                     }
@@ -330,19 +253,23 @@ struct ModernCardBackground: ViewModifier {
 }
 
 // MARK: - Modern Section Header Modifier
-struct ModernSectionHeader: ViewModifier {
-    let themeColor: Color
+public struct ModernSectionHeader: ViewModifier {
+    public let themeColor: Color
     
-    func body(content: Content) -> some View {
+    public init(themeColor: Color) {
+        self.themeColor = themeColor
+    }
+    
+    public func body(content: Content) -> some View {
         content
             .font(.headline)
             .foregroundColor(themeColor)
-            .textCase(nil) // Prevent automatic uppercasing if desired, or keep standard
+            .textCase(nil)
     }
 }
 
 // MARK: - View Extension for Easy Access
-extension View {
+public extension View {
     func modernCardBackground(glassEffectEnabled: Bool) -> some View {
         modifier(ModernCardBackground(glassEffectEnabled: glassEffectEnabled))
     }

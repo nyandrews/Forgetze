@@ -109,7 +109,7 @@ struct DataProtectionStatusView: View {
                                     .font(.caption)
                                     .foregroundColor(report.validContacts == report.totalContacts ? .green : .orange)
                                 
-                                Text("Kids: \(report.validKids)/\(report.totalKids) valid")
+                                Text("Children: \(report.validKids)/\(report.totalKids) valid")
                                     .font(.caption)
                                     .foregroundColor(report.validKids == report.totalKids ? .green : .orange)
                                 
@@ -435,21 +435,20 @@ struct BackupDetailsView: View {
     }
     
     private func loadBackupFiles() {
-        // Load backup file information
-        // This would parse the backup directory and show file details
-        backupFiles = [] // Placeholder
+        backupFiles = protectionManager.getBackupFiles()
     }
 }
 
 // MARK: - Supporting Types
 
-struct BackupFileInfo {
-    let url: URL
-    let filename: String
-    let size: String
-    let creationDate: Date
-    let operation: String
-}
+// Move BackupFileInfo outside or make it public in DataProtectionManager if it isn't already. 
+// Since we defined it in the manager update above, let's make sure it matches.
+// Actually, looking at the previous file content, BackupFileInfo was defined at the bottom of DataProtectionStatusView.swift.
+// We should probably move the definition to DataProtectionManager.swift or make sure the View uses the one returned by the Manager.
+// For now, let's assume we need to align the types.
+
+
+// BackupFileInfo moved to DataProtectionManager.swift
 
 #Preview {
     DataProtectionStatusView()

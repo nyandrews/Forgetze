@@ -88,6 +88,9 @@ class SearchManager: ObservableObject {
     
     private func executeSearch(in contacts: [Contact]) {
         let searchLower = searchText.lowercased()
+        // Split by whitespace and remove common punctuation for more flexible matching
+        let searchTokens = searchLower.components(separatedBy: CharacterSet.whitespaces.union(CharacterSet.punctuationCharacters))
+            .filter { !$0.isEmpty }
         
         // Use more efficient filtering with early termination
         var results: [Contact] = []
@@ -99,11 +102,66 @@ class SearchManager: ObservableObject {
                 break
             }
             
-            // Optimized search logic with early termination
-            if contact.firstName.lowercased().contains(searchLower) ||
-               contact.lastName.lowercased().contains(searchLower) ||
-               contact.notes.lowercased().contains(searchLower) {
-                results.append(contact)
+            // Comprehensive searchable text including relatives and details
+            var searchableComponents: [String] = [
+                contact.firstName,
+                contact.lastName,
+                contact.notes
+            ]
+            
+            // Include spouse components
+            if let spouse = contact.spouse {
+                searchableComponents.append(spouse.firstName)
+                searchableComponents.append(spouse.lastName)
+            }
+            
+            // Include kids components
+            for kid in contact.kids {
+                searchableComponents.append(kid.firstName)
+                searchableComponents.append(kid.lastName)
+            }
+            
+            // Include address components
+            for address in contact.addresses {
+                searchableComponents.append(address.type)
+                searchableComponents.append(address.street)
+                searchableComponents.append(address.city)
+                searchableComponents.append(address.state)
+                searchableComponents.append(address.zip)
+            }
+            
+            // Include phone numbers
+            for phone in contact.phoneNumbers {
+                let strippedPhone = phone.number.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+                searchableComponents.append(phone.label)
+                searchableComponents.append(phone.number)
+                searchableComponents.append(strippedPhone)
+            }
+            
+            // Include birthday components
+            if let birthday = contact.birthday {
+                searchableComponents.append(birthday.monthName)
+                searchableComponents.append(birthday.shortMonthName)
+                searchableComponents.append(String(birthday.day))
+                if let year = birthday.year {
+                    searchableComponents.append(String(year))
+                }
+            }
+            
+            // Include social media URLs
+            for url in contact.socialMediaURLs {
+                searchableComponents.append(url)
+            }
+            
+            let searchableText = searchableComponents.joined(separator: " ").lowercased()
+            
+            // A contact matches if ALL search tokens are found in the contact's aggregate data
+            let matchesAllTokens = searchTokens.allSatisfy { token in
+                return searchableText.contains(token)
+            }
+            
+            if matchesAllTokens {
+                results.append(contact) 
             }
         }
         
@@ -117,21 +175,35 @@ class SearchManager: ObservableObject {
     
     // MARK: - Caching
     
+    // Keep track of insertion order for FIFO eviction
+    private var searchHistory: [String] = []
+
     private func cacheResults(_ query: String, results: [Contact]) {
-        // Limit cache size to prevent memory issues
-        if cachedResults.count >= maxCacheSize {
-            // Remove oldest entries (simple FIFO approach)
-            let oldestKey = cachedResults.keys.first
-            if let key = oldestKey {
-                cachedResults.removeValue(forKey: key)
+        // If query is already in cache, update its position in history (make it "newest")
+        if cachedResults[query] != nil {
+            if let index = searchHistory.firstIndex(of: query) {
+                searchHistory.remove(at: index)
             }
         }
         
+        // Add to history
+        searchHistory.append(query)
         cachedResults[query] = results
+        
+        // Limit cache size
+        if cachedResults.count > maxCacheSize {
+            // Remove oldest entries (FIFO)
+            // searchHistory is ordered [oldest, ..., newest]
+            if let oldestKey = searchHistory.first {
+                cachedResults.removeValue(forKey: oldestKey)
+                searchHistory.removeFirst()
+            }
+        }
     }
     
     func clearCache() {
         cachedResults.removeAll()
+        searchHistory.removeAll()
     }
     
     func getCachedResults(for query: String) -> [Contact]? {
@@ -140,27 +212,7 @@ class SearchManager: ObservableObject {
     
     // MARK: - Performance Metrics
     
-    var cacheHitRate: Double {
-        let totalSearches = cachedResults.count
-        guard totalSearches > 0 else { return 0.0 }
-        
-        let cacheHits = cachedResults.values.filter { !$0.isEmpty }.count
-        return Double(cacheHits) / Double(totalSearches)
-    }
-    
-    var cacheSize: Int {
-        return cachedResults.count
-    }
-    
-    var memoryUsage: String {
-        let totalMemory = cachedResults.values.reduce(0) { $0 + $1.count }
-        return "\(cacheSize) queries, \(totalMemory) results cached"
-    }
-    
-    var performanceStats: String {
-        let hitRate = cacheHitRate * 100
-        return "Cache hit rate: \(String(format: "%.1f", hitRate))% | \(memoryUsage)"
-    }
+
     
     // MARK: - Public Interface
     

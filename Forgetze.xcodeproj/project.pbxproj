@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		910DA9EA2E569128008BE3D5 /* MemoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910DA9E52E569128008BE3D5 /* MemoryManager.swift */; };
+
+		91EX0002 /* ExportOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EX0001 /* ExportOptionsView.swift */; };
+		91SM0002 /* SocialMediaEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91SM0001 /* SocialMediaEditSheet.swift */; };
+		91CE0002 /* ContactExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CE0001 /* ContactExporter.swift */; };
+		91SI0002 /* AppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91SI0001 /* AppIntents.swift */; };
+		91SP0002 /* Spouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91SP0001 /* Spouse.swift */; };
+		91AS0002 /* AddSpouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AS0001 /* AddSpouseView.swift */; };
 		910DA9EC2E569128008BE3D5 /* AddressCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910DA9E72E569128008BE3D5 /* AddressCard.swift */; };
 		910DA9ED2E569128008BE3D5 /* SocialMediaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910DA9E82E569128008BE3D5 /* SocialMediaCard.swift */; };
 		910DA9EE2E569128008BE3D5 /* AddressEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910DA9E92E569128008BE3D5 /* AddressEditView.swift */; };
@@ -62,7 +68,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		910DA9E52E569128008BE3D5 /* MemoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryManager.swift; sourceTree = "<group>"; };
+
+		91EX0001 /* ExportOptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/ExportOptionsView.swift"; sourceTree = "<group>"; };
+		91SM0001 /* SocialMediaEditSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/SocialMediaEditSheet.swift"; sourceTree = "<group>"; };
+		91CE0001 /* ContactExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactExporter.swift; sourceTree = "<group>"; };
+		91SI0001 /* AppIntents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Siri/AppIntents.swift"; sourceTree = "<group>"; };
+		91SP0001 /* Spouse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spouse.swift; sourceTree = "<group>"; };
+		91AS0001 /* AddSpouseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddSpouseView.swift; sourceTree = "<group>"; };
 		910DA9E72E569128008BE3D5 /* AddressCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/AddressCard.swift"; sourceTree = "<group>"; };
 		910DA9E82E569128008BE3D5 /* SocialMediaCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/SocialMediaCard.swift"; sourceTree = "<group>"; };
 		910DA9E92E569128008BE3D5 /* AddressEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressEditView.swift; sourceTree = "<group>"; };
@@ -177,7 +189,7 @@
 				91B94D6A2E4E52E100BDE072 /* Info.plist */,
 				915CCCD72E4E644600928251 /* Kid.swift */,
 				916749BD2E54F7DC002AA45F /* LoadingView.swift */,
-				910DA9E52E569128008BE3D5 /* MemoryManager.swift */,
+
 				91B94D662E4E52E100BDE072 /* Preview Content */,
 				915CCCDE2E4E644700928251 /* PrivacyStatementView.swift */,
 				916749BF2E54F7DC002AA45F /* SampleData.swift */,
@@ -188,6 +200,12 @@
 				910DA9E82E569128008BE3D5 /* SocialMediaCard.swift */,
 				915CCCD92E4E644600928251 /* Validatable.swift */,
 				916749B82E54F37E002AA45F /* VoiceSearchManager.swift */,
+				91EX0001 /* ExportOptionsView.swift */,
+				91SM0001 /* SocialMediaEditSheet.swift */,
+				91CE0001 /* ContactExporter.swift */,
+				91SI0001 /* AppIntents.swift */,
+				91SP0001 /* Spouse.swift */,
+				91AS0001 /* AddSpouseView.swift */,
 			);
 			path = Forgetze;
 			sourceTree = "<group>";
@@ -369,7 +387,7 @@
 				915CCCE22E4E644700928251 /* ContactEditView.swift in Sources */,
 				915CCCE52E4E644700928251 /* Validatable.swift in Sources */,
 				915CCCE82E4E644700928251 /* Contact.swift in Sources */,
-				910DA9EA2E569128008BE3D5 /* MemoryManager.swift in Sources */,
+
 				915CCCE02E4E644700928251 /* Birthday.swift in Sources */,
 				910DA9EC2E569128008BE3D5 /* AddressCard.swift in Sources */,
 				910DA9ED2E569128008BE3D5 /* SocialMediaCard.swift in Sources */,
@@ -381,6 +399,12 @@
 				915CCCE12E4E644700928251 /* AddKidView.swift in Sources */,
 				916749C22E54F7DC002AA45F /* LoadingView.swift in Sources */,
 				916749BA2E54F37E002AA45F /* SearchManager.swift in Sources */,
+				91EX0002 /* ExportOptionsView.swift in Sources */,
+				91SM0002 /* SocialMediaEditSheet.swift in Sources */,
+				91CE0002 /* ContactExporter.swift in Sources */,
+				91SI0002 /* AppIntents.swift in Sources */,
+				91SP0002 /* Spouse.swift in Sources */,
+				91AS0002 /* AddSpouseView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,7 +582,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2025.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgetze.Forgetze;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -589,7 +613,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2025.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgetze.Forgetze;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -608,7 +632,7 @@
 				DEVELOPMENT_TEAM = 9NW728C2R9;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2025.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgetze.ForgetzeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -628,7 +652,7 @@
 				DEVELOPMENT_TEAM = 9NW728C2R9;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2025.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgetze.ForgetzeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -646,7 +670,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9NW728C2R9;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2025.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgetze.ForgetzeUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -664,7 +688,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9NW728C2R9;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2025.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgetze.ForgetzeUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
